@@ -18,11 +18,11 @@ The site is built with **Astro**, rendered to static HTML at build time. No serv
 
 Fonts are self-hosted. There are no third-party scripts, no analytics, no tracking pixels, no cookie banner (because there are no cookies). The entire home page transfers under 100KB.
 
-This is the same stack I use for the browser-facing surfaces of my other products: **Bun** for tooling, **TypeScript** in strict mode, **Astro** for rendering, **Alpine.js** for light interaction. The site is the proof that the stack works.
+New product work has since moved to **React + Vite** with **TanStack Router**, **TanStack Query**, **shadcn/ui**, and **Zod** — but this site still runs the original Astro build described above.
 
 ## Why static
 
-Every page on this site works with JavaScript disabled. The HTML is the product. Alpine.js enhances where needed — a mobile nav toggle, maybe a filter control later — but nothing gates on it.
+Every page on this site works with JavaScript disabled. The HTML is the product. Client-side JS enhances where needed — a mobile nav toggle, maybe a filter control later — but nothing gates on it.
 
 Static output means the deployment target is just "anything that serves files." Cloudflare Pages, a VPS with Caddy, an S3 bucket — the choice is reversible because the output is just files. That's the kind of decision I want to make: ones where the cost of being wrong is low.
 

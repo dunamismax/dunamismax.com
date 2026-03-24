@@ -43,7 +43,7 @@ export const projects: Project[] = [
 		category: "apps",
 		status: "active",
 		repo: "https://github.com/dunamismax/scrybase",
-		stack: ["Go", "Astro", "Alpine.js", "SQLite"],
+		stack: ["Go", "React", "Vite", "SQLite"],
 	},
 	{
 		name: "0xvane",
@@ -51,7 +51,7 @@ export const projects: Project[] = [
 		category: "apps",
 		status: "active",
 		repo: "https://github.com/dunamismax/0xvane",
-		stack: ["Go", "Astro", "Alpine.js", "SQLite"],
+		stack: ["Go", "React", "Vite", "SQLite"],
 	},
 	{
 		name: "bore",
@@ -59,7 +59,7 @@ export const projects: Project[] = [
 		category: "infrastructure",
 		status: "active",
 		repo: "https://github.com/dunamismax/bore",
-		stack: ["Go", "Astro", "Alpine.js", "Noise", "ChaCha20-Poly1305"],
+		stack: ["Go", "React", "Vite", "Noise", "ChaCha20-Poly1305"],
 	},
 	{
 		name: "wirescope",
@@ -75,7 +75,7 @@ export const projects: Project[] = [
 		category: "security",
 		status: "active",
 		repo: "https://github.com/dunamismax/vaultd",
-		stack: ["C", "Go", "Astro", "Alpine.js"],
+		stack: ["C", "Go", "React", "Vite"],
 	},
 	{
 		name: "repokeeper",
@@ -84,7 +84,7 @@ export const projects: Project[] = [
 		category: "developer-tools",
 		status: "active",
 		repo: "https://github.com/dunamismax/repokeeper",
-		stack: ["Go", "Astro", "Alpine.js", "SQLite"],
+		stack: ["Go", "React", "Vite", "SQLite"],
 	},
 	{
 		name: "gitpulse",
@@ -93,6 +93,6 @@ export const projects: Project[] = [
 		category: "developer-tools",
 		status: "active",
 		repo: "https://github.com/dunamismax/gitpulse",
-		stack: ["Go", "Astro", "Alpine.js", "SQLite"],
+		stack: ["Go", "React", "Vite", "SQLite"],
 	},
 ];
