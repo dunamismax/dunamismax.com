@@ -74,9 +74,9 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 
 ### What does not exist yet
 
-- DNS configuration for `dunamismax.com`
-- Lighthouse verification against live deployment
-- Live deployment
+- public deployment redeployed with the validated Caddy static-serving fix
+- Lighthouse verification against the public domain
+- external uptime monitoring
 
 ---
 

@@ -6,8 +6,9 @@
 # Build and run:
 #   docker compose up -d --build
 #
-# Rebuild after content changes:
-#   docker compose up -d --build --force-recreate
+# Rebuild after content or deploy-config changes:
+#   docker compose build --no-cache web
+#   docker compose up -d --force-recreate web
 
 services:
   web:

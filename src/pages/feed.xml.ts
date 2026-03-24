@@ -12,7 +12,7 @@ export async function GET(context: APIContext) {
 	return rss({
 		title: "Stephen Sawyer — dunamismax",
 		description:
-			"Technical writing on systems design, self-hosting, Go, Zig, C, and operational discipline.",
+			"Technical writing on systems design, self-hosting, Go, C, Python, and operational discipline.",
 		site: siteUrl,
 		items: posts.map((post) => ({
 			title: post.data.title,

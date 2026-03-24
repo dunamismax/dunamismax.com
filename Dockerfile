@@ -13,6 +13,13 @@ RUN bun run build
 FROM caddy:alpine
 
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /app/dist /srv
+COPY --from=build /app/dist /tmp/dist
+
+RUN cp -R /tmp/dist/. /usr/share/caddy/ \
+	&& find /usr/share/caddy -type d -exec chmod 755 {} \; \
+	&& find /usr/share/caddy -type f -exec chmod 644 {} \; \
+	&& rm -rf /tmp/dist
+
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1
 
 EXPOSE 80

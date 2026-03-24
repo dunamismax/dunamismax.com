@@ -32,7 +32,7 @@ The blog will cover what I'm building and how I think about it:
 
 - **Build logs** — honest accounts of shipping a product or feature. What worked, what broke, what I learned.
 - **Systems thinking** — architecture decisions, storage tradeoffs, operational discipline.
-- **Craft** — Go patterns, Zig idioms, SQLite tricks. Short, specific, useful.
+- **Craft** — Go patterns, C boundary work, Python tooling, SQLite tricks. Short, specific, useful.
 - **Stack philosophy** — why boring infrastructure wins, why self-hosting matters, why the data layer is the truth layer.
 
 No listicles. No engagement bait. No "10 things I learned" titles. I'll write like I'm explaining a decision to a colleague who will call me on it if the reasoning doesn't hold up.

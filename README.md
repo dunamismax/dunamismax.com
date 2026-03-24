@@ -22,9 +22,10 @@ No React. No Vue. No Svelte. No SPA router. No client state library. No GraphQL.
 
 ## Status
 
-**Phase 0 — not yet implemented.**
+**Phase 4 — implemented.**
 
-The repo exists. This README and [BUILD.md](BUILD.md) describe the target architecture and product shape. Nothing ships today.
+The Astro site, tests, CI, and Docker/Caddy deploy path all exist in-repo today.
+Public availability depends on the deployed container being current and healthy.
 
 ## Domain strategy
 
@@ -44,7 +45,7 @@ The active project roster. Each entry links to the repo and — when the product
 
 ### Blog
 
-Long-form technical writing. Markdown files in Astro content collections, rendered at build time. No CMS, no database, no comment system in v1. Topics: systems design, self-hosting, Go/C craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Markdown files in Astro content collections, rendered at build time. No CMS, no database, no comment system in v1. Topics: systems design, self-hosting, Go/C/Python craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
