@@ -22,10 +22,10 @@ function About() {
 				</p>
 
 				<p>
-					Most of my work is in <strong>Go</strong> and <strong>Rust</strong>. Browser-facing
-					surfaces use <strong>React</strong> and <strong>Vite</strong>. I reach for{" "}
-					<strong>SQLite</strong> by default and move to PostgreSQL only when the product clearly
-					earns it.
+					Most of my work is in <strong>Go</strong>, <strong>Rust</strong>, and{" "}
+					<strong>Zig</strong>. Browser-facing surfaces use <strong>React</strong> and{" "}
+					<strong>Vite</strong>. I reach for <strong>SQLite</strong> by default and move to
+					PostgreSQL only when the product clearly earns it.
 				</p>
 
 				<h2>What I care about</h2>
@@ -58,7 +58,8 @@ function About() {
 				<p>
 					Go for services, daemons, CLIs, APIs, and most application logic. Rust for native
 					runtimes, auditable boundary work, capture paths, custody code, and shared-core systems
-					tools.
+					tools. Zig for high-performance probes, capture agents, BPF helpers, and C-interop
+					boundaries.
 				</p>
 
 				<p>
