@@ -59,14 +59,26 @@ function Projects() {
 												</span>
 											))}
 										</div>
-										<a
-											href={project.repo}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="repo-link"
-										>
-											repo →
-										</a>
+										<div className="project-links">
+											{project.url && (
+												<a
+													href={project.url}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="repo-link"
+												>
+													read it →
+												</a>
+											)}
+											<a
+												href={project.repo}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="repo-link"
+											>
+												repo →
+											</a>
+										</div>
 									</div>
 								</li>
 							))}

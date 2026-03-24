@@ -8,25 +8,18 @@ export interface Project {
 	stack: string[];
 }
 
-export type Category = "apps" | "infrastructure" | "security" | "developer-tools" | "systems";
+export type Category = "apps" | "infrastructure" | "developer-tools" | "reference";
 
 export type Status = "active" | "shipped" | "phase-0" | "legacy";
 
 export const categoryLabels: Record<Category, string> = {
 	apps: "Apps",
 	infrastructure: "Infrastructure",
-	security: "Security",
 	"developer-tools": "Developer Tools",
-	systems: "Systems",
+	reference: "Reference",
 };
 
-export const categoryOrder: Category[] = [
-	"apps",
-	"infrastructure",
-	"security",
-	"developer-tools",
-	"systems",
-];
+export const categoryOrder: Category[] = ["apps", "infrastructure", "developer-tools", "reference"];
 
 export const statusLabels: Record<Status, string> = {
 	active: "Active",
@@ -39,60 +32,73 @@ export const projects: Project[] = [
 	{
 		name: "Scrybase",
 		tagline:
-			"Local-first Commander intelligence for decks, collection tracking, and real pod meta.",
+			"Commander intelligence workbench. Decks, collection, pod tracking, matchup journal, and Scryfall integration.",
 		category: "apps",
 		status: "active",
 		repo: "https://github.com/dunamismax/scrybase",
 		stack: ["Go", "React", "Vite", "SQLite"],
 	},
 	{
-		name: "0xvane",
-		tagline: "Local-first algorithmic trading workbench for signals, risk control, and execution.",
+		name: "Patchworks",
+		tagline:
+			"Git-style diffs for SQLite databases. Schema, rows, and the SQL to reconcile them. Native desktop app and headless CLI.",
 		category: "apps",
 		status: "active",
-		repo: "https://github.com/dunamismax/0xvane",
-		stack: ["Go", "React", "Vite", "SQLite"],
+		repo: "https://github.com/dunamismax/patchworks",
+		stack: ["Go", "SQLite"],
 	},
 	{
 		name: "bore",
-		tagline: "Privacy-first file transfer with a payload-blind relay.",
+		tagline:
+			"Peer-to-peer encrypted file transfer. Direct connections via STUN/hole-punching with Noise XXpsk0 E2E encryption, relay fallback when NAT wins. No accounts, no cloud.",
 		category: "infrastructure",
-		status: "active",
+		status: "shipped",
 		repo: "https://github.com/dunamismax/bore",
-		stack: ["Go", "React", "Vite", "Noise", "ChaCha20-Poly1305"],
+		stack: ["Go", "Noise", "STUN"],
 	},
 	{
 		name: "wirescope",
-		tagline: "Terminal-first network observability with durable metadata and raw PCAP retention.",
+		tagline:
+			"Terminal-first network observability. Live capture, top talkers, DNS context, connection tables, PCAP on disk. Go core with Rust and Zig capture backends.",
 		category: "infrastructure",
-		status: "active",
+		status: "shipped",
 		repo: "https://github.com/dunamismax/wirescope",
-		stack: ["Go", "Rust", "SQLite", "PCAP"],
-	},
-	{
-		name: "vaultd",
-		tagline: "Local HSM-style daemon with a Rust core and a Go control plane.",
-		category: "security",
-		status: "active",
-		repo: "https://github.com/dunamismax/vaultd",
-		stack: ["Rust", "Go", "React", "Vite"],
+		stack: ["Go", "Rust", "Zig", "SQLite", "PCAP"],
 	},
 	{
 		name: "repokeeper",
 		tagline:
-			"Self-hosted repo health daemon for doc verification, remote validation, and drift detection.",
+			"Self-hosted repo health daemon. Scheduled scans with jitter, doc verification, remote validation, drift detection. One binary, systemd/launchd service files included.",
 		category: "developer-tools",
 		status: "active",
 		repo: "https://github.com/dunamismax/repokeeper",
-		stack: ["Go", "React", "Vite", "SQLite"],
+		stack: ["Go", "SQLite"],
 	},
 	{
-		name: "gitpulse",
+		name: "cargo-compatible",
 		tagline:
-			"Local-first git activity analytics with separate ledgers for live work, commits, and pushes.",
+			"Check whether your resolved dependency graph fits a target Rust version. Lockfile-first, fixes before manifest changes.",
 		category: "developer-tools",
-		status: "active",
-		repo: "https://github.com/dunamismax/gitpulse",
-		stack: ["Go", "React", "Vite", "SQLite"],
+		status: "shipped",
+		repo: "https://github.com/dunamismax/cargo-compatible",
+		stack: ["Rust"],
+	},
+	{
+		name: "cargo-async-doctor",
+		tagline: "Catch async Rust bugs that compile fine and pass Clippy but deadlock at 2 AM.",
+		category: "developer-tools",
+		status: "shipped",
+		repo: "https://github.com/dunamismax/cargo-async-doctor",
+		stack: ["Rust"],
+	},
+	{
+		name: "rust-async-field-guide",
+		tagline:
+			"Learn async Rust by breaking things first. Twelve chapters of real footguns, reproductions, and verified fixes.",
+		category: "reference",
+		status: "shipped",
+		repo: "https://github.com/dunamismax/rust-async-field-guide",
+		url: "https://dunamismax.github.io/rust-async-field-guide/",
+		stack: ["Rust"],
 	},
 ];

@@ -109,6 +109,12 @@
 	border-radius: var(--radius);
 }
 
+.project-links {
+	display: flex;
+	gap: var(--space-4);
+	flex-shrink: 0;
+}
+
 .repo-link {
 	font-family: var(--font-mono);
 	font-size: var(--text-sm);
