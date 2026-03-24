@@ -22,9 +22,10 @@ function About() {
 				</p>
 
 				<p>
-					Most of my work is in <strong>Go</strong> and <strong>Rust</strong>. Browser-facing surfaces
-					use <strong>React</strong> and <strong>Vite</strong>. I reach for <strong>SQLite</strong>{" "}
-					by default and move to PostgreSQL only when the product clearly earns it.
+					Most of my work is in <strong>Go</strong> and <strong>Rust</strong>. Browser-facing
+					surfaces use <strong>React</strong> and <strong>Vite</strong>. I reach for{" "}
+					<strong>SQLite</strong> by default and move to PostgreSQL only when the product clearly
+					earns it.
 				</p>
 
 				<h2>What I care about</h2>
