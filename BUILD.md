@@ -205,7 +205,7 @@ Content pillars:
 
 - **Build logs.** Honest accounts of shipping a product or feature. What worked, what broke, what was learned. Not tutorials — dispatches from the build.
 - **Systems thinking.** Architecture decisions, storage tradeoffs, operational discipline, self-hosting lessons. Opinions with receipts.
-- **Craft.** Go patterns, Zig idioms, C boundary discipline, SQLite tricks, Astro/Alpine techniques. Short, specific, useful.
+- **Craft.** Go patterns, C boundary discipline, SQLite tricks, Astro/Alpine techniques. Short, specific, useful.
 - **Stack philosophy.** Why boring infrastructure wins. Why self-hosting matters. Why the data layer is the truth layer. The intellectual backbone of the portfolio.
 
 Tone: the same as the code. Direct, opinionated, evidence-first. No listicles, no engagement bait, no "10 things I learned" titles. Write like you are explaining a decision to a colleague who will call you on your shit.

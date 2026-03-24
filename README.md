@@ -44,7 +44,7 @@ The active project roster. Each entry links to the repo and — when the product
 
 ### Blog
 
-Long-form technical writing. Markdown files in Astro content collections, rendered at build time. No CMS, no database, no comment system in v1. Topics: systems design, self-hosting, Go/Zig/C craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Markdown files in Astro content collections, rendered at build time. No CMS, no database, no comment system in v1. Topics: systems design, self-hosting, Go/C craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
