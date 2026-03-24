@@ -1,0 +1,25 @@
+{
+	"name": "dunamismax.com",
+	"type": "module",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"check": "biome check . && astro check",
+		"test": "vitest run",
+		"format": "biome format . --write"
+	},
+	"dependencies": {
+		"@astrojs/rss": "^4.0.17",
+		"@astrojs/sitemap": "^3.7.1",
+		"astro": "^6.0.8"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.8",
+		"@biomejs/biome": "^2.4.8",
+		"typescript": "^6.0.2",
+		"vitest": "^4.1.1"
+	}
+}
