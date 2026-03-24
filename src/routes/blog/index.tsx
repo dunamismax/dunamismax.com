@@ -15,7 +15,7 @@ function BlogIndex() {
 		<>
 			<Head
 				title="Blog — Stephen Sawyer"
-				description="Technical writing on systems design, self-hosting, Go, C, and operational discipline."
+				description="Technical writing on systems design, self-hosting, Go, Rust, and operational discipline."
 			/>
 			<div className="blog-index">
 				<h1>Blog</h1>

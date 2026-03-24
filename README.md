@@ -45,7 +45,7 @@ The active project roster. Each entry links to the repo. Projects are grouped by
 
 ### Blog
 
-Long-form technical writing. Posts live as data in the repo, rendered with react-markdown. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/C craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Posts live as data in the repo, rendered with react-markdown. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 

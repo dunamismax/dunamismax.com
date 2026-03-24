@@ -22,7 +22,7 @@ function About() {
 				</p>
 
 				<p>
-					Most of my work is in <strong>Go</strong> and <strong>C</strong>. Browser-facing surfaces
+					Most of my work is in <strong>Go</strong> and <strong>Rust</strong>. Browser-facing surfaces
 					use <strong>React</strong> and <strong>Vite</strong>. I reach for <strong>SQLite</strong>{" "}
 					by default and move to PostgreSQL only when the product clearly earns it.
 				</p>
@@ -55,8 +55,9 @@ function About() {
 				<h2>The stack</h2>
 
 				<p>
-					Go for services, daemons, CLIs, APIs, and most application logic. C for auditable
-					boundary-layer work, capture paths, custody code, and tight ABI surfaces.
+					Go for services, daemons, CLIs, APIs, and most application logic. Rust for native
+					runtimes, auditable boundary work, capture paths, custody code, and shared-core systems
+					tools.
 				</p>
 
 				<p>

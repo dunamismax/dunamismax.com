@@ -67,15 +67,15 @@ export const projects: Project[] = [
 		category: "infrastructure",
 		status: "active",
 		repo: "https://github.com/dunamismax/wirescope",
-		stack: ["Go", "C", "SQLite", "PCAP"],
+		stack: ["Go", "Rust", "SQLite", "PCAP"],
 	},
 	{
 		name: "vaultd",
-		tagline: "Local HSM-style daemon with a C core and a Go control plane.",
+		tagline: "Local HSM-style daemon with a Rust core and a Go control plane.",
 		category: "security",
 		status: "active",
 		repo: "https://github.com/dunamismax/vaultd",
-		stack: ["C", "Go", "React", "Vite"],
+		stack: ["Rust", "Go", "React", "Vite"],
 	},
 	{
 		name: "repokeeper",
