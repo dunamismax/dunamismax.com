@@ -68,11 +68,12 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 - Open Graph and Twitter Card meta tags on every page
 - Canonical URLs, preloaded fonts, RSS alternate link
 - Vitest with 3 passing smoke tests
-- `bun run check` and `bun run build` pass clean (7 pages, 478ms)
+- CI pipeline (GitHub Actions: check, test, build on push/PR)
+- Docker deployment (multi-stage Dockerfile, Caddyfile, docker-compose.yml)
+- `bun run check` and `bun run build` pass clean (7 pages, 481ms)
 
 ### What does not exist yet
 
-- CI pipeline
 - DNS configuration for `dunamismax.com`
 - Lighthouse verification against live deployment
 - Live deployment
@@ -92,6 +93,10 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 | `astro.config.mjs` | Astro build and integration configuration |
 | `biome.json` | lint and format rules |
 | `package.json` | dependencies and scripts |
+| `Dockerfile` | multi-stage Docker build (Bun → Caddy Alpine) |
+| `Caddyfile` | static file serving, caching, security headers |
+| `docker-compose.yml` | container orchestration |
+| `.github/workflows/ci.yml` | CI pipeline configuration |
 
 ---
 
@@ -248,15 +253,66 @@ Categories match the profile README groupings:
 
 ## Deployment
 
-### Phase 1 target: static hosting
+### Architecture
 
-Static output served from a fast CDN or a single VPS with a reverse proxy. Candidates:
+Self-hosted via Docker with Caddy serving static files. The container sits behind an external Caddy reverse proxy that handles TLS for `dunamismax.com`.
 
-- **Cloudflare Pages** — free, fast, automatic deploys from GitHub
-- **Self-hosted Caddy or Nginx on a VPS** — full control, matches the self-hosting philosophy
-- **Vercel or Netlify** — fast but less aligned with the ownership doctrine
+```
+Internet → Caddy (host, TLS) → Docker container (Caddy on :80, static files)
+```
 
-Decision deferred until Phase 1 implementation is complete. The build output is static HTML; any static host works.
+### Files
+
+| File | Purpose |
+| --- | --- |
+| `Dockerfile` | Multi-stage build: Bun builds the site, Caddy Alpine serves it |
+| `Caddyfile` | Static file serving, compression, cache headers, security headers, clean URLs, 404 handling |
+| `docker-compose.yml` | Container orchestration with restart policy, exposes port 8080 |
+| `.dockerignore` | Keeps the build context small |
+| `.github/workflows/ci.yml` | CI pipeline: install, check, test, build on push/PR |
+
+### Build and run
+
+```bash
+# Build and start the container
+docker compose up -d --build
+
+# Rebuild after content changes
+docker compose up -d --build --force-recreate
+
+# Stop
+docker compose down
+
+# View logs
+docker compose logs -f web
+```
+
+The container exposes port 8080. Point the host Caddy reverse proxy at `localhost:8080`.
+
+Example host Caddyfile block:
+
+```
+dunamismax.com {
+    reverse_proxy localhost:8080
+}
+```
+
+### Build without Docker
+
+```bash
+bun install
+bun run build
+# Serve the dist/ directory with any static file server
+```
+
+### CI pipeline
+
+GitHub Actions runs on every push to `main` and on pull requests:
+
+1. `bun install --frozen-lockfile`
+2. `bun run check` (Biome + Astro check)
+3. `bun run test` (Vitest)
+4. `bun run build` (production static build)
 
 ### Future: SSR if earned
 
@@ -364,7 +420,7 @@ Checklist:
 - [x] add Open Graph images (static or generated)
 - [x] add `robots.txt`
 - [x] add favicon and touch icons
-- [ ] configure deployment target and CI pipeline
+- [x] configure deployment target and CI pipeline
 - [ ] set up `dunamismax.com` DNS
 - [ ] verify: site is live and reachable at `dunamismax.com`
 - [ ] verify: RSS feed validates
@@ -524,6 +580,7 @@ Mitigation: the site is static HTML. Any host works. Pick one in Phase 4 and shi
 - 2026-03-23: Inter for body text, JetBrains Mono for code and headings. Self-hosted, no CDN.
 - 2026-03-23: no contact form in v1. Direct contact channels listed on the contact page.
 - 2026-03-23: Phases 1–3 completed. Phase 4 partially complete (assets done, deployment pending).
+- 2026-03-23: Deployment target: self-hosted Caddy via Docker. Multi-stage Dockerfile (Bun build → Caddy Alpine serve). Container serves on port 80 behind an external Caddy reverse proxy that handles TLS. CI pipeline via GitHub Actions.
 
 ---
 
