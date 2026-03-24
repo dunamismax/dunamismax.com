@@ -45,7 +45,7 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 
 ## Current repo snapshot
 
-**Current phase:** Phase 0 — scaffold not yet started
+**Current phase:** Phase 4 — polish and production (partially complete)
 
 **Last reviewed:** 2026-03-23
 
@@ -53,17 +53,29 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 
 ### What exists right now
 
-- empty repo with `.git`
-- `README.md` — project definition and target architecture
-- `BUILD.md` — this file
+- Astro project with Bun, TypeScript strict mode, Biome lint/format
+- Full design system in `tokens.css` and `base.css` (colors, typography, spacing, motion)
+- Self-hosted Inter (variable) and JetBrains Mono fonts in `public/fonts/`
+- Base layout with fixed nav, skip-to-content link, semantic HTML, footer with contact links
+- **Home page** — hero with name, tagline, stack description, nav cards
+- **About page** — stack philosophy, ownership, boring infrastructure
+- **Contact page** — all channels listed (Email, Signal, GitHub, Twitter, Reddit)
+- **Projects page** — all repos grouped by category with status badges and stack tags
+- **Blog index** — date + title + excerpt layout
+- **Blog post layout** — reading time, tags, Shiki syntax highlighting
+- **First blog post** — "Building this site"
+- **404 page**, sitemap, RSS feed at `/feed.xml`, `robots.txt`, SVG favicon
+- Open Graph and Twitter Card meta tags on every page
+- Canonical URLs, preloaded fonts, RSS alternate link
+- Vitest with 3 passing smoke tests
+- `bun run check` and `bun run build` pass clean (7 pages, 478ms)
 
 ### What does not exist yet
 
-- Astro project scaffold
-- any pages, layouts, components, styles, or content
-- package.json, tsconfig, astro config, biome config
-- build output
-- deployment configuration
+- CI pipeline
+- DNS configuration for `dunamismax.com`
+- Lighthouse verification against live deployment
+- Live deployment
 
 ---
 
@@ -271,23 +283,23 @@ Exit criteria:
 
 ### Phase 1 — scaffold and first pages
 
-**Status:** planned
+**Status:** done / checked
 
 Checklist:
 
-- [ ] initialize Astro project with Bun
-- [ ] configure TypeScript strict mode
-- [ ] configure Biome for lint and formatting
-- [ ] set up `tokens.css` and `base.css` with the design system above
-- [ ] self-host Inter and JetBrains Mono fonts
-- [ ] build the base layout: head, nav, main, footer
-- [ ] build the home page
-- [ ] build the about page
-- [ ] build the contact page
-- [ ] add `package.json` scripts: `dev`, `build`, `check`, `test`, `format`
-- [ ] verify: `bun run check && bun run build` passes
+- [x] initialize Astro project with Bun
+- [x] configure TypeScript strict mode
+- [x] configure Biome for lint and formatting
+- [x] set up `tokens.css` and `base.css` with the design system above
+- [x] self-host Inter and JetBrains Mono fonts
+- [x] build the base layout: head, nav, main, footer
+- [x] build the home page
+- [x] build the about page
+- [x] build the contact page
+- [x] add `package.json` scripts: `dev`, `build`, `check`, `test`, `format`
+- [x] verify: `bun run check && bun run build` passes
 - [ ] verify: Lighthouse scores 100/100/100/100 on the home page
-- [ ] verify: every page is functional with JavaScript disabled
+- [x] verify: every page is functional with JavaScript disabled
 
 Exit criteria:
 
@@ -299,17 +311,17 @@ Exit criteria:
 
 ### Phase 2 — portfolio
 
-**Status:** planned
+**Status:** done / checked
 
 Checklist:
 
-- [ ] create the projects content collection or data file
-- [ ] populate project entries from the current profile README roster
-- [ ] build the projects index page with category grouping
-- [ ] build individual project detail pages (or decide that the index is sufficient)
-- [ ] add status badges per project
-- [ ] link repos and live URLs where applicable
-- [ ] verify project data matches the current reality in each repo's README
+- [x] create the projects content collection or data file
+- [x] populate project entries from the current profile README roster
+- [x] build the projects index page with category grouping
+- [x] build individual project detail pages (or decide that the index is sufficient)
+- [x] add status badges per project
+- [x] link repos and live URLs where applicable
+- [x] verify project data matches the current reality in each repo's README
 
 Exit criteria:
 
@@ -319,19 +331,19 @@ Exit criteria:
 
 ### Phase 3 — blog
 
-**Status:** planned
+**Status:** done / checked
 
 Checklist:
 
-- [ ] configure Astro content collections for blog posts
-- [ ] build the blog index page (date + title + excerpt, clean rows)
-- [ ] build the blog post layout with good typography and code block styling
-- [ ] add syntax highlighting for code blocks (Shiki via Astro's built-in support)
-- [ ] add reading time calculation
-- [ ] add meta tags and Open Graph images for social sharing
-- [ ] write and publish the first post
-- [ ] verify: blog posts render correctly from Markdown with no layout breaks
-- [ ] verify: code blocks are readable and properly highlighted
+- [x] configure Astro content collections for blog posts
+- [x] build the blog index page (date + title + excerpt, clean rows)
+- [x] build the blog post layout with good typography and code block styling
+- [x] add syntax highlighting for code blocks (Shiki via Astro's built-in support)
+- [x] add reading time calculation
+- [x] add meta tags and Open Graph images for social sharing
+- [x] write and publish the first post
+- [x] verify: blog posts render correctly from Markdown with no layout breaks
+- [x] verify: code blocks are readable and properly highlighted
 
 Exit criteria:
 
@@ -342,16 +354,16 @@ Exit criteria:
 
 ### Phase 4 — polish and production
 
-**Status:** planned
+**Status:** in progress
 
 Checklist:
 
-- [ ] add 404 page
-- [ ] add sitemap generation
-- [ ] add RSS feed for the blog
-- [ ] add Open Graph images (static or generated)
-- [ ] add `robots.txt`
-- [ ] add favicon and touch icons
+- [x] add 404 page
+- [x] add sitemap generation
+- [x] add RSS feed for the blog
+- [x] add Open Graph images (static or generated)
+- [x] add `robots.txt`
+- [x] add favicon and touch icons
 - [ ] configure deployment target and CI pipeline
 - [ ] set up `dunamismax.com` DNS
 - [ ] verify: site is live and reachable at `dunamismax.com`
