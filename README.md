@@ -2,29 +2,29 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. It is a single Astro site that ships fast, stays small, and proves the stack by being built with it.
+dunamismax.com is the public-facing home for everything I build. It is a single-page application that ships fast, stays small, and proves the stack by being built with it.
 
-The site itself is the portfolio entry. If the page loads in under a second, renders without JavaScript, looks good on a phone, and does not ask for cookies — that is the pitch.
+The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies — that is the pitch.
 
 ## Stack
 
 - **Bun** for toolchain, installs, scripts, and local development
 - **TypeScript** in strict mode
-- **Astro** for static-first rendering with SSR only where it earns its keep
-- **Alpine.js** for the small interaction layer
-- **CSS variables and hand-written CSS** — no Tailwind, no utility pile, no design-token build machinery
-- **Astro content collections** for blog posts and project entries
+- **Vite** for build and dev server
+- **React** for the UI framework
+- **TanStack Router** for type-safe file-based routing
+- **Tailwind CSS** alongside hand-written CSS design tokens
 - **Biome** for lint and formatting
 - **Vitest** for tests
-- **Static output by default** — SSR only if auth, previews, or request-scoped data later require it
+- **Static output** — Vite builds to `dist/`, served by any static file server with SPA catch-all
 
-No React. No Vue. No Svelte. No SPA router. No client state library. No GraphQL. No CMS. No analytics scripts. No cookie banners. No framework theater.
+No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
 
 ## Status
 
-**Phase 4 — implemented.**
+**Implemented.**
 
-The Astro site, tests, CI, and Docker/Caddy deploy path all exist in-repo today.
+The React + Vite SPA, tests, CI, and Docker/Caddy deploy path all exist in-repo today.
 Public availability depends on the deployed container being current and healthy.
 
 ## Domain strategy
@@ -41,11 +41,11 @@ The landing page. One screen that communicates who I am, what I build, and where
 
 ### Portfolio
 
-The active project roster. Each entry links to the repo and — when the product ships a browser surface — to the live product. Projects are grouped the same way the profile README groups them: browser-first products, infrastructure and observability, security and custody, developer tooling, and systems work. Status is honest: if it is Phase 0, it says Phase 0.
+The active project roster. Each entry links to the repo. Projects are grouped by category: apps, infrastructure, security, developer tooling. Status is honest: if it is Phase 0, it says Phase 0.
 
 ### Blog
 
-Long-form technical writing. Markdown files in Astro content collections, rendered at build time. No CMS, no database, no comment system in v1. Topics: systems design, self-hosting, Go/C/Python craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Posts live as data in the repo, rendered with react-markdown. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/C craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
@@ -53,7 +53,7 @@ Who I am. What I care about. The stack philosophy and why it exists. Short, dire
 
 ### Contact
 
-How to reach me. Channels listed clearly, no contact form in v1 unless it earns its keep later.
+How to reach me. Channels listed clearly, no contact form.
 
 - Email: dunamismax@tutamail.com
 - Signal: [signal.me link](https://signal.me/#eu/ohSycFRzUEPZzCEifM1UVelp9pdBfmOPoSHItfUsK1PqosRCQSBBEIsqRq2krmph)
@@ -61,7 +61,7 @@ How to reach me. Channels listed clearly, no contact form in v1 unless it earns 
 - Twitter: [DunamisMax](https://x.com/DunamisMax)
 - Reddit: [DunamisMax](https://www.reddit.com/user/DunamisMax/)
 
-## Intended repo layout
+## Repo layout
 
 ```text
 dunamismax.com/
@@ -70,23 +70,17 @@ dunamismax.com/
 │   └── og/
 ├── src/
 │   ├── components/
-│   ├── content/
-│   │   ├── blog/
-│   │   └── projects/
-│   ├── layouts/
 │   ├── lib/
-│   ├── pages/
-│   │   ├── blog/
-│   │   └── projects/
-│   └── styles/
-│       ├── base.css
-│       └── tokens.css
-├── scripts/
+│   ├── routes/
+│   │   └── blog/
+│   ├── styles/
+│   └── main.tsx
 ├── tests/
-├── astro.config.mjs
+├── index.html
+├── vite.config.ts
+├── tsconfig.json
 ├── biome.json
 ├── package.json
-├── tsconfig.json
 ├── BUILD.md
 └── README.md
 ```
@@ -113,7 +107,8 @@ bun run build
 ### Quality checks
 
 ```bash
-bun run check    # biome check . && astro check
+bun run check    # biome check . && vitest run
+bun run lint     # biome check .
 bun run test     # vitest run
 bun run format   # biome format . --write
 ```
@@ -126,7 +121,6 @@ Dark by default. The site should feel like a terminal that learned typography.
 - Monospace for code and headings where it fits; clean sans-serif for body text
 - Generous whitespace, tight line lengths, no visual clutter
 - Subtle motion only — no parallax, no scroll hijacking, no entrance animations
-- Every page useful without JavaScript
 - Fast enough that the network tab is boring
 - Mobile-first layout that does not feel like a concession
 
@@ -134,17 +128,13 @@ The aesthetic target: if a senior engineer opened the site at 2am while debuggin
 
 ## Development rules
 
-1. Ship static HTML first. Add SSR only when a page genuinely needs request-scoped data.
-2. Keep Alpine interactions small. If a component needs more than ~30 lines of Alpine, reconsider the approach.
-3. Blog posts are Markdown in content collections, not a database.
-4. Project data is a content collection or a simple TypeScript data file, not a CMS.
-5. No client-side routing. Every page is a full page load. That is a feature.
-6. No third-party analytics. If traffic data matters later, use server-side access logs.
-7. No cookie banner because there are no cookies.
-8. Keep the dependency count low enough to audit in five minutes.
-9. Fonts are self-hosted. No Google Fonts CDN call.
-10. Images are optimized at build time. No lazy-load library.
-11. If the docs and the site disagree, fix both.
+1. Blog posts are data in the repo, not a database.
+2. Project data is a TypeScript data file, not a CMS.
+3. No third-party analytics. If traffic data matters later, use server-side access logs.
+4. No cookie banner because there are no cookies.
+5. Keep the dependency count low enough to audit in five minutes.
+6. Fonts are self-hosted. No Google Fonts CDN call.
+7. If the docs and the site disagree, fix both.
 
 ## License
 

@@ -1,0 +1,23 @@
+.about {
+	max-width: var(--content-width);
+	margin: 0 auto;
+}
+
+.about h1 {
+	margin-bottom: var(--space-8);
+}
+
+.about h2 {
+	margin-top: var(--space-12);
+	margin-bottom: var(--space-4);
+}
+
+.about p {
+	color: var(--text-secondary);
+	line-height: var(--leading-relaxed);
+}
+
+.about strong {
+	color: var(--text-primary);
+	font-weight: 500;
+}

@@ -10,7 +10,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"correctness": {
+				"noUnusedImports": "warn"
+			}
 		}
 	},
 	"formatter": {
@@ -19,6 +22,12 @@
 		"lineWidth": 100
 	},
 	"files": {
-		"includes": ["src/**/*.ts", "tests/**", "astro.config.mjs", "*.json"]
+		"includes": [
+			"src/**/*.{ts,tsx}",
+			"tests/**",
+			"vite.config.ts",
+			"*.json",
+			"!src/routeTree.gen.ts"
+		]
 	}
 }
