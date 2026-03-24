@@ -6,6 +6,8 @@ dunamismax.com is the public-facing home for everything I build. It is a single-
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies — that is the pitch.
 
+> **Status:** Implemented. The React + Vite SPA, tests, CI, and Docker/Caddy deploy path all exist in-repo today. Public availability depends on the deployed container being current and healthy.
+
 ## Stack
 
 - **Bun** for toolchain, installs, scripts, and local development
@@ -20,20 +22,13 @@ The site itself is the portfolio entry. If the page loads in under a second, loo
 
 No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
 
-## Status
-
-**Implemented.**
-
-The React + Vite SPA, tests, CI, and Docker/Caddy deploy path all exist in-repo today.
-Public availability depends on the deployed container being current and healthy.
-
 ## Domain strategy
 
 | Domain | Role |
 | --- | --- |
 | `dunamismax.com` | Primary personal site: home, portfolio, blog, about, contact, and links to active projects. |
 
-## What the site covers
+## Product Surfaces
 
 ### Home
 
@@ -61,7 +56,7 @@ How to reach me. Channels listed clearly, no contact form.
 - Twitter: [DunamisMax](https://x.com/DunamisMax)
 - Reddit: [DunamisMax](https://www.reddit.com/user/DunamisMax/)
 
-## Repo layout
+## Repository Layout
 
 ```text
 dunamismax.com/
