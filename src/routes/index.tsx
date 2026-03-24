@@ -18,9 +18,8 @@ function Home() {
 					<h1>Stephen Sawyer</h1>
 					<p className="tagline">I build self-hostable systems software.</p>
 					<p className="stack">
-						Most of it lives in <strong>Go</strong>, <strong>Rust</strong>, and{" "}
-						<strong>Zig</strong>, with{" "}
-						<strong>React + Vite</strong> on the browser-facing side. Local-first,
+						Most of it lives in <strong>Go</strong>, <strong>Rust</strong>, and <strong>Zig</strong>
+						, with <strong>React + Vite</strong> on the browser-facing side. Local-first,
 						operator-friendly, relational data, single-binary where possible.
 					</p>
 				</section>
