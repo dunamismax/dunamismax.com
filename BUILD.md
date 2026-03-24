@@ -505,6 +505,16 @@ Mitigation: the site is static HTML. Any host works. Pick one in Phase 4 and shi
 
 ---
 
+## Verification Log
+
+### Verified on 2026-03-23
+
+- `bun run check` — passes (0 errors, 0 warnings)
+- `bun run build` — passes (7 pages built in 478ms)
+- `bun run test` — passes (3 tests)
+- No JavaScript required for any page
+- All HTML is semantic with proper ARIA attributes
+
 ## Decision Log
 
 - 2026-03-23: project created. Stack is Bun + TypeScript + Astro + Alpine.js. Static output by default. No database, no CMS, no third-party scripts.
@@ -513,6 +523,7 @@ Mitigation: the site is static HTML. Any host works. Pick one in Phase 4 and shi
 - 2026-03-23: deployment target deferred until Phase 4. Static output means the choice is reversible.
 - 2026-03-23: Inter for body text, JetBrains Mono for code and headings. Self-hosted, no CDN.
 - 2026-03-23: no contact form in v1. Direct contact channels listed on the contact page.
+- 2026-03-23: Phases 1–3 completed. Phase 4 partially complete (assets done, deployment pending).
 
 ---
 
