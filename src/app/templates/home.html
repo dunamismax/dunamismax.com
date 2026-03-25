@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block head %}<link rel="stylesheet" href="/static/css/home.css">{% endblock %}
+{% block content %}
+<div class="home">
+    <section class="hero">
+        <h1>Stephen Sawyer</h1>
+        <p class="tagline">I build self-hostable systems software.</p>
+        <p class="stack">
+            Most of it lives in <strong>Python</strong>, <strong>Go</strong>, and
+            <strong>Rust</strong>, with server-rendered frontends on the browser-facing side.
+            Local-first, operator-friendly, relational data, single-binary where possible.
+        </p>
+    </section>
+
+    <nav class="home-nav" aria-label="Quick navigation">
+        <a href="/projects" class="nav-card">
+            <span class="nav-card-label">Projects</span>
+            <span class="nav-card-desc">What I'm building</span>
+        </a>
+        <a href="/blog" class="nav-card">
+            <span class="nav-card-label">Blog</span>
+            <span class="nav-card-desc">How I think about it</span>
+        </a>
+        <a href="/about" class="nav-card">
+            <span class="nav-card-label">About</span>
+            <span class="nav-card-desc">Who I am</span>
+        </a>
+        <a href="/contact" class="nav-card">
+            <span class="nav-card-label">Contact</span>
+            <span class="nav-card-desc">Get in touch</span>
+        </a>
+    </nav>
+</div>
+{% endblock %}

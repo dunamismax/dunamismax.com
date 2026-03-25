@@ -1,7 +1,7 @@
 # dunamismax.com
 #
 # Intended to sit behind an external Caddy reverse proxy that handles TLS.
-# The container serves static files on port 80 only.
+# The container runs Uvicorn on port 8000.
 #
 # Build and run:
 #   docker compose up -d --build
@@ -15,7 +15,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8080:8000"
     labels:
       - "app=dunamismax-com"
-      - "description=Static personal site served by Caddy"
+      - "description=Personal site served by FastAPI + Uvicorn"

@@ -1,54 +1,19 @@
-(static_defaults) {
-	root * /usr/share/caddy
-	encode zstd gzip
-	header {
-		X-Content-Type-Options "nosniff"
-		X-Frame-Options "DENY"
-		Referrer-Policy "strict-origin-when-cross-origin"
-		X-XSS-Protection "0"
-		Permissions-Policy "camera=(), microphone=(), geolocation=()"
-		-Server
-	}
-}
+# Caddyfile for dunamismax.com
+#
+# Sits on the host as a reverse proxy in front of the Docker container.
+# TLS is handled by Caddy on the host. The container runs Uvicorn on port 8080.
 
-:80 {
-	# Fonts: immutable for a year.
-	@fonts path /fonts/*
-	handle @fonts {
-		import static_defaults
-		header Cache-Control "public, max-age=31536000, immutable"
-		file_server
-	}
+dunamismax.com {
+    encode zstd gzip
 
-	# Hashed CSS and JS: immutable for a year.
-	@hashed path_regexp hashed \.(css|js)$
-	handle @hashed {
-		import static_defaults
-		header Cache-Control "public, max-age=31536000, immutable"
-		file_server
-	}
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        X-XSS-Protection "0"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+    }
 
-	# Images and icons: cache for a week.
-	@images path_regexp images \.(png|jpg|jpeg|gif|webp|avif|svg|ico)$
-	handle @images {
-		import static_defaults
-		header Cache-Control "public, max-age=604800"
-		file_server
-	}
-
-	# XML feeds: always revalidate.
-	@xml path_regexp xml \.(xml)$
-	handle @xml {
-		import static_defaults
-		header Cache-Control "no-cache, no-store, must-revalidate"
-		file_server
-	}
-
-	# SPA catch-all: serve index.html for any path that doesn't match a file.
-	handle {
-		import static_defaults
-		header Cache-Control "no-cache, no-store, must-revalidate"
-		try_files {path} /index.html
-		file_server
-	}
+    reverse_proxy localhost:8080
 }

@@ -2,25 +2,26 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. It is a single-page application that ships fast, stays small, and proves the stack by being built with it.
+dunamismax.com is the public-facing home for everything I build. It is a server-rendered site that ships fast, stays small, and proves the stack by being built with it.
 
-The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies — that is the pitch.
+The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Implemented. The React + Vite SPA, tests, CI, and Docker/Caddy deploy path all exist in-repo today. Public availability depends on the deployed container being current and healthy.
+> **Status:** Implemented. FastAPI + Jinja2 + htmx, tests, CI, and Docker/Caddy deploy path all exist in-repo today. Public availability depends on the deployed container being current and healthy.
 
 ## Stack
 
-- **Bun** for toolchain, installs, scripts, and local development
-- **TypeScript** in strict mode
-- **Vite** for build and dev server
-- **React** for the UI framework
-- **TanStack Router** for type-safe file-based routing
-- **Tailwind CSS** alongside hand-written CSS design tokens
-- **Biome** for lint and formatting
-- **Vitest** for tests
-- **Static output** — Vite builds to `dist/`, served by any static file server with SPA catch-all
+- **Python 3.12+** with strict type checking
+- **FastAPI** for the web framework
+- **Jinja2** for server-rendered HTML templates
+- **htmx** for dynamic interactions without a JavaScript build step
+- **Uvicorn** as the ASGI server
+- **Hand-written CSS** with design tokens (no Tailwind, no CSS framework)
+- **uv** for package management
+- **Ruff** for linting and formatting
+- **Pyright** for type checking
+- **pytest** for tests
 
-No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
+No database. No CMS. No analytics scripts. No cookie banners. No framework theater. No JavaScript build toolchain.
 
 ## Domain strategy
 
@@ -40,7 +41,7 @@ The active project roster. Each entry links to the repo. Projects are grouped by
 
 ### Blog
 
-Long-form technical writing. Posts live as data in the repo, rendered with react-markdown. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Posts live as data in the repo, rendered with Python's markdown library. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
@@ -60,52 +61,61 @@ How to reach me. Channels listed clearly, no contact form.
 
 ```text
 dunamismax.com/
-├── public/
-│   ├── fonts/
-│   └── og/
-├── src/
-│   ├── components/
-│   ├── lib/
-│   ├── routes/
-│   │   └── blog/
-│   ├── styles/
-│   └── main.tsx
-├── tests/
-├── index.html
-├── vite.config.ts
-├── tsconfig.json
-├── biome.json
-├── package.json
-├── BUILD.md
-└── README.md
+  src/
+    app/
+      __init__.py
+      main.py
+      config.py
+      content/
+        blog.py
+        projects.py
+      routes/
+        pages.py
+      templates/
+        base.html
+        home.html
+        about.html
+        contact.html
+        projects.html
+        404.html
+        blog/
+          index.html
+          post.html
+      static/
+        css/
+        fonts/
+        og/
+  tests/
+  pyproject.toml
+  uv.lock
+  Dockerfile
+  Caddyfile
+  docker-compose.yml
+  BUILD.md
+  README.md
 ```
 
 ## Build and run
 
 ### Prerequisites
 
-- Bun 1.3+
+- Python 3.12+
+- uv
 
 ### Local development
 
 ```bash
-bun install
-bun run dev
-```
-
-### Build
-
-```bash
-bun run build
+uv sync
+uv run uvicorn app.main:app --reload
 ```
 
 ### Quality checks
 
 ```bash
-bun run check    # biome check . && vitest run
-bun run lint     # biome check .
-bun run test     # vitest run
-bun run format   # biome format . --write
+uv run ruff check .
+uv run ruff format --check .
+uv run pyright
+uv run pytest
 ```
 
 ## Design direction
@@ -115,7 +125,7 @@ Dark by default. The site should feel like a terminal that learned typography.
 - High-contrast dark palette with one accent color
 - Monospace for code and headings where it fits; clean sans-serif for body text
 - Generous whitespace, tight line lengths, no visual clutter
-- Subtle motion only — no parallax, no scroll hijacking, no entrance animations
+- Subtle motion only, no parallax, no scroll hijacking, no entrance animations
 - Fast enough that the network tab is boring
 - Mobile-first layout that does not feel like a concession
 
@@ -124,7 +134,7 @@ The aesthetic target: if a senior engineer opened the site at 2am while debuggin
 ## Development rules
 
 1. Blog posts are data in the repo, not a database.
-2. Project data is a TypeScript data file, not a CMS.
+2. Project data is a Python data file, not a CMS.
 3. No third-party analytics. If traffic data matters later, use server-side access logs.
 4. No cookie banner because there are no cookies.
 5. Keep the dependency count low enough to audit in five minutes.

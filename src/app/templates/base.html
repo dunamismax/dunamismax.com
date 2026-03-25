@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ description }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:image" content="{{ site_url }}/static/og/default.png">
+    <meta property="og:site_name" content="{{ site_name }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="{{ description }}">
+    <meta name="twitter:image" content="{{ site_url }}/static/og/default.png">
+    <meta name="twitter:site" content="@DunamisMax">
+
+    <link rel="canonical" href="{{ request.url }}">
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="alternate" type="application/rss+xml" title="dunamismax.com RSS" href="/feed.xml">
+
+    <!-- Preload fonts -->
+    <link rel="preload" href="/static/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/static/fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    {% block head %}{% endblock %}
+
+    <!-- htmx -->
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">dunamismax</a>
+            <ul class="nav-links">
+                <li><a href="/" {% if request.url.path == "/" %}aria-current="page"{% endif %}>Home</a></li>
+                <li><a href="/projects" {% if request.url.path == "/projects" %}aria-current="page"{% endif %}>Projects</a></li>
+                <li><a href="/blog" {% if request.url.path.startswith("/blog") %}aria-current="page"{% endif %}>Blog</a></li>
+                <li><a href="/about" {% if request.url.path == "/about" %}aria-current="page"{% endif %}>About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p class="footer-text">Stephen Sawyer · Building self-hostable systems software.</p>
+            <ul class="footer-links">
+                <li><a href="mailto:dunamismax@tutamail.com" rel="me">Email</a></li>
+                <li><a href="https://github.com/dunamismax" target="_blank" rel="noopener noreferrer me">GitHub</a></li>
+                <li><a href="https://x.com/DunamisMax" target="_blank" rel="noopener noreferrer me">Twitter</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><a href="/feed.xml">RSS</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,2 +1,12 @@
-node_modules/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.env.*
+.ruff_cache/
+.pyright/
+.pytest_cache/
 dist/
+*.egg
+.DS_Store
