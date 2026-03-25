@@ -59,11 +59,11 @@ export const projects: Project[] = [
 	{
 		name: "wirescope",
 		tagline:
-			"Terminal-first network observability. Live capture, top talkers, DNS context, connection tables, PCAP on disk. Go core with Rust and Zig capture backends.",
+			"Terminal-first network observability. Live capture, top talkers, DNS context, connection tables, PCAP on disk. Go core with Rust capture backend.",
 		category: "infrastructure",
 		status: "shipped",
 		repo: "https://github.com/dunamismax/wirescope",
-		stack: ["Go", "Rust", "Zig", "SQLite", "PCAP"],
+		stack: ["Go", "Rust", "SQLite", "PCAP"],
 	},
 	{
 		name: "repokeeper",

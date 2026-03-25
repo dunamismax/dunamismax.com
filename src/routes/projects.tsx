@@ -30,7 +30,7 @@ function Projects() {
 		<>
 			<Head
 				title="Projects — Stephen Sawyer"
-				description="Active project roster. Self-hostable systems software in Go, Rust, Zig, and the web."
+				description="Active project roster. Self-hostable systems software in Python, Go, Rust, and the web."
 			/>
 			<div className="projects-page">
 				<h1>Projects</h1>
