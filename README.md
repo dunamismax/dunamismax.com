@@ -143,4 +143,4 @@ The aesthetic target: if a senior engineer opened the site at 2am while debuggin
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
