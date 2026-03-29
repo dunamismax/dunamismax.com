@@ -5,10 +5,11 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, Response
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 
+from app.config import get_settings
 from app.content.blog import (
     get_post_by_slug,
     get_published_posts,
@@ -16,11 +17,19 @@ from app.content.blog import (
     render_markdown,
 )
 from app.content.projects import STATUS_LABELS, get_projects_grouped
+from app.site import (
+    build_page_context,
+    build_robots_txt,
+    build_rss_feed,
+    build_sitemap,
+    date_to_iso8601,
+)
 
 TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 router = APIRouter()
+settings = get_settings()
 
 
 def _format_date(date_str: str, fmt: str = "%b %d, %Y") -> str:
@@ -34,8 +43,8 @@ def _format_date_long(date_str: str) -> str:
 
 
 # Register template globals
-templates.env.globals["site_name"] = "dunamismax.com"
-templates.env.globals["site_url"] = "https://dunamismax.com"
+templates.env.globals["site_name"] = settings.site_name
+templates.env.globals["site_url"] = settings.site_url
 templates.env.filters["format_date"] = _format_date
 templates.env.filters["format_date_long"] = _format_date_long
 templates.env.filters["reading_time"] = get_reading_time
@@ -44,51 +53,49 @@ templates.env.filters["render_markdown"] = render_markdown
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(
-        request,
-        "home.html",
-        {
-            "title": "Stephen Sawyer -- dunamismax",
-            "description": (
-                "Building self-hostable systems software."
-                " Python, Go, Rust, and the web."
-                " Local-first, operator-friendly, relational data."
-            ),
-        },
+    context = build_page_context(
+        title="Stephen Sawyer -- dunamismax",
+        description=(
+            "Building self-hostable systems software."
+            " Python, Go, Rust, and the web."
+            " Local-first, operator-friendly, relational data."
+        ),
+        path="/",
     )
+    return templates.TemplateResponse(request, "home.html", context)
 
 
 @router.get("/projects", response_class=HTMLResponse)
 async def projects(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(
-        request,
-        "projects.html",
+    context = build_page_context(
+        title="Projects -- Stephen Sawyer",
+        description=(
+            "Active project roster. Self-hostable systems software"
+            " in Python, Go, Rust, and the web."
+        ),
+        path="/projects",
+    )
+    context.update(
         {
-            "title": "Projects -- Stephen Sawyer",
-            "description": (
-                "Active project roster. Self-hostable systems software"
-                " in Python, Go, Rust, and the web."
-            ),
             "groups": get_projects_grouped(),
             "status_labels": STATUS_LABELS,
-        },
+        }
     )
+    return templates.TemplateResponse(request, "projects.html", context)
 
 
 @router.get("/blog", response_class=HTMLResponse)
 async def blog_index(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(
-        request,
-        "blog/index.html",
-        {
-            "title": "Blog -- Stephen Sawyer",
-            "description": (
-                "Technical writing on systems design, self-hosting,"
-                " Go, Rust, and operational discipline."
-            ),
-            "posts": get_published_posts(),
-        },
+    context = build_page_context(
+        title="Blog -- Stephen Sawyer",
+        description=(
+            "Technical writing on systems design, self-hosting,"
+            " Go, Rust, and operational discipline."
+        ),
+        path="/blog",
     )
+    context["posts"] = get_published_posts()
+    return templates.TemplateResponse(request, "blog/index.html", context)
 
 
 @router.get("/blog/{slug}", response_class=HTMLResponse)
@@ -98,32 +105,34 @@ async def blog_post(request: Request, slug: str) -> HTMLResponse:
         return templates.TemplateResponse(
             request,
             "404.html",
-            {"title": "404 -- Not Found", "description": "Page not found."},
+            build_page_context(
+                title="404 -- Not Found",
+                description="Page not found.",
+                path=request.url.path,
+            ),
             status_code=404,
         )
-    return templates.TemplateResponse(
-        request,
-        "blog/post.html",
-        {
-            "title": f"{post.title} -- Stephen Sawyer",
-            "description": post.description,
-            "post": post,
-        },
+
+    context = build_page_context(
+        title=f"{post.title} -- Stephen Sawyer",
+        description=post.description,
+        path=f"/blog/{post.slug}",
+        og_type="article",
+        article_published_time=date_to_iso8601(post.date),
+        article_tags=post.tags,
     )
+    context["post"] = post
+    return templates.TemplateResponse(request, "blog/post.html", context)
 
 
 @router.get("/about", response_class=HTMLResponse)
 async def about(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(
-        request,
-        "about.html",
-        {
-            "title": "About -- Stephen Sawyer",
-            "description": (
-                "Who I am, what I care about, and the stack philosophy behind everything I build."
-            ),
-        },
+    context = build_page_context(
+        title="About -- Stephen Sawyer",
+        description="Who I am, what I care about, and how I build durable software.",
+        path="/about",
     )
+    return templates.TemplateResponse(request, "about.html", context)
 
 
 @router.get("/contact", response_class=HTMLResponse)
@@ -163,14 +172,30 @@ async def contact(request: Request) -> HTMLResponse:
             "external": True,
         },
     ]
-    return templates.TemplateResponse(
-        request,
-        "contact.html",
-        {
-            "title": "Contact -- Stephen Sawyer",
-            "description": (
-                "How to reach Stephen Sawyer. Email, Signal, GitHub, Twitter, Reddit."
-            ),
-            "channels": channels,
-        },
+    context = build_page_context(
+        title="Contact -- Stephen Sawyer",
+        description="How to reach Stephen Sawyer. Email, Signal, GitHub, Twitter, Reddit.",
+        path="/contact",
     )
+    context["channels"] = channels
+    return templates.TemplateResponse(request, "contact.html", context)
+
+
+@router.get("/feed.xml")
+async def rss_feed() -> Response:
+    return Response(build_rss_feed(get_published_posts()), media_type="application/rss+xml")
+
+
+@router.get("/sitemap.xml")
+async def sitemap() -> Response:
+    return Response(build_sitemap(get_published_posts()), media_type="application/xml")
+
+
+@router.get("/robots.txt")
+async def robots_txt() -> PlainTextResponse:
+    return PlainTextResponse(build_robots_txt())
+
+
+@router.get("/health")
+async def healthcheck() -> JSONResponse:
+    return JSONResponse({"status": "ok"}, headers={"Cache-Control": "no-store"})

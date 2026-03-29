@@ -25,11 +25,11 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 
 ### Product rules
 
-- **FastAPI + Jinja2 + htmx + Uvicorn** is the stack.
+- **FastAPI + Jinja2 + Uvicorn** is the stack.
 - **Server-rendered HTML.** Every URL returns complete HTML on the first response. No SPA, no hydration, no client-side routing.
 - **No database.** Blog posts and project data live as Python data files in the repo.
 - **No CMS.** Posts and project entries are code.
-- **htmx** for any dynamic interactions. No JavaScript build step.
+- **htmx only if it earns its keep.** The current launch surface ships without client-side JavaScript.
 - **No third-party scripts.** No analytics, no tracking pixels, no CDN font calls, no cookie consent.
 - **Dark by default.** Light mode is a stretch goal, not a launch requirement.
 - **Mobile-first.** Not mobile-tolerable. Mobile-first.
@@ -45,15 +45,15 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 
 ## Current repo snapshot
 
-**Current phase:** Implemented, FastAPI + Jinja2 + htmx
+**Current phase:** Implemented, launch-ready in repo
 
-**Last reviewed:** 2026-03-25
+**Last reviewed:** 2026-03-29
 
 **Branch:** `main`
 
 ### What exists right now
 
-- FastAPI + Jinja2 server-rendered site with htmx, Uvicorn, uv, Ruff, Pyright, pytest
+- FastAPI + Jinja2 server-rendered site with Uvicorn, uv, Ruff, Pyright, pytest
 - Full design system in `tokens.css` and `base.css` (colors, typography, spacing, motion)
 - Hand-written CSS with design tokens (no Tailwind, no CSS framework)
 - Self-hosted Inter (variable) and JetBrains Mono fonts in `static/fonts/`
@@ -65,20 +65,19 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 - **Blog index** with date + title + excerpt layout
 - **Blog post detail** with reading time, tags, markdown rendered via Python markdown library
 - **First blog post** ("Building this site")
-- Open Graph and Twitter Card meta tags on every page
-- Canonical URLs, preloaded fonts, RSS alternate link
-- 22 passing tests (route smoke tests + content data tests)
-- CI pipeline (GitHub Actions: ruff, pyright, pytest)
+- Canonical URLs and Open Graph/Twitter metadata built from the production site URL
+- Machine-readable launch surfaces: `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`
+- Cheap local smoke check via `uv run python scripts/smoke.py`
+- CI pipeline (GitHub Actions: ruff, pyright, pytest, smoke)
+- 28 passing tests covering HTML routes, machine-readable routes, metadata, and content data
 - Docker deployment (multi-stage Dockerfile with Uvicorn, docker-compose.yml)
 - Caddy reverse proxy config
 
 ### What does not exist yet
 
-- RSS feed generation (TODO)
-- Sitemap generation (TODO)
-- Public deployment redeployed with the Python build
+- Public deployment redeployed with the current Python build
 - Lighthouse verification against the public domain
-- External uptime monitoring
+- External uptime monitoring wired to `/health`
 
 ---
 
@@ -93,8 +92,10 @@ The site is the proof. If the portfolio says "I build self-hostable systems soft
 | `src/app/static/css/tokens.css` | design tokens and color palette |
 | `src/app/static/css/base.css` | global base styles and typography |
 | `src/app/main.py` | FastAPI application entry point |
-| `src/app/routes/pages.py` | all page routes |
+| `src/app/routes/pages.py` | HTML routes plus feed, sitemap, robots, and health |
+| `src/app/site.py` | canonical URL helpers plus RSS/sitemap/robots builders |
 | `src/app/templates/` | Jinja2 HTML templates |
+| `scripts/smoke.py` | local route and metadata smoke check |
 | `pyproject.toml` | dependencies, tooling config, project metadata |
 | `Dockerfile` | multi-stage Docker build (Python slim + Uvicorn) |
 | `Caddyfile` | reverse proxy config for the host Caddy |
@@ -192,6 +193,7 @@ GitHub Actions runs on every push to `main` and on pull requests:
 3. `uv run ruff format --check .` (format)
 4. `uv run pyright` (type check)
 5. `uv run pytest` (tests)
+6. `uv run python scripts/smoke.py` (route + metadata smoke)
 
 ---
 
@@ -211,6 +213,7 @@ uv run ruff check .                  # lint
 uv run ruff format --check .         # format check
 uv run pyright                       # type check
 uv run pytest                        # tests
+uv run python scripts/smoke.py       # local launch smoke check
 ```
 
 ### Verification checklist for any change
@@ -218,19 +221,18 @@ uv run pytest                        # tests
 1. `uv run ruff check . && uv run ruff format --check .` passes
 2. `uv run pyright` passes
 3. `uv run pytest` passes
-4. Visual review on mobile viewport
-5. Visual review on desktop viewport
+4. `uv run python scripts/smoke.py` passes
+5. Visual review on mobile viewport
+6. Visual review on desktop viewport
 
 ---
 
 ## TODOs
 
-- [ ] RSS feed generation
-- [ ] Sitemap generation
-- [ ] Set up `dunamismax.com` DNS
+- [ ] Redeploy the current Python container to the public host
 - [ ] Verify: site is live and reachable at `dunamismax.com`
-- [ ] Lighthouse verification
-- [ ] External uptime monitoring
+- [ ] Run Lighthouse against the public domain and capture the scores
+- [ ] Wire an external uptime check to `https://dunamismax.com/health`
 - [ ] Light mode toggle (if it earns its keep)
 - [ ] Table of contents for long blog posts
 - [ ] Search across blog posts
@@ -246,7 +248,8 @@ uv run pytest                        # tests
 - 2026-03-23: deployment target: self-hosted Caddy via Docker.
 - 2026-03-23: Inter for body text, JetBrains Mono for code and headings. Self-hosted.
 - 2026-03-24: migrated from Astro to React + Vite SPA. Stack was Bun + TypeScript + Vite + React + TanStack Router + Tailwind CSS + Biome + Vitest.
-- 2026-03-25: rewrote from React SPA to FastAPI + Jinja2 + htmx. Stack is now Python 3.12, FastAPI, Jinja2, htmx, Uvicorn, hand-written CSS, uv, Ruff, Pyright, pytest. No JavaScript build toolchain. Server-rendered HTML.
+- 2026-03-25: rewrote from React SPA to FastAPI + Jinja2 + htmx. Stack is now Python 3.12, FastAPI, Jinja2, htmx-ready if needed, Uvicorn, hand-written CSS, uv, Ruff, Pyright, pytest. No JavaScript build toolchain. Server-rendered HTML.
+- 2026-03-29: added launch-readiness machine surfaces (`/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`), production canonical URL metadata, and a cheap local smoke check. Removed the unused third-party htmx CDN script so the code matches the privacy and no-third-party-script policy.
 
 ---
 
@@ -257,5 +260,5 @@ If you are resuming this repo later:
 1. Read `README.md`
 2. Read this file
 3. Check `git status` and `git log --oneline -5`
-4. Run `uv sync && uv run ruff check . && uv run pyright && uv run pytest` to confirm the baseline
+4. Run `uv sync && uv run ruff check . && uv run pyright && uv run pytest && uv run python scripts/smoke.py` to confirm the baseline
 5. Pick up where the TODOs left off

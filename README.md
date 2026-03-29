@@ -6,14 +6,14 @@ dunamismax.com is the public-facing home for everything I build. It is a server-
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Implemented. FastAPI + Jinja2 + htmx, tests, CI, and Docker/Caddy deploy path all exist in-repo today. Public availability depends on the deployed container being current and healthy.
+> **Status:** Launch-ready in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. Public availability still depends on the deployed container being current and healthy.
 
 ## Stack
 
 - **Python 3.12+** with strict type checking
 - **FastAPI** for the web framework
 - **Jinja2** for server-rendered HTML templates
-- **htmx** for dynamic interactions without a JavaScript build step
+- **htmx** available only if an interaction clearly earns it, with no JavaScript build step today
 - **Uvicorn** as the ASGI server
 - **Hand-written CSS** with design tokens (no Tailwind, no CSS framework)
 - **uv** for package management
@@ -71,6 +71,7 @@ dunamismax.com/
         projects.py
       routes/
         pages.py
+      site.py
       templates/
         base.html
         home.html
@@ -85,6 +86,8 @@ dunamismax.com/
         css/
         fonts/
         og/
+  scripts/
+    smoke.py
   tests/
   pyproject.toml
   uv.lock
@@ -116,7 +119,15 @@ uv run ruff check .
 uv run ruff format --check .
 uv run pyright
 uv run pytest
+uv run python scripts/smoke.py
 ```
+
+## Machine-readable surfaces
+
+- `/feed.xml` - RSS 2.0 feed for published posts
+- `/sitemap.xml` - XML sitemap for the public pages and blog posts
+- `/robots.txt` - crawler policy with sitemap location
+- `/health` - cheap uptime probe endpoint that returns `{"status": "ok"}`
 
 ## Design direction
 

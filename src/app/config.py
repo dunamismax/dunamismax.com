@@ -22,5 +22,9 @@ class Settings:
 def get_settings() -> Settings:
     """Build settings from env vars with sensible defaults."""
     return Settings(
+        site_name=os.getenv("SITE_NAME", Settings.site_name),
+        site_url=os.getenv("SITE_URL", Settings.site_url).rstrip("/"),
+        site_title=os.getenv("SITE_TITLE", Settings.site_title),
+        site_description=os.getenv("SITE_DESCRIPTION", Settings.site_description),
         debug=os.getenv("DEBUG", "").lower() in ("1", "true", "yes"),
     )

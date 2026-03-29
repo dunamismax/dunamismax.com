@@ -5,25 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ title }}</title>
     <meta name="description" content="{{ description }}">
+    <meta name="author" content="Stephen Sawyer">
+    <meta name="theme-color" content="#0a0a0b">
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{{ og_type }}">
     <meta property="og:title" content="{{ title }}">
     <meta property="og:description" content="{{ description }}">
-    <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:image" content="{{ site_url }}/static/og/default.png">
+    <meta property="og:url" content="{{ og_url }}">
+    <meta property="og:image" content="{{ og_image }}">
     <meta property="og:site_name" content="{{ site_name }}">
+    {% if article_published_time %}
+    <meta property="article:published_time" content="{{ article_published_time }}">
+    {% endif %}
+    {% for tag in article_tags %}
+    <meta property="article:tag" content="{{ tag }}">
+    {% endfor %}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ title }}">
     <meta name="twitter:description" content="{{ description }}">
-    <meta name="twitter:image" content="{{ site_url }}/static/og/default.png">
+    <meta name="twitter:image" content="{{ og_image }}">
     <meta name="twitter:site" content="@DunamisMax">
 
-    <link rel="canonical" href="{{ request.url }}">
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-    <link rel="alternate" type="application/rss+xml" title="dunamismax.com RSS" href="/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="dunamismax.com RSS" href="{{ site_url }}/feed.xml">
 
     <!-- Preload fonts -->
     <link rel="preload" href="/static/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,9 +41,6 @@
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/layout.css">
     {% block head %}{% endblock %}
-
-    <!-- htmx -->
-    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous" defer></script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to content</a>

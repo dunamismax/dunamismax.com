@@ -41,3 +41,6 @@ jobs:
 
       - name: Test
         run: uv run pytest
+
+      - name: Smoke check
+        run: uv run python scripts/smoke.py

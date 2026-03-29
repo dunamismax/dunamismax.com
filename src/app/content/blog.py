@@ -59,10 +59,9 @@ something earns its spot.
 
 ## The stack
 
-The site is built with **FastAPI** and **Jinja2**, server-rendered with **htmx**
-for dynamic interactions. The styling uses hand-written CSS with design tokens,
-keeping the dark, minimal aesthetic that feels like a terminal that learned
-typography.
+The site is built with **FastAPI** and **Jinja2**. The current launch surface is
+fully server-rendered HTML with hand-written CSS and design tokens, keeping the
+dark, minimal aesthetic that feels like a terminal that learned typography.
 
 Fonts are self-hosted. There are no third-party scripts, no analytics, no
 tracking pixels, no cookie banner (because there are no cookies). The entire
