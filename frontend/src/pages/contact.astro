@@ -1,0 +1,30 @@
+---
+import { contactChannels, getPageContract } from '../config/site'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const page = getPageContract('contact')
+---
+
+<BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
+  <div class="contact">
+    <h1>Contact</h1>
+    <p class="lead">Best way to reach me is email or Signal. I read everything.</p>
+
+    <ul class="channels">
+      {
+        contactChannels.map((channel) => (
+          <li class="channel">
+            <span class="channel-label">{channel.label}</span>
+            <a
+              href={channel.href}
+              rel={channel.external ? 'noopener noreferrer' : undefined}
+              target={channel.external ? '_blank' : undefined}
+            >
+              {channel.display}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

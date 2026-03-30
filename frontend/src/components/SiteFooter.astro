@@ -4,19 +4,20 @@ import { siteConfig, socialLinks } from '../config/site'
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-text">
-      {siteConfig.author} · Building self-hostable systems software.
-    </p>
-    <ul class="footer-links" role="list">
+    <p class="footer-text">{siteConfig.author} · Building self-hostable systems software.</p>
+    <ul class="footer-links">
       {
         socialLinks.map((link) => (
           <li>
-            <a href={link.href} rel="me noopener noreferrer">
+            <a href={link.href} rel={link.rel} target={link.href.startsWith('http') ? '_blank' : undefined}>
               {link.label}
             </a>
           </li>
         ))
       }
+      <li>
+        <a href="/contact">Contact</a>
+      </li>
       <li>
         <a href={siteConfig.rssPath}>RSS</a>
       </li>

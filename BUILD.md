@@ -21,11 +21,11 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - [x] The live site in this repo is still the **Python 3.12 + FastAPI + Jinja2** app under `src/app/`.
 - [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
 - [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
-- [ ] **Phases 3 through 6** are not complete. Content ownership has moved into the frontend, but page parity is not reached, machine surfaces are not restored in Astro, and deployment still serves the Python app.
+- [ ] **Phases 4 through 6** are not complete. Content ownership and public page parity now live in the frontend, but machine surfaces are not restored in Astro and deployment still serves the Python app.
 
 ## Current state summary
 
-Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site with a separate **Phase 2 Astro frontend migration app**.
+Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site with a separate **Phase 3 Astro frontend migration app**.
 
 What exists now:
 
@@ -41,7 +41,8 @@ What exists now:
 - [x] Python quality gates: Ruff, Pyright, pytest, smoke script
 - [x] Frontend migration contract inventory in `docs/frontend-contract-inventory.md`
 - [x] Astro frontend migration app in `frontend/` with Astro, Vue, Biome, Bun tests, static build output, and frontend-owned content collections
-- [ ] Frontend parity site in Astro
+- [x] Frontend parity site in Astro
+  - The Astro frontend now ships the public HTML route set with shared layout, metadata, content rendering, and the ported CSS system.
 - [x] Frontend-owned blog content files
 - [x] Frontend-owned project roster data
 - [ ] Astro versions of RSS, sitemap, robots, and health
@@ -64,10 +65,10 @@ Target shape:
 - [ ] Vue is optional and used only for components that actually need client state
 - [x] Blog posts move out of Python constants into repo-native content files
 - [x] Project data becomes typed frontend-owned content, not Python module data
-- [ ] The site builds as a static or mostly-static web app unless a real server feature appears
-- [ ] Existing public URLs stay stable
-- [ ] The design language stays dark, fast, minimal, and self-hosted
-- [ ] Privacy rules stay intact: no third-party scripts, no analytics, no cookie theater
+- [x] The site builds as a static or mostly-static web app unless a real server feature appears
+- [x] Existing public URLs stay stable
+- [x] The design language stays dark, fast, minimal, and self-hosted
+- [x] Privacy rules stay intact: no third-party scripts, no analytics, no cookie theater
 
 ## Backend notes
 
@@ -108,8 +109,8 @@ Do not break these during migration:
 - [x] **No CMS**
 - [x] **No third-party scripts**
 - [x] **Self-hosted fonts and assets**
-- [ ] **Existing route slugs remain stable**
-  - The contract is frozen in `docs/frontend-contract-inventory.md`, but the Astro pages have not been ported yet.
+- [x] **Existing route slugs remain stable**
+  - The Astro frontend now builds the frozen public route set at `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, and `404`.
 - [ ] **RSS, sitemap, robots, and health surfaces remain available**
   - They remain available in the live Python app, but not yet in the Astro frontend.
 - [x] **Home, projects, blog, about, and contact stay first-class pages**
@@ -118,10 +119,9 @@ Do not break these during migration:
 
 Preferred content direction:
 
-- [ ] blog posts: Markdown or MDX in-repo, frontmatter-backed
-- [ ] project roster: typed data file in TypeScript or JSON validated at build time
-- [ ] site metadata: centralized config, not scattered across pages
-  - Partial progress exists in `frontend/src/config/site.ts`.
+- [x] blog posts: Markdown or MDX in-repo, frontmatter-backed
+- [x] project roster: typed data file in TypeScript or JSON validated at build time
+- [x] site metadata: centralized config, not scattered across pages
 
 ## Risks
 
@@ -206,25 +206,24 @@ Notes:
 - `frontend/src/content/config.ts` now validates the migrated content collections.
 - The live Python app currently reads the frontend-owned Markdown and JSON files so content stays single-sourced before the Astro page cutover.
 
-### [ ] Phase 3: port the public pages with visual parity first
+### [x] Phase 3: port the public pages with visual parity first
 
 Goal: ship page parity before adding new ideas.
 
 Checklist:
 
-- [ ] port home, projects, blog index, blog post, about, contact, and 404
-  - Only a scaffold home page exists today at `frontend/src/pages/index.astro`.
-- [ ] move the existing design tokens and CSS system into the Astro frontend
-  - Partial: `frontend/src/styles/tokens.css` and `frontend/src/styles/global.css` carry over shared tokens, fonts, header/footer shell, and baseline dark-theme layout. Page-specific CSS and full visual parity are not ported.
-- [ ] preserve the dark visual language and mobile-first layout
-  - Partial: the scaffold reflects the design direction, but not the current page system.
+- [x] port home, projects, blog index, blog post, about, contact, and 404
+- [x] move the existing design tokens and CSS system into the Astro frontend
+- [x] preserve the dark visual language and mobile-first layout
 - [x] keep JavaScript near zero unless a page genuinely needs interaction
-- [ ] serve the same public information architecture from the Astro build
-- [ ] make the migrated site at least as fast and as readable as the current one
+- [x] serve the same public information architecture from the Astro build
+- [x] make the migrated site at least as fast and as readable as the current one
 
 Notes:
 
-- This phase is clearly not done. The frontend currently proves tooling and shared shell decisions, not page parity.
+- `frontend/src/pages/` now covers the full public HTML route set, including the blog slug route and `404`.
+- `frontend/src/styles/tokens.css` and `frontend/src/styles/global.css` now carry the live site's typography, layout shell, page styling, and self-hosted font usage into the Astro frontend.
+- Verification for this phase currently consists of `bun run lint`, `bun run check`, `bun run test`, and `bun run build` in `frontend/`, with the build output confirming the expected static routes.
 
 ### [ ] Phase 4: restore machine-readable and operational surfaces
 
@@ -236,8 +235,8 @@ Checklist:
 - [ ] reimplement sitemap generation
 - [ ] preserve `robots.txt`
 - [ ] provide a cheap `/health` endpoint or static equivalent in the deploy layer
-- [ ] preserve canonical metadata, Open Graph tags, and article metadata
-  - Partial: `frontend/src/layouts/BaseLayout.astro` already centralizes canonical URLs, default Open Graph values, Twitter card values, theme color, and the RSS alternate link. Route-specific and article-specific parity is not done.
+- [x] preserve canonical metadata, Open Graph tags, and article metadata
+  - `frontend/src/layouts/BaseLayout.astro` now covers canonical URLs, Open Graph defaults, Twitter card values, theme color, and article metadata fields for blog posts.
 - [ ] make every current machine surface exist in the new frontend path
 - [ ] reach SEO and uptime-probe parity with the Python build
 
@@ -288,7 +287,7 @@ The migration is done when all of the following are true:
 - [ ] the repo's primary frontend is **TypeScript + Bun + Astro + Vue**
 - [x] the repo remains **web-only**
 - [x] there is **no TUI plan** and no leftover ambiguity about that
-- [ ] the public route set matches current behavior in the migrated frontend
+- [x] the public route set matches current behavior in the migrated frontend
 - [x] blog posts and project data are no longer stored as Python app code
 - [ ] RSS, sitemap, robots, and health still work from the migrated stack
 - [x] self-hosted assets, privacy posture, and no-CMS rules are preserved today

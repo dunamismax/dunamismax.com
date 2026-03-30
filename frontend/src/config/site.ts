@@ -13,6 +13,19 @@ export type MachineSurfaceContract = {
   notes: string
 }
 
+export type NavLink = {
+  href: string
+  label: string
+  matches: (path: string) => boolean
+}
+
+export type ContactChannel = {
+  label: string
+  href: string
+  display: string
+  external: boolean
+}
+
 export const siteConfig = {
   name: 'dunamismax.com',
   author: 'Stephen Sawyer',
@@ -98,22 +111,77 @@ export const machineSurfaceContracts: MachineSurfaceContract[] = [
   },
 ] as const
 
+export const navLinks: NavLink[] = [
+  {
+    href: '/',
+    label: 'Home',
+    matches: (path) => path === '/',
+  },
+  {
+    href: '/projects',
+    label: 'Projects',
+    matches: (path) => path === '/projects',
+  },
+  {
+    href: '/blog',
+    label: 'Blog',
+    matches: (path) => path === '/blog' || path.startsWith('/blog/'),
+  },
+  {
+    href: '/about',
+    label: 'About',
+    matches: (path) => path === '/about',
+  },
+] as const
+
 export const socialLinks = [
   {
     label: 'Email',
     href: 'mailto:dunamismax@tutamail.com',
+    rel: 'me',
   },
   {
     label: 'GitHub',
     href: 'https://github.com/dunamismax',
+    rel: 'noopener noreferrer me',
   },
   {
     label: 'Twitter',
     href: 'https://x.com/DunamisMax',
+    rel: 'noopener noreferrer me',
+  },
+] as const
+
+export const contactChannels: ContactChannel[] = [
+  {
+    label: 'Email',
+    href: 'mailto:dunamismax@tutamail.com',
+    display: 'dunamismax@tutamail.com',
+    external: false,
   },
   {
     label: 'Signal',
     href: 'https://signal.me/#eu/ohSycFRzUEPZzCEifM1UVelp9pdBfmOPoSHItfUsK1PqosRCQSBBEIsqRq2krmph',
+    display: 'Signal',
+    external: true,
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/dunamismax',
+    display: 'dunamismax',
+    external: true,
+  },
+  {
+    label: 'Twitter',
+    href: 'https://x.com/DunamisMax',
+    display: '@DunamisMax',
+    external: true,
+  },
+  {
+    label: 'Reddit',
+    href: 'https://www.reddit.com/user/DunamisMax/',
+    display: 'u/DunamisMax',
+    external: true,
   },
 ] as const
 

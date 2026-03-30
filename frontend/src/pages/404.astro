@@ -1,0 +1,14 @@
+---
+import { getPageContract } from '../config/site'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const page = getPageContract('not-found')
+---
+
+<BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
+  <div class="not-found">
+    <h1>404</h1>
+    <p>Page not found.</p>
+    <a href="/">← Home</a>
+  </div>
+</BaseLayout>

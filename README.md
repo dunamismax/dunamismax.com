@@ -2,11 +2,11 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend now owns the blog and project content under `frontend/`, but it is not yet the parity site.
+dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend under `frontend/` now owns the blog and project content and has the public page routes ported, but machine-readable surfaces and deploy cutover are still not complete.
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory now contains the Astro + Vue migration scaffold plus frontend-owned blog and project content, but page parity and cutover are still later phases.
+> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory now contains the Astro + Vue migration site for the public HTML pages plus frontend-owned blog and project content, but machine-readable surfaces and serving cutover are still later phases.
 
 ## Stack
 
@@ -156,13 +156,14 @@ uv run pytest
 uv run python scripts/smoke.py
 ```
 
-Frontend scaffold:
+Frontend migration app:
 
 ```bash
 cd frontend
 bun run lint
 bun run check
 bun run test
+bun run build
 ```
 
 ## Machine-readable surfaces
@@ -188,7 +189,7 @@ The aesthetic target: if a senior engineer opened the site at 2am while debuggin
 ## Development rules
 
 1. Blog posts are data in the repo, not a database.
-2. Project data is a Python data file, not a CMS.
+2. Project data is frontend-owned repo content, not a CMS.
 3. No third-party analytics. If traffic data matters later, use server-side access logs.
 4. No cookie banner because there are no cookies.
 5. Keep the dependency count low enough to audit in five minutes.

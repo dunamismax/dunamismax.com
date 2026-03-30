@@ -8,9 +8,20 @@ type Props = {
   pageTitle: string
   description: string
   path: string
+  ogType?: 'website' | 'article'
+  articlePublishedTime?: string
+  articleTags?: string[]
 }
 
-const { pageTitle, description, path } = Astro.props as Props
+const {
+  pageTitle,
+  description,
+  path,
+  ogType = 'website',
+  articlePublishedTime,
+  articleTags = [],
+} = Astro.props as Props
+
 const canonicalUrl = toAbsoluteUrl(path)
 const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
 ---
@@ -25,12 +36,14 @@ const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
     <meta content={siteConfig.author} name="author" />
     <meta content={siteConfig.themeColor} name="theme-color" />
 
-    <meta content="website" property="og:type" />
+    <meta content={ogType} property="og:type" />
     <meta content={pageTitle} property="og:title" />
     <meta content={description} property="og:description" />
     <meta content={canonicalUrl} property="og:url" />
     <meta content={socialImageUrl} property="og:image" />
     <meta content={siteConfig.name} property="og:site_name" />
+    {articlePublishedTime && <meta content={articlePublishedTime} property="article:published_time" />}
+    {articleTags.map((tag) => <meta content={tag} property="article:tag" />)}
 
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={pageTitle} name="twitter:title" />
@@ -46,10 +59,12 @@ const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
       title={`${siteConfig.name} RSS`}
       type="application/rss+xml"
     />
+    <link href="/fonts/InterVariable.woff2" rel="preload" as="font" type="font/woff2" crossorigin />
+    <link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <SiteHeader />
+    <SiteHeader currentPath={path} />
     <main id="main-content">
       <slot />
     </main>

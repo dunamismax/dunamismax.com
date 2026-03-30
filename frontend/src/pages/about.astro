@@ -1,0 +1,71 @@
+---
+import { getPageContract } from '../config/site'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const page = getPageContract('about')
+---
+
+<BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
+  <article class="about">
+    <h1>About</h1>
+
+    <p>
+      I'm Stephen Sawyer. I build self-hostable systems software -- the kind of tools
+      that run on your hardware, store data you can actually inspect, and don't phone
+      home.
+    </p>
+
+    <p>
+      Most of my work is in <strong>Python</strong>, <strong>Go</strong>, and
+      <strong>Rust</strong>. Browser-facing surfaces use server-rendered templates with
+      <strong>FastAPI</strong> and <strong>Jinja2</strong>. I reach for
+      <strong>SQLite</strong> by default and move to PostgreSQL only when the product
+      clearly earns it.
+    </p>
+
+    <h2>What I care about</h2>
+
+    <p>
+      <strong>Ownership.</strong> If you can't run it yourself, you don't own it.
+      Every product I build is designed to run on a single machine under your control.
+    </p>
+
+    <p>
+      <strong>Boring infrastructure.</strong> Novel architecture is a liability until
+      proven otherwise. I want the system that wakes nobody up at 3am, not the one
+      that looks impressive on a whiteboard.
+    </p>
+
+    <p>
+      <strong>The data layer is the truth layer.</strong> Relational data, explicit
+      schema, query paths you can inspect. If you can't trace a value through the
+      system, it's too clever.
+    </p>
+
+    <p>
+      <strong>Shipping beats planning.</strong> A working system you iterate on
+      outranks a perfect design doc. Complexity must be earned -- every abstraction
+      needs justification beyond "might be useful someday."
+    </p>
+
+    <h2>The stack</h2>
+
+    <p>
+      Python for web surfaces, automation, and operational tools. Go for services,
+      daemons, CLIs, APIs, and most application logic. Rust for native runtimes,
+      auditable boundary work, capture paths, custody code, and shared-core systems
+      tools.
+    </p>
+
+    <p>
+      On the browser side: server-rendered Jinja2 templates served by FastAPI. No
+      JavaScript framework, no build toolchain, no SPA. If an interaction ever earns
+      extra client-side behavior, it needs to justify itself.
+    </p>
+
+    <p>
+      This site runs on that exact stack -- FastAPI, Jinja2, hand-written CSS, and
+      Uvicorn behind Caddy.
+    </p>
+  </article>
+</BaseLayout>

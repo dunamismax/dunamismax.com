@@ -1,0 +1,61 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content'
+
+import { getPageContract } from '../config/site'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { groupProjects, type ProjectRecord, STATUS_LABELS } from '../lib/projects'
+
+const page = getPageContract('projects')
+const projectEntries = await getCollection('projects')
+const projects: ProjectRecord[] = projectEntries.map((entry: CollectionEntry<'projects'>) => ({
+  id: entry.id,
+  ...entry.data,
+}))
+const groups = groupProjects(projects)
+---
+
+<BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
+  <div class="projects-page">
+    <h1>Projects</h1>
+    <p class="lead">
+      Everything is self-hostable, local-first, and designed to run on hardware you
+      control.
+    </p>
+
+    {
+      groups.map((group) => (
+        <section class="category-group">
+          <h2>{group.label}</h2>
+          <ul class="project-list">
+            {group.projects.map((project) => (
+              <li class="project-card">
+                <div class="project-header">
+                  <h3 class="project-name">{project.name}</h3>
+                  <span class={`status-badge status-${project.status}`}>
+                    {STATUS_LABELS[project.status]}
+                  </span>
+                </div>
+                <p class="project-tagline">{project.tagline}</p>
+                <div class="project-meta">
+                  <div class="project-stack">
+                    {project.stack.map((tech) => <span class="tech-tag">{tech}</span>)}
+                  </div>
+                  <div class="project-links">
+                    {project.url && (
+                      <a class="repo-link" href={project.url} rel="noopener noreferrer" target="_blank">
+                        read it →
+                      </a>
+                    )}
+                    <a class="repo-link" href={project.repo} rel="noopener noreferrer" target="_blank">
+                      repo →
+                    </a>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>

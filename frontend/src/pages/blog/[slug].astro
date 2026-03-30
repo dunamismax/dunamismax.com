@@ -1,0 +1,59 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content'
+
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { formatDateLong, getReadingTime, isPublishedPost, sortPosts } from '../../lib/blog'
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('blog', isPublishedPost))
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }))
+}
+
+type Props = {
+  post: CollectionEntry<'blog'>
+}
+
+const { post } = Astro.props as Props
+const { Content } = await render(post)
+const pageTitle = `${post.data.title} -- Stephen Sawyer`
+const articlePath = `/blog/${post.slug}`
+---
+
+<BaseLayout
+  articlePublishedTime={post.data.date.toISOString()}
+  articleTags={post.data.tags}
+  description={post.data.description}
+  ogType="article"
+  pageTitle={pageTitle}
+  path={articlePath}
+>
+  <article class="blog-post">
+    <header class="post-header">
+      <h1>{post.data.title}</h1>
+      <div class="post-meta">
+        <time datetime={post.data.date.toISOString().slice(0, 10)}>{formatDateLong(post.data.date)}</time>
+        <span class="separator">·</span>
+        <span class="reading-time">{getReadingTime(post.body)}</span>
+      </div>
+      {
+        post.data.tags.length > 0 && (
+          <div class="post-tags">
+            {post.data.tags.map((tag: string) => <span class="tag">{tag}</span>)}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="post-content">
+      <Content />
+    </div>
+
+    <footer class="post-footer">
+      <a href="/blog">← All posts</a>
+    </footer>
+  </article>
+</BaseLayout>

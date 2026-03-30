@@ -1,64 +1,39 @@
 ---
-import PhasePill from '../components/PhasePill.vue'
-import { machineSurfaceContracts, pageContracts } from '../config/site'
+import { getPageContract } from '../config/site'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
-const page = pageContracts.find((entry) => entry.id === 'home')
-const scaffoldMarkers = ['Bun', 'Astro', 'Vue', 'Biome']
-
-if (!page) {
-  throw new Error('Missing home page contract')
-}
+const page = getPageContract('home')
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
-  <section class="hero-shell">
-    <div class="hero-shell__eyebrow">dunamismax.com</div>
-    <div class="hero-shell__markers" aria-label="Frontend scaffold stack">
-      {scaffoldMarkers.map((marker) => <PhasePill label={marker} />)}
-    </div>
-    <h1>Astro frontend lane established.</h1>
-    <p class="hero-shell__lede">
-      This page is intentionally a shell. It proves the Bun + Astro + Vue frontend path,
-      central metadata, frontend-owned content, and a frontend quality bar without claiming
-      full route parity.
-    </p>
-    <p class="hero-shell__copy">
-      The current public site remains the Python runtime in this repository. Blog posts and
-      project roster data now live under the frontend content tree, while later phases still
-      need to port the public pages and machine surfaces against the frozen contract.
-    </p>
-  </section>
+  <div class="home">
+    <section class="hero">
+      <h1>Stephen Sawyer</h1>
+      <p class="tagline">I build self-hostable systems software.</p>
+      <p class="stack">
+        Most of it lives in <strong>Python</strong>, <strong>Go</strong>, and
+        <strong>Rust</strong>, with server-rendered frontends on the browser-facing side.
+        Local-first, operator-friendly, relational data, single-binary where possible.
+      </p>
+    </section>
 
-  <section class="contract-panel">
-    <div>
-      <h2>Frozen public routes</h2>
-      <ul class="contract-list" role="list">
-        {
-          pageContracts
-            .filter((entry) => entry.id !== 'not-found')
-            .map((entry) => (
-              <li>
-                <strong>{entry.path}</strong>
-                <span>{entry.title}</span>
-              </li>
-            ))
-        }
-      </ul>
-    </div>
-
-    <div>
-      <h2>Machine surfaces to restore later</h2>
-      <ul class="contract-list" role="list">
-        {
-          machineSurfaceContracts.map((entry) => (
-            <li>
-              <strong>{entry.path}</strong>
-              <span>{entry.notes}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
+    <nav class="home-nav" aria-label="Quick navigation">
+      <a class="nav-card" href="/projects">
+        <span class="nav-card-label">Projects</span>
+        <span class="nav-card-desc">What I'm building</span>
+      </a>
+      <a class="nav-card" href="/blog">
+        <span class="nav-card-label">Blog</span>
+        <span class="nav-card-desc">How I think about it</span>
+      </a>
+      <a class="nav-card" href="/about">
+        <span class="nav-card-label">About</span>
+        <span class="nav-card-desc">Who I am</span>
+      </a>
+      <a class="nav-card" href="/contact">
+        <span class="nav-card-label">Contact</span>
+        <span class="nav-card-desc">Get in touch</span>
+      </a>
+    </nav>
+  </div>
 </BaseLayout>
