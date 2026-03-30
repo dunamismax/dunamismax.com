@@ -1,264 +1,280 @@
 # BUILD.md
 
-## Purpose
-
-This is the execution manual for dunamismax.com.
+## Decision
 
-It should always answer:
+**Target frontend:** web-only.
 
-- what the site is actually doing right now
-- what has been built and verified
-- what the next correct move is
-- what the design and content targets look like
+This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add an OpenTUI surface. dunamismax.com is a public site, portfolio, and writing surface. It does not have a real operator workflow that would justify a second terminal frontend.
 
-If this file and the code disagree, fix them together in the same change.
+**Backend call:** no dedicated backend in the target baseline. If a server-side feature later earns one, prefer **Python** over Go for this repo. Do not keep FastAPI around out of nostalgia.
 
----
+## Why
 
-## Mission
+- The new global web lane is Astro + Vue on Bun.
+- This product is content-first, browser-first, and public-facing.
+- Current interactivity is low. Astro can own the pages and delivery.
+- A TUI would be ceremonial and would not improve the product.
+- Go is not justified here. If a thin backend appears later, Python fits content tooling and simple site services better.
 
-Build the best personal developer site on the internet.
+## Current state summary
 
-Not the flashiest. Not the most complex. The best, meaning: fast, honest, beautiful in its restraint, and unmistakably the work of someone who ships real systems software. Every pixel, every millisecond, every line of markup should communicate craft.
+Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site.
 
-The site is the proof. If the portfolio says "I build self-hostable systems software with boring infrastructure and clean operational discipline," then the site itself must be self-hostable, boring to operate, and clean in every detail.
-
-### Product rules
-
-- **FastAPI + Jinja2 + Uvicorn** is the stack.
-- **Server-rendered HTML.** Every URL returns complete HTML on the first response. No SPA, no hydration, no client-side routing.
-- **No database.** Blog posts and project data live as Python data files in the repo.
-- **No CMS.** Posts and project entries are code.
-- **htmx only if it earns its keep.** The current launch surface ships without client-side JavaScript.
-- **No third-party scripts.** No analytics, no tracking pixels, no CDN font calls, no cookie consent.
-- **Dark by default.** Light mode is a stretch goal, not a launch requirement.
-- **Mobile-first.** Not mobile-tolerable. Mobile-first.
-- **Performance is a feature, not a metric.** The site should feel instant.
-
-### Domain strategy
-
-| Domain | Role |
-| --- | --- |
-| `dunamismax.com` | Primary personal site: home, portfolio, blog, about, contact. |
+What exists now:
 
----
+- Public pages: `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, `404`
+- Machine surfaces: `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`
+- Content lives in repo-local Python data files under `src/app/content/`
+- Templates live under `src/app/templates/`
+- Styling is hand-written CSS under `src/app/static/css/`
+- No database, no CMS, no analytics scripts, no cookie banner
+- Self-hosted fonts and static assets
+- Docker + Caddy deploy path
+- Python quality gates: Ruff, Pyright, pytest, smoke script
 
-## Current repo snapshot
+What matters about the current build:
 
-**Current phase:** Implemented, launch-ready in repo
+- Route and content shape are already good enough to preserve
+- The repo is static-ish in behavior even though it currently runs through FastAPI
+- The Python runtime mostly exists to render templates and generate machine-readable outputs
 
-**Last reviewed:** 2026-03-29
+## Target state summary
 
-**Branch:** `main`
+The target repo should be an **Astro-first site on Bun** with **Vue only for earned interactivity**.
 
-### What exists right now
+Target shape:
 
-- FastAPI + Jinja2 server-rendered site with Uvicorn, uv, Ruff, Pyright, pytest
-- Full design system in `tokens.css` and `base.css` (colors, typography, spacing, motion)
-- Hand-written CSS with design tokens (no Tailwind, no CSS framework)
-- Self-hosted Inter (variable) and JetBrains Mono fonts in `static/fonts/`
-- Layout template with fixed nav, skip-to-content link, semantic HTML, footer with contact links
-- **Home page** with hero, tagline, stack description, nav cards
-- **About page** with stack philosophy, ownership, boring infrastructure
-- **Contact page** with all channels listed (Email, Signal, GitHub, Twitter, Reddit)
-- **Projects page** with all repos grouped by category with status badges and stack tags
-- **Blog index** with date + title + excerpt layout
-- **Blog post detail** with reading time, tags, markdown rendered via Python markdown library
-- **First blog post** ("Building this site")
-- Canonical URLs and Open Graph/Twitter metadata built from the production site URL
-- Machine-readable launch surfaces: `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`
-- Cheap local smoke check via `uv run python scripts/smoke.py`
-- CI pipeline (GitHub Actions: ruff, pyright, pytest, smoke)
-- 28 passing tests covering HTML routes, machine-readable routes, metadata, and content data
-- Docker deployment (multi-stage Dockerfile with Uvicorn, docker-compose.yml)
-- Caddy reverse proxy config
+- Astro owns routing, layouts, metadata, feed generation, sitemap, and static delivery
+- Vue is optional and used only for components that actually need client state
+- Blog posts move out of Python constants into repo-native content files
+- Project data becomes typed frontend-owned content, not Python module data
+- The site builds as a static or mostly-static web app unless a real server feature appears
+- Existing public URLs stay stable
+- The design language stays dark, fast, minimal, and self-hosted
+- Privacy rules stay intact: no third-party scripts, no analytics, no cookie theater
 
-### What does not exist yet
+## Backend notes
 
-- Public deployment redeployed with the current Python build
-- Lighthouse verification against the public domain
-- External uptime monitoring wired to `/health`
+### Baseline
 
----
+The migration should assume **no dedicated backend**.
 
-## Source-of-truth map
+That means:
 
-| File | Owns |
-| --- | --- |
-| `README.md` | public-facing project definition and architecture |
-| `BUILD.md` | this file; execution manual, phase plan, verification log |
-| `src/app/content/blog.py` | blog post data |
-| `src/app/content/projects.py` | project entry data |
-| `src/app/static/css/tokens.css` | design tokens and color palette |
-| `src/app/static/css/base.css` | global base styles and typography |
-| `src/app/main.py` | FastAPI application entry point |
-| `src/app/routes/pages.py` | HTML routes plus feed, sitemap, robots, and health |
-| `src/app/site.py` | canonical URL helpers plus RSS/sitemap/robots builders |
-| `src/app/templates/` | Jinja2 HTML templates |
-| `scripts/smoke.py` | local route and metadata smoke check |
-| `pyproject.toml` | dependencies, tooling config, project metadata |
-| `Dockerfile` | multi-stage Docker build (Python slim + Uvicorn) |
-| `Caddyfile` | reverse proxy config for the host Caddy |
-| `docker-compose.yml` | container orchestration |
-| `.github/workflows/ci.yml` | CI pipeline configuration |
+- no FastAPI replacement by default
+- no Go service
+- no database
+- no CMS
+- no contact form backend unless there is a deliberate later decision
 
----
+### If server logic becomes necessary later
 
-## Design System
+Choose **Python**, not Go, for this repo's first backend addition.
 
-### Color palette (dark default)
+Valid reasons would be:
 
-Target feel: a terminal that learned typography. High contrast, one accent, nothing gratuitous.
+- authenticated admin or draft workflow
+- contact form handling that cannot stay mailto-only
+- build-time or on-demand content ingestion that Astro alone should not own
+- search or feed generation needs that stop being clean build-time work
 
-```
---bg-primary:     #0a0a0b        /* near-black, not pure black */
---bg-secondary:   #131316        /* card/section backgrounds */
---bg-tertiary:    #1a1a1f        /* subtle elevation */
---border:         #2a2a30        /* borders and dividers */
---text-primary:   #e8e8ed        /* main body text */
---text-secondary: #8888a0        /* muted text, metadata, dates */
---text-tertiary:  #5a5a70        /* disabled, placeholder */
---accent:         #5b8af5        /* links, active states, focus rings */
---accent-hover:   #7ba3ff        /* hover state for accent */
---accent-muted:   #5b8af520      /* subtle accent backgrounds */
---success:        #34d399        /* status indicators */
---warning:        #fbbf24        /* status indicators */
---error:          #f87171        /* status indicators */
---code-bg:        #0f0f12        /* inline code and code block backgrounds */
-```
+Invalid reasons:
 
-### Typography
+- preserving the current FastAPI shape because it already exists
+- adding an API for a mostly static site
+- introducing server complexity before the public site actually needs it
 
-```
---font-body:      'Inter', system-ui, -apple-system, sans-serif
---font-mono:      'JetBrains Mono', 'SF Mono', 'Fira Code', monospace
---font-heading:   var(--font-mono)
-```
+## Data and runtime constraints
 
-### Component patterns
+Do not break these during migration:
 
-**Navigation:** fixed top bar, monospace logo, minimal links (Home, Projects, Blog, About), no hamburger menu. Stack vertically on mobile instead.
+- **No database** in the baseline migration
+- **No CMS**
+- **No third-party scripts**
+- **Self-hosted fonts and assets**
+- **Existing route slugs remain stable**
+- **RSS, sitemap, robots, and health surfaces remain available**
+- **Home, projects, blog, about, and contact stay first-class pages**
+- **Content remains repo-owned and reviewable in git**
+- **Deployment stays self-hostable and boring**
 
-**Project cards:** dark card on darker background. Project name in monospace. One-line description. Status badge (active / shipped / phase 0). Repo link. Grouped by category.
+Preferred content direction:
 
-**Blog post list:** date on the left (muted), title as a link, one-line excerpt below. No thumbnails, no cards, no category pills. Clean rows.
+- blog posts: Markdown or MDX in-repo, frontmatter-backed
+- project roster: typed data file in TypeScript or JSON validated at build time
+- site metadata: centralized config, not scattered across pages
 
-**Blog post page:** full-width content column constrained to `--measure`. Monospace title. Date and reading time in muted text below the title. Markdown-rendered body with good code block styling. No sidebar, no table of contents.
+## Risks
 
-**Footer:** minimal. Name, year, one-line description, and a row of contact/social links.
+1. **Content-model churn**
+   - The current blog and project data live in Python modules.
+   - Migrating them carelessly can change slugs, dates, reading-time behavior, or metadata.
 
----
+2. **SEO and metadata regression**
+   - Canonical URLs, Open Graph metadata, RSS, sitemap, and robots are already present.
+   - Astro must reproduce them before cutover.
 
-## Deployment
+3. **Over-hydration**
+   - The point of this migration is the new web lane, not a client-heavy rewrite.
+   - Vue should stay island-sized.
 
-### Architecture
+4. **Deployment drift**
+   - The current deploy path assumes a Python container.
+   - The cutover should simplify deployment, not invent a more complex runtime.
 
-Self-hosted via Docker with Caddy as a reverse proxy. The container runs Uvicorn on port 8000 behind an external Caddy instance that handles TLS for `dunamismax.com`.
+5. **Scope creep**
+   - This is a frontend migration, not a redesign and not a content rewrite.
 
-```
-Internet -> Caddy (host, TLS) -> Docker container (Uvicorn on :8000, FastAPI app)
-```
+## Phase plan
 
-### Build and run
+### Phase 0: freeze the current contract
 
-```bash
-# Build and start the container
-docker compose up -d --build
+Goal: capture what must survive the rewrite.
 
-# Rebuild after content changes
-docker compose up -d --build --force-recreate
+Tasks:
 
-# Stop
-docker compose down
+- inventory every public route and machine-readable endpoint
+- record current metadata behavior and route titles/descriptions
+- record blog content, project data shape, and URL slugs
+- identify which CSS tokens and layout rules should carry forward unchanged
+- decide static versus server-rendered Astro mode based on real needs, not habit
 
-# View logs
-docker compose logs -f web
-```
+Done when:
 
-The container exposes port 8080 (mapped to internal 8000). Point the host Caddy reverse proxy at `localhost:8080`.
+- the migration acceptance checklist is explicit
+- the future subagent can port the site without guessing what matters
 
-### Run without Docker
+### Phase 1: scaffold the Astro + Vue web lane
 
-```bash
-uv sync
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
+Goal: create the new frontend shell on Bun.
 
-### CI pipeline
+Tasks:
 
-GitHub Actions runs on every push to `main` and on pull requests:
+- initialize Astro with TypeScript on Bun
+- add Vue integration, but use it only where interaction is justified
+- add Biome, `astro check`, and `bun test`
+- create the target directory shape for pages, layouts, components, content, and styles
+- centralize site metadata and canonical URL configuration
 
-1. `uv sync`
-2. `uv run ruff check .` (lint)
-3. `uv run ruff format --check .` (format)
-4. `uv run pyright` (type check)
-5. `uv run pytest` (tests)
-6. `uv run python scripts/smoke.py` (route + metadata smoke)
+Done when:
 
----
+- the repo has a clean Astro entrypoint and quality bar
+- no Python runtime is required to render the basic page shell in the new frontend
 
-## Build / Run / Verify
+### Phase 2: move content ownership into the frontend
 
-### Prerequisites
+Goal: stop treating content as Python application code.
 
-- Python 3.12+
-- uv
+Tasks:
 
-### Commands
+- migrate blog posts from Python constants to Markdown or MDX content files
+- migrate project roster from `projects.py` to typed frontend-owned data
+- preserve slugs, dates, descriptions, tags, and ordering rules
+- re-create reading-time and publish filtering logic in TypeScript or Astro content utilities
 
-```bash
-uv sync                              # install deps
-uv run uvicorn app.main:app --reload # local dev server
-uv run ruff check .                  # lint
-uv run ruff format --check .         # format check
-uv run pyright                       # type check
-uv run pytest                        # tests
-uv run python scripts/smoke.py       # local launch smoke check
-```
+Done when:
 
-### Verification checklist for any change
+- all content needed for the public site lives in frontend-owned repo files
+- content changes no longer require touching Python modules
 
-1. `uv run ruff check . && uv run ruff format --check .` passes
-2. `uv run pyright` passes
-3. `uv run pytest` passes
-4. `uv run python scripts/smoke.py` passes
-5. Visual review on mobile viewport
-6. Visual review on desktop viewport
+### Phase 3: port the public pages with visual parity first
 
----
+Goal: ship page parity before adding new ideas.
 
-## TODOs
+Tasks:
 
-- [ ] Redeploy the current Python container to the public host
-- [ ] Verify: site is live and reachable at `dunamismax.com`
-- [ ] Run Lighthouse against the public domain and capture the scores
-- [ ] Wire an external uptime check to `https://dunamismax.com/health`
-- [ ] Light mode toggle (if it earns its keep)
-- [ ] Table of contents for long blog posts
-- [ ] Search across blog posts
-- [ ] Project filtering or sorting
+- port home, projects, blog index, blog post, about, contact, and 404
+- move the existing design tokens and CSS system into the Astro frontend
+- preserve the dark visual language and mobile-first layout
+- keep JavaScript near zero unless a page genuinely needs interaction
 
----
+Done when:
 
-## Decision Log
+- the Astro build serves the same public information architecture
+- the migrated site is at least as fast and as readable as the current one
 
-- 2026-03-23: project created. Stack was Bun + TypeScript + Astro + Alpine.js.
-- 2026-03-23: dark theme is the default and only theme. Light mode deferred.
-- 2026-03-23: blog content lives in repo as data files. No external CMS.
-- 2026-03-23: deployment target: self-hosted Caddy via Docker.
-- 2026-03-23: Inter for body text, JetBrains Mono for code and headings. Self-hosted.
-- 2026-03-24: migrated from Astro to React + Vite SPA. Stack was Bun + TypeScript + Vite + React + TanStack Router + Tailwind CSS + Biome + Vitest.
-- 2026-03-25: rewrote from React SPA to FastAPI + Jinja2 + htmx. Stack is now Python 3.12, FastAPI, Jinja2, htmx-ready if needed, Uvicorn, hand-written CSS, uv, Ruff, Pyright, pytest. No JavaScript build toolchain. Server-rendered HTML.
-- 2026-03-29: added launch-readiness machine surfaces (`/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`), production canonical URL metadata, and a cheap local smoke check. Removed the unused third-party htmx CDN script so the code matches the privacy and no-third-party-script policy.
+### Phase 4: restore machine-readable and operational surfaces
 
----
+Goal: regain non-HTML correctness before cutover.
 
-## Resume Checklist
+Tasks:
 
-If you are resuming this repo later:
+- reimplement RSS generation
+- reimplement sitemap generation
+- preserve `robots.txt`
+- provide a cheap `/health` endpoint or static equivalent in the deploy layer
+- preserve canonical metadata, Open Graph tags, and article metadata
 
-1. Read `README.md`
-2. Read this file
-3. Check `git status` and `git log --oneline -5`
-4. Run `uv sync && uv run ruff check . && uv run pyright && uv run pytest && uv run python scripts/smoke.py` to confirm the baseline
-5. Pick up where the TODOs left off
+Done when:
+
+- every current machine surface exists in the new frontend path
+- SEO and uptime probes have parity with the Python build
+
+### Phase 5: cut deployment over to the new runtime
+
+Goal: replace the Python web runtime with the Astro build output.
+
+Tasks:
+
+- choose the simplest deploy shape: static output behind Caddy if possible
+- use a tiny runtime only if Astro mode genuinely requires it
+- remove Python web-serving requirements from Docker and compose files once parity is proven
+- update CI to the Bun/Astro quality bar and any targeted smoke coverage
+
+Done when:
+
+- the default local and deploy path are Bun/Astro-native
+- FastAPI and Jinja2 are no longer in the serving path
+
+### Phase 6: clean up and retire legacy web code
+
+Goal: leave one obvious stack behind.
+
+Tasks:
+
+- remove unused Python web app files, templates, and dependencies
+- update README and deployment docs to current truth
+- verify there is no stale documentation claiming FastAPI + Jinja2 is still the live path
+- run final smoke and route checks
+
+Done when:
+
+- the repo reads like one stack, not two
+- BUILD.md can be removed or collapsed into stable docs once the migration is finished
+
+## Recommended execution order
+
+1. Phase 0 before any scaffolding
+2. Phase 1 before any content migration
+3. Phase 2 before visual porting of blog and projects
+4. Phase 3 before deployment work
+5. Phase 4 before cutover
+6. Phase 5 before deleting Python web code
+7. Phase 6 last
+
+Do **not** combine content migration, deploy cutover, and legacy deletion in one pass.
+
+## Acceptance criteria
+
+The migration is done when all of the following are true:
+
+- the repo's primary frontend is **TypeScript + Bun + Astro + Vue**
+- the repo remains **web-only**
+- there is **no TUI plan** and no leftover ambiguity about that
+- the public route set matches current behavior
+- blog posts and project data are no longer stored as Python app code
+- RSS, sitemap, robots, and health still work
+- self-hosted assets, privacy posture, and no-CMS rules are preserved
+- deployment is at least as simple as the current Docker + Caddy path
+- README describes current truth
+- BUILD.md is no longer needed as a migration tracker once cutover is complete
+
+## Small verification rule for doc-only planning changes
+
+For changes to this file only, run the smallest useful check:
+
+- verify the decision matches the tech-stacks guidance
+- verify the plan matches the repo's actual current surfaces
+- verify README still describes the current live implementation, not the target stack
+
+If the plan and the repo diverge later, fix BUILD.md again or remove it once the migration is complete.
