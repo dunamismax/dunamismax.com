@@ -5,9 +5,9 @@ This is the Bun + Astro + Vue migration frontend for `dunamismax.com`.
 Current truth:
 
 - The deployed site is still the Python app in `src/app/`.
-- The Astro frontend now owns the public page routes and styling parity work for `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, and `404`.
+- The Astro frontend now owns the public page routes, machine-readable surfaces, and styling parity work for `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, `404`, `/feed.xml`, `/sitemap.xml`, `/robots.txt`, and `/health`.
 - Blog posts and project data are single-sourced under `frontend/src/content/`.
-- Machine-readable surfaces and runtime cutover are still later phases.
+- Deployment cutover away from the Python web runtime is still a later phase.
 
 ## Commands
 
@@ -32,8 +32,5 @@ The frontend currently covers:
 
 Still not complete here:
 
-- `feed.xml`
-- `sitemap.xml`
-- `robots.txt`
-- `/health`
 - deployment cutover away from the Python web runtime
+- Docker/Caddy updates that make the Astro build the default served artifact

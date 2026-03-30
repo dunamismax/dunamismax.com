@@ -21,7 +21,7 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - [x] The live site in this repo is still the **Python 3.12 + FastAPI + Jinja2** app under `src/app/`.
 - [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
 - [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
-- [ ] **Phases 4 through 6** are not complete. Content ownership and public page parity now live in the frontend, but machine surfaces are not restored in Astro and deployment still serves the Python app.
+- [ ] **Phases 5 through 6** are not complete. Content ownership, public page parity, and machine surfaces now live in the frontend, but deployment still serves the Python app.
 
 ## Current state summary
 
@@ -45,7 +45,8 @@ What exists now:
   - The Astro frontend now ships the public HTML route set with shared layout, metadata, content rendering, and the ported CSS system.
 - [x] Frontend-owned blog content files
 - [x] Frontend-owned project roster data
-- [ ] Astro versions of RSS, sitemap, robots, and health
+- [x] Astro versions of RSS, sitemap, robots, and health
+  - `frontend/src/pages/feed.xml.ts`, `frontend/src/pages/sitemap.xml.ts`, `frontend/src/pages/robots.txt.ts`, and `frontend/src/pages/health.ts` now emit the machine-readable route set from the Astro build.
 - [ ] Bun/Astro-native deployment as the default serving path
 
 What matters about the current build:
@@ -111,8 +112,8 @@ Do not break these during migration:
 - [x] **Self-hosted fonts and assets**
 - [x] **Existing route slugs remain stable**
   - The Astro frontend now builds the frozen public route set at `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, and `404`.
-- [ ] **RSS, sitemap, robots, and health surfaces remain available**
-  - They remain available in the live Python app, but not yet in the Astro frontend.
+- [x] **RSS, sitemap, robots, and health surfaces remain available**
+  - The Astro frontend now emits the full machine surface set, while the live Python app continues to serve the production site until cutover.
 - [x] **Home, projects, blog, about, and contact stay first-class pages**
 - [x] **Content remains repo-owned and reviewable in git**
 - [x] **Deployment stays self-hostable and boring**
@@ -225,20 +226,20 @@ Notes:
 - `frontend/src/styles/tokens.css` and `frontend/src/styles/global.css` now carry the live site's typography, layout shell, page styling, and self-hosted font usage into the Astro frontend.
 - Verification for this phase currently consists of `bun run lint`, `bun run check`, `bun run test`, and `bun run build` in `frontend/`, with the build output confirming the expected static routes.
 
-### [ ] Phase 4: restore machine-readable and operational surfaces
+### [x] Phase 4: restore machine-readable and operational surfaces
 
 Goal: regain non-HTML correctness before cutover.
 
 Checklist:
 
-- [ ] reimplement RSS generation
-- [ ] reimplement sitemap generation
-- [ ] preserve `robots.txt`
-- [ ] provide a cheap `/health` endpoint or static equivalent in the deploy layer
+- [x] reimplement RSS generation
+- [x] reimplement sitemap generation
+- [x] preserve `robots.txt`
+- [x] provide a cheap `/health` endpoint or static equivalent in the deploy layer
 - [x] preserve canonical metadata, Open Graph tags, and article metadata
   - `frontend/src/layouts/BaseLayout.astro` now covers canonical URLs, Open Graph defaults, Twitter card values, theme color, and article metadata fields for blog posts.
-- [ ] make every current machine surface exist in the new frontend path
-- [ ] reach SEO and uptime-probe parity with the Python build
+- [x] make every current machine surface exist in the new frontend path
+- [x] reach SEO and uptime-probe parity with the Python build
 
 ### [ ] Phase 5: cut deployment over to the new runtime
 
@@ -289,7 +290,7 @@ The migration is done when all of the following are true:
 - [x] there is **no TUI plan** and no leftover ambiguity about that
 - [x] the public route set matches current behavior in the migrated frontend
 - [x] blog posts and project data are no longer stored as Python app code
-- [ ] RSS, sitemap, robots, and health still work from the migrated stack
+- [x] RSS, sitemap, robots, and health still work from the migrated stack
 - [x] self-hosted assets, privacy posture, and no-CMS rules are preserved today
 - [ ] deployment is at least as simple as the current Docker + Caddy path after cutover
 - [x] README describes current truth

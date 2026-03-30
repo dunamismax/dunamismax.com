@@ -2,11 +2,11 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend under `frontend/` now owns the blog and project content and has the public page routes ported, but machine-readable surfaces and deploy cutover are still not complete.
+dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend under `frontend/` now owns the blog and project content, the public page routes, and the machine-readable surfaces, but deploy cutover is still not complete.
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory now contains the Astro + Vue migration site for the public HTML pages plus frontend-owned blog and project content, but machine-readable surfaces and serving cutover are still later phases.
+> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory now contains the Astro + Vue migration site for the public HTML pages, machine-readable surfaces, and frontend-owned content, but serving cutover is still a later phase.
 
 ## Stack
 
