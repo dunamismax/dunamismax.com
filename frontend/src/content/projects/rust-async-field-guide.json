@@ -1,0 +1,10 @@
+{
+  "order": 10,
+  "name": "rust-async-field-guide",
+  "tagline": "Learn async Rust by breaking things first. Twelve chapters of real footguns, reproductions, and verified fixes.",
+  "category": "reference",
+  "status": "shipped",
+  "repo": "https://github.com/dunamismax/rust-async-field-guide",
+  "url": "https://dunamismax.github.io/rust-async-field-guide/",
+  "stack": ["Rust"]
+}

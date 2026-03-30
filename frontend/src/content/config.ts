@@ -1,5 +1,7 @@
 import { defineCollection, z } from 'astro:content'
 
+import { CATEGORY_ORDER, PROJECT_STATUSES } from '../lib/projects'
+
 const blog = defineCollection({
   type: 'content',
   schema: z.object({
@@ -14,10 +16,11 @@ const blog = defineCollection({
 const projects = defineCollection({
   type: 'data',
   schema: z.object({
+    order: z.number().int().min(0),
     name: z.string(),
     tagline: z.string(),
-    category: z.enum(['apps', 'infrastructure', 'developer-tools', 'reference']),
-    status: z.enum(['active', 'shipped', 'phase-0', 'legacy']),
+    category: z.enum(CATEGORY_ORDER),
+    status: z.enum(PROJECT_STATUSES),
     repo: z.string().url(),
     stack: z.array(z.string()),
     url: z.string().url().optional(),

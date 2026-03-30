@@ -1,0 +1,9 @@
+{
+  "order": 10,
+  "name": "bore",
+  "tagline": "Peer-to-peer encrypted file transfer. Direct connections via STUN/hole-punching with Noise XXpsk0 E2E encryption, relay fallback when NAT wins. No accounts, no cloud.",
+  "category": "infrastructure",
+  "status": "shipped",
+  "repo": "https://github.com/dunamismax/bore",
+  "stack": ["Go", "Noise", "STUN"]
+}

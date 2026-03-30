@@ -2,11 +2,11 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend scaffold now lives under `frontend/` for the migration, but it is not yet the parity site.
+dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend now owns the blog and project content under `frontend/`, but it is not yet the parity site.
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory is Phase 1 Astro + Vue migration scaffolding only.
+> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory now contains the Astro + Vue migration scaffold plus frontend-owned blog and project content, but page parity and cutover are still later phases.
 
 ## Stack
 
@@ -51,7 +51,7 @@ The active project roster. Each entry links to the repo. Projects are grouped by
 
 ### Blog
 
-Long-form technical writing. Posts live as data in the repo, rendered with Python's markdown library. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Posts now live as frontend-owned Markdown in the repo and are still rendered by the current Python runtime until the Astro cutover happens. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
@@ -101,6 +101,8 @@ dunamismax.com/
       components/
       config/
       content/
+        blog/
+        projects/
       layouts/
       pages/
       styles/
@@ -134,7 +136,7 @@ uv sync
 uv run uvicorn app.main:app --reload
 ```
 
-Phase 1 frontend scaffold:
+Frontend migration app:
 
 ```bash
 cd frontend

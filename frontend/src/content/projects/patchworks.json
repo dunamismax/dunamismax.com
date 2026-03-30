@@ -1,0 +1,9 @@
+{
+  "order": 20,
+  "name": "Patchworks",
+  "tagline": "Git-style diffs for SQLite databases. Schema, rows, and the SQL to reconcile them. Native desktop app and headless CLI.",
+  "category": "apps",
+  "status": "active",
+  "repo": "https://github.com/dunamismax/patchworks",
+  "stack": ["Go", "SQLite"]
+}

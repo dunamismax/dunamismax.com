@@ -21,17 +21,18 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - [x] The live site in this repo is still the **Python 3.12 + FastAPI + Jinja2** app under `src/app/`.
 - [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
 - [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
-- [ ] **Phases 2 through 6** are not complete. Content still lives in Python modules, page parity is not reached, machine surfaces are not restored in Astro, and deployment still serves the Python app.
+- [ ] **Phases 3 through 6** are not complete. Content ownership has moved into the frontend, but page parity is not reached, machine surfaces are not restored in Astro, and deployment still serves the Python app.
 
 ## Current state summary
 
-Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site with a separate **Phase 1 Astro scaffold**.
+Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site with a separate **Phase 2 Astro frontend migration app**.
 
 What exists now:
 
 - [x] Public pages: `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, `404`
 - [x] Machine surfaces: `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`
-- [x] Content lives in repo-local Python data files under `src/app/content/`
+- [x] Blog posts and project roster data now live under `frontend/src/content/`
+  - The live Python app still consumes that frontend-owned content during the migration.
 - [x] Templates live under `src/app/templates/`
 - [x] Styling is hand-written CSS under `src/app/static/css/`
 - [x] No database, no CMS, no analytics scripts, no cookie banner
@@ -39,10 +40,10 @@ What exists now:
 - [x] Docker + Caddy deploy path for the live Python app
 - [x] Python quality gates: Ruff, Pyright, pytest, smoke script
 - [x] Frontend migration contract inventory in `docs/frontend-contract-inventory.md`
-- [x] Astro scaffold in `frontend/` with Astro, Vue, Biome, Bun tests, and static build output
+- [x] Astro frontend migration app in `frontend/` with Astro, Vue, Biome, Bun tests, static build output, and frontend-owned content collections
 - [ ] Frontend parity site in Astro
-- [ ] Frontend-owned blog content files
-- [ ] Frontend-owned project roster data
+- [x] Frontend-owned blog content files
+- [x] Frontend-owned project roster data
 - [ ] Astro versions of RSS, sitemap, robots, and health
 - [ ] Bun/Astro-native deployment as the default serving path
 
@@ -61,8 +62,8 @@ Target shape:
 
 - [ ] Astro owns routing, layouts, metadata, feed generation, sitemap, and static delivery
 - [ ] Vue is optional and used only for components that actually need client state
-- [ ] Blog posts move out of Python constants into repo-native content files
-- [ ] Project data becomes typed frontend-owned content, not Python module data
+- [x] Blog posts move out of Python constants into repo-native content files
+- [x] Project data becomes typed frontend-owned content, not Python module data
 - [ ] The site builds as a static or mostly-static web app unless a real server feature appears
 - [ ] Existing public URLs stay stable
 - [ ] The design language stays dark, fast, minimal, and self-hosted
@@ -184,25 +185,26 @@ Notes:
 - `frontend/package.json`, `frontend/astro.config.mjs`, `frontend/src/config/site.ts`, and the frontend CI job confirm this phase is complete.
 - The scaffold is intentionally not the parity site yet.
 
-### [ ] Phase 2: move content ownership into the frontend
+### [x] Phase 2: move content ownership into the frontend
 
 Goal: stop treating content as Python application code.
 
 Checklist:
 
-- [ ] migrate blog posts from Python constants to Markdown or MDX content files
-  - `frontend/src/content/blog/` still contains only `.gitkeep`.
-- [ ] migrate project roster from `projects.py` to typed frontend-owned data
-  - `frontend/src/content/projects/` still contains only `.gitkeep`.
-- [ ] preserve slugs, dates, descriptions, tags, and ordering rules
-  - The contract is documented, but the content itself has not moved.
-- [ ] re-create reading-time and publish filtering logic in TypeScript or Astro content utilities
-- [ ] move all public-site content into frontend-owned repo files
-- [ ] make content changes possible without touching Python modules
+- [x] migrate blog posts from Python constants to Markdown or MDX content files
+  - Blog content now lives in `frontend/src/content/blog/hello-world.md`.
+- [x] migrate project roster from `projects.py` to typed frontend-owned data
+  - Project entries now live as typed JSON files under `frontend/src/content/projects/`.
+- [x] preserve slugs, dates, descriptions, tags, and ordering rules
+  - Slugs stay filename-backed, blog dates and tags moved intact, and project ordering is preserved with explicit `order` metadata plus category ordering utilities.
+- [x] re-create reading-time and publish filtering logic in TypeScript or Astro content utilities
+- [x] move all public-site content into frontend-owned repo files
+- [x] make content changes possible without touching Python modules
 
 Notes:
 
-- `frontend/src/content/config.ts` already defines the target schemas, so the lane is prepared but not migrated.
+- `frontend/src/content/config.ts` now validates the migrated content collections.
+- The live Python app currently reads the frontend-owned Markdown and JSON files so content stays single-sourced before the Astro page cutover.
 
 ### [ ] Phase 3: port the public pages with visual parity first
 
@@ -287,7 +289,7 @@ The migration is done when all of the following are true:
 - [x] the repo remains **web-only**
 - [x] there is **no TUI plan** and no leftover ambiguity about that
 - [ ] the public route set matches current behavior in the migrated frontend
-- [ ] blog posts and project data are no longer stored as Python app code
+- [x] blog posts and project data are no longer stored as Python app code
 - [ ] RSS, sitemap, robots, and health still work from the migrated stack
 - [x] self-hosted assets, privacy posture, and no-CMS rules are preserved today
 - [ ] deployment is at least as simple as the current Docker + Caddy path after cutover

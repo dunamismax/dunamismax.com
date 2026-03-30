@@ -53,7 +53,9 @@ Status on 2026-03-30: the deployed site in this repo is still the Python `FastAP
 
 ## Blog content contract
 
-Current source: `src/app/content/blog.py`
+Current source: frontend-owned Markdown files under `frontend/src/content/blog/`
+
+The live Python app currently reads those files through `src/app/content/blog.py` while the Astro page port is still pending.
 
 Schema today:
 
@@ -77,7 +79,9 @@ Behavior today:
 
 ## Project content contract
 
-Current source: `src/app/content/projects.py`
+Current source: frontend-owned JSON files under `frontend/src/content/projects/`
+
+The live Python app currently reads those files through `src/app/content/projects.py` while the Astro page port is still pending.
 
 Schema today:
 
@@ -160,5 +164,7 @@ This inventory was extracted from:
 - `src/app/config.py`
 - `src/app/content/blog.py`
 - `src/app/content/projects.py`
+- `frontend/src/content/blog/`
+- `frontend/src/content/projects/`
 - `src/app/static/css/tokens.css`
 - `src/app/static/css/layout.css`

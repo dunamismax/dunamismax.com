@@ -6,17 +6,17 @@ from app.content.blog import get_post_by_slug, get_published_posts, get_reading_
 from app.content.projects import (
     CATEGORY_LABELS,
     CATEGORY_ORDER,
-    PROJECTS,
+    get_projects,
     get_projects_grouped,
 )
 
 
 class TestProjects:
     def test_has_projects(self) -> None:
-        assert len(PROJECTS) > 0
+        assert len(get_projects()) > 0
 
     def test_every_project_has_required_fields(self) -> None:
-        for p in PROJECTS:
+        for p in get_projects():
             assert p.name
             assert p.tagline
             assert p.category
@@ -34,6 +34,16 @@ class TestProjects:
         for group in groups:
             assert group.label
             assert len(group.projects) > 0
+
+    def test_project_group_order_matches_contract(self) -> None:
+        groups = get_projects_grouped()
+        assert [group.category for group in groups] == [
+            "apps",
+            "infrastructure",
+            "developer-tools",
+            "reference",
+        ]
+        assert [project.name for project in groups[0].projects] == ["Scrybase", "Patchworks"]
 
 
 class TestBlog:
