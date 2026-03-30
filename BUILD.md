@@ -16,27 +16,42 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - A TUI would be ceremonial and would not improve the product.
 - Go is not justified here. If a thin backend appears later, Python fits content tooling and simple site services better.
 
+## Status snapshot as of 2026-03-30
+
+- [x] The live site in this repo is still the **Python 3.12 + FastAPI + Jinja2** app under `src/app/`.
+- [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
+- [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
+- [ ] **Phases 2 through 6** are not complete. Content still lives in Python modules, page parity is not reached, machine surfaces are not restored in Astro, and deployment still serves the Python app.
+
 ## Current state summary
 
-Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site.
+Today the repo is a **Python 3.12 + FastAPI + Jinja2** server-rendered site with a separate **Phase 1 Astro scaffold**.
 
 What exists now:
 
-- Public pages: `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, `404`
-- Machine surfaces: `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`
-- Content lives in repo-local Python data files under `src/app/content/`
-- Templates live under `src/app/templates/`
-- Styling is hand-written CSS under `src/app/static/css/`
-- No database, no CMS, no analytics scripts, no cookie banner
-- Self-hosted fonts and static assets
-- Docker + Caddy deploy path
-- Python quality gates: Ruff, Pyright, pytest, smoke script
+- [x] Public pages: `/`, `/projects`, `/blog`, `/blog/{slug}`, `/about`, `/contact`, `404`
+- [x] Machine surfaces: `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/health`
+- [x] Content lives in repo-local Python data files under `src/app/content/`
+- [x] Templates live under `src/app/templates/`
+- [x] Styling is hand-written CSS under `src/app/static/css/`
+- [x] No database, no CMS, no analytics scripts, no cookie banner
+- [x] Self-hosted fonts and static assets in the live Python app
+- [x] Docker + Caddy deploy path for the live Python app
+- [x] Python quality gates: Ruff, Pyright, pytest, smoke script
+- [x] Frontend migration contract inventory in `docs/frontend-contract-inventory.md`
+- [x] Astro scaffold in `frontend/` with Astro, Vue, Biome, Bun tests, and static build output
+- [ ] Frontend parity site in Astro
+- [ ] Frontend-owned blog content files
+- [ ] Frontend-owned project roster data
+- [ ] Astro versions of RSS, sitemap, robots, and health
+- [ ] Bun/Astro-native deployment as the default serving path
 
 What matters about the current build:
 
-- Route and content shape are already good enough to preserve
-- The repo is static-ish in behavior even though it currently runs through FastAPI
-- The Python runtime mostly exists to render templates and generate machine-readable outputs
+- [x] Route and content shape are already good enough to preserve.
+- [x] The repo is static-ish in behavior even though it currently runs through FastAPI.
+- [x] The Python runtime mostly exists to render templates and generate machine-readable outputs.
+- [x] The migration now has a frozen contract and a real frontend scaffold, so later phases should port against known behavior instead of re-deciding the site.
 
 ## Target state summary
 
@@ -44,14 +59,14 @@ The target repo should be an **Astro-first site on Bun** with **Vue only for ear
 
 Target shape:
 
-- Astro owns routing, layouts, metadata, feed generation, sitemap, and static delivery
-- Vue is optional and used only for components that actually need client state
-- Blog posts move out of Python constants into repo-native content files
-- Project data becomes typed frontend-owned content, not Python module data
-- The site builds as a static or mostly-static web app unless a real server feature appears
-- Existing public URLs stay stable
-- The design language stays dark, fast, minimal, and self-hosted
-- Privacy rules stay intact: no third-party scripts, no analytics, no cookie theater
+- [ ] Astro owns routing, layouts, metadata, feed generation, sitemap, and static delivery
+- [ ] Vue is optional and used only for components that actually need client state
+- [ ] Blog posts move out of Python constants into repo-native content files
+- [ ] Project data becomes typed frontend-owned content, not Python module data
+- [ ] The site builds as a static or mostly-static web app unless a real server feature appears
+- [ ] Existing public URLs stay stable
+- [ ] The design language stays dark, fast, minimal, and self-hosted
+- [ ] Privacy rules stay intact: no third-party scripts, no analytics, no cookie theater
 
 ## Backend notes
 
@@ -61,11 +76,11 @@ The migration should assume **no dedicated backend**.
 
 That means:
 
-- no FastAPI replacement by default
-- no Go service
-- no database
-- no CMS
-- no contact form backend unless there is a deliberate later decision
+- [x] no FastAPI replacement by default
+- [x] no Go service
+- [x] no database
+- [x] no CMS
+- [x] no contact form backend unless there is a deliberate later decision
 
 ### If server logic becomes necessary later
 
@@ -73,36 +88,39 @@ Choose **Python**, not Go, for this repo's first backend addition.
 
 Valid reasons would be:
 
-- authenticated admin or draft workflow
-- contact form handling that cannot stay mailto-only
-- build-time or on-demand content ingestion that Astro alone should not own
-- search or feed generation needs that stop being clean build-time work
+- [ ] authenticated admin or draft workflow
+- [ ] contact form handling that cannot stay mailto-only
+- [ ] build-time or on-demand content ingestion that Astro alone should not own
+- [ ] search or feed generation needs that stop being clean build-time work
 
 Invalid reasons:
 
-- preserving the current FastAPI shape because it already exists
-- adding an API for a mostly static site
-- introducing server complexity before the public site actually needs it
+- [x] preserving the current FastAPI shape because it already exists
+- [x] adding an API for a mostly static site
+- [x] introducing server complexity before the public site actually needs it
 
 ## Data and runtime constraints
 
 Do not break these during migration:
 
-- **No database** in the baseline migration
-- **No CMS**
-- **No third-party scripts**
-- **Self-hosted fonts and assets**
-- **Existing route slugs remain stable**
-- **RSS, sitemap, robots, and health surfaces remain available**
-- **Home, projects, blog, about, and contact stay first-class pages**
-- **Content remains repo-owned and reviewable in git**
-- **Deployment stays self-hostable and boring**
+- [x] **No database** in the baseline migration
+- [x] **No CMS**
+- [x] **No third-party scripts**
+- [x] **Self-hosted fonts and assets**
+- [ ] **Existing route slugs remain stable**
+  - The contract is frozen in `docs/frontend-contract-inventory.md`, but the Astro pages have not been ported yet.
+- [ ] **RSS, sitemap, robots, and health surfaces remain available**
+  - They remain available in the live Python app, but not yet in the Astro frontend.
+- [x] **Home, projects, blog, about, and contact stay first-class pages**
+- [x] **Content remains repo-owned and reviewable in git**
+- [x] **Deployment stays self-hostable and boring**
 
 Preferred content direction:
 
-- blog posts: Markdown or MDX in-repo, frontmatter-backed
-- project roster: typed data file in TypeScript or JSON validated at build time
-- site metadata: centralized config, not scattered across pages
+- [ ] blog posts: Markdown or MDX in-repo, frontmatter-backed
+- [ ] project roster: typed data file in TypeScript or JSON validated at build time
+- [ ] site metadata: centralized config, not scattered across pages
+  - Partial progress exists in `frontend/src/config/site.ts`.
 
 ## Risks
 
@@ -125,156 +143,163 @@ Preferred content direction:
 5. **Scope creep**
    - This is a frontend migration, not a redesign and not a content rewrite.
 
-## Phase plan
+## Phase checklist
 
-### Phase 0: freeze the current contract
+### [x] Phase 0: freeze the current contract
 
 Goal: capture what must survive the rewrite.
 
-Tasks:
+Checklist:
 
-- inventory every public route and machine-readable endpoint
-- record current metadata behavior and route titles/descriptions
-- record blog content, project data shape, and URL slugs
-- identify which CSS tokens and layout rules should carry forward unchanged
-- decide static versus server-rendered Astro mode based on real needs, not habit
+- [x] inventory every public route and machine-readable endpoint
+- [x] record current metadata behavior and route titles/descriptions
+- [x] record blog content, project data shape, and URL slugs
+- [x] identify which CSS tokens and layout rules should carry forward unchanged
+- [x] decide static versus server-rendered Astro mode based on real needs, not habit
+- [x] make the migration acceptance checklist explicit
+- [x] leave enough detail that a future subagent can port the site without guessing what matters
 
-Done when:
+Notes:
 
-- the migration acceptance checklist is explicit
-- the future subagent can port the site without guessing what matters
+- Evidence lives in `docs/frontend-contract-inventory.md`.
+- The current frontend scaffold already reflects the static-output decision in `frontend/astro.config.mjs`.
 
-### Phase 1: scaffold the Astro + Vue web lane
+### [x] Phase 1: scaffold the Astro + Vue web lane
 
 Goal: create the new frontend shell on Bun.
 
-Tasks:
+Checklist:
 
-- initialize Astro with TypeScript on Bun
-- add Vue integration, but use it only where interaction is justified
-- add Biome, `astro check`, and `bun test`
-- create the target directory shape for pages, layouts, components, content, and styles
-- centralize site metadata and canonical URL configuration
+- [x] initialize Astro with TypeScript on Bun
+- [x] add Vue integration, but use it only where interaction is justified
+  - Vue is installed and wired in, but no client island behavior ships yet.
+- [x] add Biome, `astro check`, and `bun test`
+- [x] create the target directory shape for pages, layouts, components, content, and styles
+- [x] centralize site metadata and canonical URL configuration
+- [x] leave the repo with a clean Astro entrypoint and frontend quality bar
+- [x] ensure no Python runtime is required to render the basic page shell in the new frontend
 
-Done when:
+Notes:
 
-- the repo has a clean Astro entrypoint and quality bar
-- no Python runtime is required to render the basic page shell in the new frontend
+- `frontend/package.json`, `frontend/astro.config.mjs`, `frontend/src/config/site.ts`, and the frontend CI job confirm this phase is complete.
+- The scaffold is intentionally not the parity site yet.
 
-### Phase 2: move content ownership into the frontend
+### [ ] Phase 2: move content ownership into the frontend
 
 Goal: stop treating content as Python application code.
 
-Tasks:
+Checklist:
 
-- migrate blog posts from Python constants to Markdown or MDX content files
-- migrate project roster from `projects.py` to typed frontend-owned data
-- preserve slugs, dates, descriptions, tags, and ordering rules
-- re-create reading-time and publish filtering logic in TypeScript or Astro content utilities
+- [ ] migrate blog posts from Python constants to Markdown or MDX content files
+  - `frontend/src/content/blog/` still contains only `.gitkeep`.
+- [ ] migrate project roster from `projects.py` to typed frontend-owned data
+  - `frontend/src/content/projects/` still contains only `.gitkeep`.
+- [ ] preserve slugs, dates, descriptions, tags, and ordering rules
+  - The contract is documented, but the content itself has not moved.
+- [ ] re-create reading-time and publish filtering logic in TypeScript or Astro content utilities
+- [ ] move all public-site content into frontend-owned repo files
+- [ ] make content changes possible without touching Python modules
 
-Done when:
+Notes:
 
-- all content needed for the public site lives in frontend-owned repo files
-- content changes no longer require touching Python modules
+- `frontend/src/content/config.ts` already defines the target schemas, so the lane is prepared but not migrated.
 
-### Phase 3: port the public pages with visual parity first
+### [ ] Phase 3: port the public pages with visual parity first
 
 Goal: ship page parity before adding new ideas.
 
-Tasks:
+Checklist:
 
-- port home, projects, blog index, blog post, about, contact, and 404
-- move the existing design tokens and CSS system into the Astro frontend
-- preserve the dark visual language and mobile-first layout
-- keep JavaScript near zero unless a page genuinely needs interaction
+- [ ] port home, projects, blog index, blog post, about, contact, and 404
+  - Only a scaffold home page exists today at `frontend/src/pages/index.astro`.
+- [ ] move the existing design tokens and CSS system into the Astro frontend
+  - Partial: `frontend/src/styles/tokens.css` and `frontend/src/styles/global.css` carry over shared tokens, fonts, header/footer shell, and baseline dark-theme layout. Page-specific CSS and full visual parity are not ported.
+- [ ] preserve the dark visual language and mobile-first layout
+  - Partial: the scaffold reflects the design direction, but not the current page system.
+- [x] keep JavaScript near zero unless a page genuinely needs interaction
+- [ ] serve the same public information architecture from the Astro build
+- [ ] make the migrated site at least as fast and as readable as the current one
 
-Done when:
+Notes:
 
-- the Astro build serves the same public information architecture
-- the migrated site is at least as fast and as readable as the current one
+- This phase is clearly not done. The frontend currently proves tooling and shared shell decisions, not page parity.
 
-### Phase 4: restore machine-readable and operational surfaces
+### [ ] Phase 4: restore machine-readable and operational surfaces
 
 Goal: regain non-HTML correctness before cutover.
 
-Tasks:
+Checklist:
 
-- reimplement RSS generation
-- reimplement sitemap generation
-- preserve `robots.txt`
-- provide a cheap `/health` endpoint or static equivalent in the deploy layer
-- preserve canonical metadata, Open Graph tags, and article metadata
+- [ ] reimplement RSS generation
+- [ ] reimplement sitemap generation
+- [ ] preserve `robots.txt`
+- [ ] provide a cheap `/health` endpoint or static equivalent in the deploy layer
+- [ ] preserve canonical metadata, Open Graph tags, and article metadata
+  - Partial: `frontend/src/layouts/BaseLayout.astro` already centralizes canonical URLs, default Open Graph values, Twitter card values, theme color, and the RSS alternate link. Route-specific and article-specific parity is not done.
+- [ ] make every current machine surface exist in the new frontend path
+- [ ] reach SEO and uptime-probe parity with the Python build
 
-Done when:
-
-- every current machine surface exists in the new frontend path
-- SEO and uptime probes have parity with the Python build
-
-### Phase 5: cut deployment over to the new runtime
+### [ ] Phase 5: cut deployment over to the new runtime
 
 Goal: replace the Python web runtime with the Astro build output.
 
-Tasks:
+Checklist:
 
-- choose the simplest deploy shape: static output behind Caddy if possible
-- use a tiny runtime only if Astro mode genuinely requires it
-- remove Python web-serving requirements from Docker and compose files once parity is proven
-- update CI to the Bun/Astro quality bar and any targeted smoke coverage
+- [x] choose the simplest deploy shape: static output behind Caddy if possible
+  - The scaffold already uses `output: 'static'` in `frontend/astro.config.mjs`.
+- [x] use a tiny runtime only if Astro mode genuinely requires it
+  - Nothing in the scaffold currently justifies a frontend runtime beyond static hosting.
+- [ ] remove Python web-serving requirements from Docker and compose files once parity is proven
+- [ ] update CI to the Bun/Astro quality bar and any targeted smoke coverage
+  - Partial: CI already runs frontend lint, check, test, and build, but the live deploy path and smoke script are still Python-first.
+- [ ] make the default local and deploy path Bun/Astro-native
+- [ ] remove FastAPI and Jinja2 from the serving path
 
-Done when:
-
-- the default local and deploy path are Bun/Astro-native
-- FastAPI and Jinja2 are no longer in the serving path
-
-### Phase 6: clean up and retire legacy web code
+### [ ] Phase 6: clean up and retire legacy web code
 
 Goal: leave one obvious stack behind.
 
-Tasks:
+Checklist:
 
-- remove unused Python web app files, templates, and dependencies
-- update README and deployment docs to current truth
-- verify there is no stale documentation claiming FastAPI + Jinja2 is still the live path
-- run final smoke and route checks
-
-Done when:
-
-- the repo reads like one stack, not two
-- BUILD.md can be removed or collapsed into stable docs once the migration is finished
+- [ ] remove unused Python web app files, templates, and dependencies
+- [ ] update README and deployment docs to current truth
+  - README is already honest about the live Python app and the Phase 1 frontend scaffold, but the post-cutover cleanup does not apply yet.
+- [ ] verify there is no stale documentation claiming FastAPI + Jinja2 is still the live path
+- [ ] run final smoke and route checks
+- [ ] leave the repo reading like one stack, not two
+- [ ] remove BUILD.md or collapse the still-useful parts into stable docs once the migration is finished
 
 ## Recommended execution order
 
-1. Phase 0 before any scaffolding
-2. Phase 1 before any content migration
-3. Phase 2 before visual porting of blog and projects
-4. Phase 3 before deployment work
-5. Phase 4 before cutover
-6. Phase 5 before deleting Python web code
-7. Phase 6 last
+1. Phase 2 before any serious page-port work.
+2. Phase 3 before deployment work.
+3. Phase 4 before cutover.
+4. Phase 5 before deleting Python web code.
+5. Phase 6 last.
 
 Do **not** combine content migration, deploy cutover, and legacy deletion in one pass.
 
-## Acceptance criteria
+## Acceptance checklist
 
 The migration is done when all of the following are true:
 
-- the repo's primary frontend is **TypeScript + Bun + Astro + Vue**
-- the repo remains **web-only**
-- there is **no TUI plan** and no leftover ambiguity about that
-- the public route set matches current behavior
-- blog posts and project data are no longer stored as Python app code
-- RSS, sitemap, robots, and health still work
-- self-hosted assets, privacy posture, and no-CMS rules are preserved
-- deployment is at least as simple as the current Docker + Caddy path
-- README describes current truth
-- BUILD.md is no longer needed as a migration tracker once cutover is complete
+- [ ] the repo's primary frontend is **TypeScript + Bun + Astro + Vue**
+- [x] the repo remains **web-only**
+- [x] there is **no TUI plan** and no leftover ambiguity about that
+- [ ] the public route set matches current behavior in the migrated frontend
+- [ ] blog posts and project data are no longer stored as Python app code
+- [ ] RSS, sitemap, robots, and health still work from the migrated stack
+- [x] self-hosted assets, privacy posture, and no-CMS rules are preserved today
+- [ ] deployment is at least as simple as the current Docker + Caddy path after cutover
+- [x] README describes current truth
+- [ ] BUILD.md is no longer needed as a migration tracker once cutover is complete
 
 ## Small verification rule for doc-only planning changes
 
 For changes to this file only, run the smallest useful check:
 
-- verify the decision matches the tech-stacks guidance
-- verify the plan matches the repo's actual current surfaces
-- verify README still describes the current live implementation, not the target stack
+- [x] verify the decision matches the tech-stacks guidance
+- [x] verify the plan matches the repo's actual current surfaces
+- [x] verify README still describes the current live implementation, not the target stack
 
 If the plan and the repo diverge later, fix BUILD.md again or remove it once the migration is complete.
