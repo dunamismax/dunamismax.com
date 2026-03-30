@@ -1,0 +1,63 @@
+---
+import PhasePill from '../components/PhasePill.vue'
+import { machineSurfaceContracts, pageContracts } from '../config/site'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const page = pageContracts.find((entry) => entry.id === 'home')
+const scaffoldMarkers = ['Bun', 'Astro', 'Vue', 'Biome']
+
+if (!page) {
+  throw new Error('Missing home page contract')
+}
+---
+
+<BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
+  <section class="hero-shell">
+    <div class="hero-shell__eyebrow">dunamismax.com</div>
+    <div class="hero-shell__markers" aria-label="Frontend scaffold stack">
+      {scaffoldMarkers.map((marker) => <PhasePill label={marker} />)}
+    </div>
+    <h1>Astro frontend lane established.</h1>
+    <p class="hero-shell__lede">
+      This page is intentionally a shell. It proves the Bun + Astro + Vue frontend path,
+      central metadata, and a frontend quality bar without claiming route or content parity.
+    </p>
+    <p class="hero-shell__copy">
+      The current public site remains the Python runtime in this repository. Future phases
+      should port pages and content against the frozen contract inventory instead of
+      re-deciding slugs, metadata, or layout rules.
+    </p>
+  </section>
+
+  <section class="contract-panel">
+    <div>
+      <h2>Frozen public routes</h2>
+      <ul class="contract-list" role="list">
+        {
+          pageContracts
+            .filter((entry) => entry.id !== 'not-found')
+            .map((entry) => (
+              <li>
+                <strong>{entry.path}</strong>
+                <span>{entry.title}</span>
+              </li>
+            ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2>Machine surfaces to restore later</h2>
+      <ul class="contract-list" role="list">
+        {
+          machineSurfaceContracts.map((entry) => (
+            <li>
+              <strong>{entry.path}</strong>
+              <span>{entry.notes}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

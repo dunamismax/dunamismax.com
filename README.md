@@ -2,13 +2,15 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. It is a server-rendered site that ships fast, stays small, and proves the stack by being built with it.
+dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend scaffold now lives under `frontend/` for the migration, but it is not yet the parity site.
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Launch-ready in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. Public availability still depends on the deployed container being current and healthy.
+> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory is Phase 1 Astro + Vue migration scaffolding only.
 
 ## Stack
+
+### Current serving path
 
 - **Python 3.12+** with strict type checking
 - **FastAPI** for the web framework
@@ -21,7 +23,15 @@ The site itself is the portfolio entry. If the page loads in under a second, loo
 - **Pyright** for type checking
 - **pytest** for tests
 
-No database. No CMS. No analytics scripts. No cookie banners. No framework theater. No JavaScript build toolchain.
+No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
+
+### Migration lane
+
+- **Bun**
+- **TypeScript**
+- **Astro**
+- **Vue** only for earned client islands
+- **Biome**
 
 ## Domain strategy
 
@@ -37,7 +47,7 @@ The landing page. One screen that communicates who I am, what I build, and where
 
 ### Portfolio
 
-The active project roster. Each entry links to the repo. Projects are grouped by category: apps, infrastructure, security, developer tooling. Status is honest: if it is Phase 0, it says Phase 0.
+The active project roster. Each entry links to the repo. Projects are grouped by category: apps, infrastructure, developer tools, and reference. Status is honest: if it is Phase 0, it says Phase 0.
 
 ### Blog
 
@@ -86,6 +96,16 @@ dunamismax.com/
         css/
         fonts/
         og/
+  frontend/
+    src/
+      components/
+      config/
+      content/
+      layouts/
+      pages/
+      styles/
+    tests/
+    package.json
   scripts/
     smoke.py
   tests/
@@ -107,12 +127,24 @@ dunamismax.com/
 
 ### Local development
 
+Current Python app:
+
 ```bash
 uv sync
 uv run uvicorn app.main:app --reload
 ```
 
+Phase 1 frontend scaffold:
+
+```bash
+cd frontend
+bun install
+bun run dev
+```
+
 ### Quality checks
+
+Current Python app:
 
 ```bash
 uv run ruff check .
@@ -120,6 +152,15 @@ uv run ruff format --check .
 uv run pyright
 uv run pytest
 uv run python scripts/smoke.py
+```
+
+Frontend scaffold:
+
+```bash
+cd frontend
+bun run lint
+bun run check
+bun run test
 ```
 
 ## Machine-readable surfaces

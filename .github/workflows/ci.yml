@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  python-site:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,3 +44,32 @@ jobs:
 
       - name: Smoke check
         run: uv run python scripts/smoke.py
+
+  frontend-scaffold:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install frontend dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Frontend lint
+        run: bun run lint
+
+      - name: Frontend type check
+        run: bun run check
+
+      - name: Frontend tests
+        run: bun run test
+
+      - name: Frontend build
+        run: bun run build

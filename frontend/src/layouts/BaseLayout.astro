@@ -1,0 +1,58 @@
+---
+import SiteFooter from '../components/SiteFooter.astro'
+import SiteHeader from '../components/SiteHeader.astro'
+import { siteConfig, toAbsoluteUrl } from '../config/site'
+import '../styles/global.css'
+
+type Props = {
+  pageTitle: string
+  description: string
+  path: string
+}
+
+const { pageTitle, description, path } = Astro.props as Props
+const canonicalUrl = toAbsoluteUrl(path)
+const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
+---
+
+<!doctype html>
+<html lang={siteConfig.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>{pageTitle}</title>
+    <meta content={description} name="description" />
+    <meta content={siteConfig.author} name="author" />
+    <meta content={siteConfig.themeColor} name="theme-color" />
+
+    <meta content="website" property="og:type" />
+    <meta content={pageTitle} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content={canonicalUrl} property="og:url" />
+    <meta content={socialImageUrl} property="og:image" />
+    <meta content={siteConfig.name} property="og:site_name" />
+
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={pageTitle} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
+    <meta content={socialImageUrl} name="twitter:image" />
+    <meta content={siteConfig.twitterSite} name="twitter:site" />
+
+    <link href={canonicalUrl} rel="canonical" />
+    <link href={siteConfig.faviconPath} rel="icon" type="image/svg+xml" />
+    <link
+      href={siteConfig.rssPath}
+      rel="alternate"
+      title={`${siteConfig.name} RSS`}
+      type="application/rss+xml"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
