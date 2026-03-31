@@ -9,6 +9,14 @@ This is the Bun + Astro + Vue site for `dunamismax.com`.
 
 ## Commands
 
+From the repo root, use the default verification wrapper:
+
+```bash
+bun run verify
+```
+
+Inside `frontend/`, the direct commands are:
+
 ```bash
 bun install
 bun run dev

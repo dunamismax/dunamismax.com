@@ -1,0 +1,10 @@
+{
+  "order": 20,
+  "name": "ElChess",
+  "tagline": "Real-time multiplayer chess platform focused on fast play, durable game history, ratings, and post-game review.",
+  "category": "apps",
+  "status": "phase-0",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/elchess",
+  "stack": ["TypeScript", "Bun", "Astro", "Elysia", "PostgreSQL"]
+}

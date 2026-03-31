@@ -1,9 +1,10 @@
 {
-  "order": 10,
+  "order": 40,
   "name": "Scrybase",
-  "tagline": "Commander intelligence workbench. Decks, collection, pod tracking, matchup journal, and Scryfall integration.",
+  "tagline": "Local-first Commander workbench for decks, collection tracking, pod history, matchup notes, and tuning against a real playgroup.",
   "category": "apps",
   "status": "active",
+  "visibility": "public",
   "repo": "https://github.com/dunamismax/scrybase",
-  "stack": ["Go", "React", "Vite", "SQLite"]
+  "stack": ["Python", "Astro", "Vue", "PostgreSQL"]
 }

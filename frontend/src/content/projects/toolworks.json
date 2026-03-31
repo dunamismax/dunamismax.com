@@ -1,0 +1,10 @@
+{
+  "order": 30,
+  "name": "toolworks",
+  "tagline": "Automation, CLI helpers, and scripts that earn their keep.",
+  "category": "developer-tools",
+  "status": "active",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/toolworks",
+  "stack": ["Python", "CLI", "Automation"]
+}

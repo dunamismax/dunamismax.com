@@ -8,6 +8,7 @@ export const CATEGORY_LABELS = {
 export const CATEGORY_ORDER = ['apps', 'infrastructure', 'developer-tools', 'reference'] as const
 
 export const PROJECT_STATUSES = ['active', 'shipped', 'phase-0', 'legacy'] as const
+export const PROJECT_VISIBILITIES = ['public', 'private'] as const
 
 export const STATUS_LABELS = {
   active: 'Active',
@@ -18,6 +19,7 @@ export const STATUS_LABELS = {
 
 export type ProjectCategory = (typeof CATEGORY_ORDER)[number]
 export type ProjectStatus = (typeof PROJECT_STATUSES)[number]
+export type ProjectVisibility = (typeof PROJECT_VISIBILITIES)[number]
 
 export type ProjectRecord = {
   id: string
@@ -26,7 +28,8 @@ export type ProjectRecord = {
   tagline: string
   category: ProjectCategory
   status: ProjectStatus
-  repo: string
+  visibility: ProjectVisibility
+  repo?: string
   stack: string[]
   url?: string
 }

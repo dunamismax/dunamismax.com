@@ -28,8 +28,10 @@ Fonts are self-hosted. There are no third-party scripts, no analytics, no
 tracking pixels, no cookie banner (because there are no cookies). The entire
 home page transfers under 100KB.
 
-The broader product stack uses **Python** for backends and automation,
-**Go** for services and CLIs, and **Rust** for systems-level work.
+The broader product stack now centers **TypeScript + Bun + Astro + Vue** for web
+apps, **Go** for networking and operator tools, and **Python** for automation and
+APIs. **Rust** still shows up where an existing repo or low-level boundary earns
+it.
 
 ## Why static-first
 
@@ -52,8 +54,8 @@ The blog will cover what I'm building and how I think about it:
   worked, what broke, what I learned.
 - **Systems thinking** -- architecture decisions, storage tradeoffs, operational
   discipline.
-- **Craft** -- Go patterns, Rust systems work, SQLite tricks. Short, specific,
-  useful.
+- **Craft** -- Bun and Astro patterns, Go systems work, Python automation,
+  SQLite tricks. Short, specific, useful.
 - **Stack philosophy** -- why boring infrastructure wins, why self-hosting
   matters, why the data layer is the truth layer.
 

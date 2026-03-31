@@ -1,0 +1,10 @@
+{
+  "order": 30,
+  "name": "MyLifeRPG",
+  "tagline": "Planning-first personal operating system for habits, routines, tasks, goals, quests, and honest progress tracking.",
+  "category": "apps",
+  "status": "active",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/myliferpg",
+  "stack": ["TypeScript", "Bun", "Astro", "Elysia", "PostgreSQL"]
+}

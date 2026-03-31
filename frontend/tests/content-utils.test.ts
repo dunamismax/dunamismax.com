@@ -34,6 +34,7 @@ describe('project utilities', () => {
         tagline: 'Network observability.',
         category: 'infrastructure',
         status: 'shipped',
+        visibility: 'public',
         repo: 'https://github.com/dunamismax/wirescope',
         stack: ['Go'],
       },
@@ -44,35 +45,51 @@ describe('project utilities', () => {
         tagline: 'Commander intelligence workbench.',
         category: 'apps',
         status: 'active',
+        visibility: 'public',
         repo: 'https://github.com/dunamismax/scrybase',
-        stack: ['Go'],
+        stack: ['Python'],
       },
       {
         id: 'patchworks',
         order: 20,
-        name: 'Patchworks',
+        name: 'patchworks',
         tagline: 'SQLite diffs.',
         category: 'apps',
-        status: 'active',
+        status: 'shipped',
+        visibility: 'private',
         repo: 'https://github.com/dunamismax/patchworks',
-        stack: ['Go'],
+        stack: ['Python'],
       },
     ]
 
     const groups = groupProjects(projects)
 
     expect(groups.map((group) => group.category)).toEqual(CATEGORY_ORDER.slice(0, 2))
-    expect(groups[0]?.projects.map((project) => project.name)).toEqual(['Scrybase', 'Patchworks'])
+    expect(groups[0]?.projects.map((project) => project.name)).toEqual(['Scrybase', 'patchworks'])
   })
 
   test('keeps status labels explicit', () => {
     expect(STATUS_LABELS['phase-0']).toBe('Phase 0')
   })
 
-  test('frontend-owned project data exists', () => {
+  test('frontend-owned project data keeps the current portfolio roster present', () => {
     const projectsDir = join(import.meta.dir, '..', 'src', 'content', 'projects')
     const projectFiles = readdirSync(projectsDir).filter((file) => file.endsWith('.json'))
 
-    expect(projectFiles.length).toBe(8)
+    expect(projectFiles).toEqual(
+      expect.arrayContaining([
+        'bore.json',
+        'debugpath.json',
+        'elchess.json',
+        'flowhook.json',
+        'gitpulse.json',
+        'myliferpg.json',
+        'patchworks.json',
+        'scrybase.json',
+        'toolworks.json',
+        'wirescope.json',
+      ]),
+    )
+    expect(projectFiles).not.toContain('repokeeper.json')
   })
 })

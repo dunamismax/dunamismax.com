@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content'
 
-import { CATEGORY_ORDER, PROJECT_STATUSES } from '../lib/projects'
+import { CATEGORY_ORDER, PROJECT_STATUSES, PROJECT_VISIBILITIES } from '../lib/projects'
 
 const blog = defineCollection({
   type: 'content',
@@ -21,7 +21,8 @@ const projects = defineCollection({
     tagline: z.string(),
     category: z.enum(CATEGORY_ORDER),
     status: z.enum(PROJECT_STATUSES),
-    repo: z.string().url(),
+    visibility: z.enum(PROJECT_VISIBILITIES).default('public'),
+    repo: z.string().url().optional(),
     stack: z.array(z.string()),
     url: z.string().url().optional(),
   }),

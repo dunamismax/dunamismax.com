@@ -46,7 +46,7 @@ The landing page. One screen that communicates who I am, what I build, and where
 
 ### Portfolio
 
-The active project roster. Each entry links to the repo. Projects are grouped by category: apps, infrastructure, developer tools, and reference. Status is honest: if it is Phase 0, it says Phase 0.
+The active project roster. Projects are grouped by category: apps, infrastructure, developer tools, and reference. Public repo links show up where they exist, and private repos are marked honestly instead of sending readers to dead links. Status is honest: if it is Phase 0, it says Phase 0.
 
 ### Blog
 
@@ -89,9 +89,11 @@ dunamismax.com/
     frontend-contract-inventory.md
   scripts/
     smoke.py
+    verify.sh
   Dockerfile
   Caddyfile
   docker-compose.yml
+  package.json
   README.md
 ```
 
@@ -105,18 +107,21 @@ dunamismax.com/
 
 ### Local development
 
-Default site development:
+Install the frontend dependencies once:
 
 ```bash
-cd frontend
-bun install
+bun --cwd frontend install
+```
+
+Default site development from the repo root:
+
+```bash
 bun run dev
 ```
 
 Preview the built site locally:
 
 ```bash
-cd frontend
 bun run build
 bun run preview
 ```
@@ -136,15 +141,20 @@ python3 scripts/smoke.py --base-url http://127.0.0.1:18080
 
 ### Quality checks
 
-Default site checks:
+Default repo-root verification:
 
 ```bash
-cd frontend
-bun run lint
-bun run check
-bun run test
-bun run build
-cd ..
+bun run verify
+```
+
+Equivalent manual checks:
+
+```bash
+bun --cwd frontend install --frozen-lockfile
+bun --cwd frontend run lint
+bun --cwd frontend run check
+bun --cwd frontend run test
+bun --cwd frontend run build
 python3 scripts/smoke.py
 ```
 

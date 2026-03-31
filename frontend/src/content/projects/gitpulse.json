@@ -1,0 +1,10 @@
+{
+  "order": 20,
+  "name": "GitPulse",
+  "tagline": "Local-first git activity analytics with separate ledgers for live work, commit history, and push activity.",
+  "category": "developer-tools",
+  "status": "active",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/gitpulse",
+  "stack": ["Go", "Astro", "Vue", "SQLite", "OpenTUI"]
+}

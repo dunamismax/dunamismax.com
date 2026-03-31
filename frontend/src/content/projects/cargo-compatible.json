@@ -1,9 +1,10 @@
 {
-  "order": 20,
+  "order": 50,
   "name": "cargo-compatible",
-  "tagline": "Check whether your resolved dependency graph fits a target Rust version. Lockfile-first, fixes before manifest changes.",
+  "tagline": "Check whether a resolved dependency graph still fits a target Rust version.",
   "category": "developer-tools",
   "status": "shipped",
+  "visibility": "private",
   "repo": "https://github.com/dunamismax/cargo-compatible",
   "stack": ["Rust"]
 }

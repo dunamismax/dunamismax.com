@@ -12,7 +12,10 @@ const posts = sortPosts(await getCollection('blog', isPublishedPost))
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
   <div class="blog-index">
     <h1>Blog</h1>
-    <p class="lead">Build logs, systems thinking, craft, and stack philosophy.</p>
+    <p class="lead">
+      Build logs on Bun and Astro web apps, Go systems work, Python automation,
+      and stack choices that hold up in production.
+    </p>
 
     {
       posts.length > 0 ? (

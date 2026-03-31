@@ -1,9 +1,0 @@
-{
-  "order": 10,
-  "name": "repokeeper",
-  "tagline": "Self-hosted repo health daemon. Scheduled scans with jitter, doc verification, remote validation, drift detection. One binary, systemd/launchd service files included.",
-  "category": "developer-tools",
-  "status": "active",
-  "repo": "https://github.com/dunamismax/repokeeper",
-  "stack": ["Go", "SQLite"]
-}

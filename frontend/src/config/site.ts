@@ -31,7 +31,7 @@ export const siteConfig = {
   author: 'Stephen Sawyer',
   siteUrl: 'https://dunamismax.com',
   title: 'Stephen Sawyer',
-  description: 'Building self-hostable systems software. Python, Go, Rust, and the web.',
+  description: 'Building self-hostable software in Python, Go, and TypeScript.',
   language: 'en',
   themeColor: '#0a0a0b',
   socialImagePath: '/og/default.png',
@@ -47,7 +47,7 @@ export const pageContracts: PageContract[] = [
     path: '/',
     title: 'Stephen Sawyer -- dunamismax',
     description:
-      'Building self-hostable systems software. Python, Go, Rust, and the web. Local-first, operator-friendly, relational data.',
+      'Building self-hostable software in Python, Go, and TypeScript. Astro-first web apps, local-first bias, relational data.',
   },
   {
     id: 'projects',
@@ -55,7 +55,7 @@ export const pageContracts: PageContract[] = [
     path: '/projects',
     title: 'Projects -- Stephen Sawyer',
     description:
-      'Active project roster. Self-hostable systems software in Python, Go, Rust, and the web.',
+      'Active project roster across full-stack web apps, Go systems work, Python automation, and selective Rust maintenance.',
   },
   {
     id: 'blog',
@@ -63,7 +63,7 @@ export const pageContracts: PageContract[] = [
     path: '/blog',
     title: 'Blog -- Stephen Sawyer',
     description:
-      'Technical writing on systems design, self-hosting, Go, Rust, and operational discipline.',
+      'Technical writing on Bun and Astro web apps, Go systems work, Python automation, self-hosting, and operational discipline.',
   },
   {
     id: 'about',

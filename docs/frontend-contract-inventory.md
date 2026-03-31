@@ -13,9 +13,9 @@ This document is the current route, metadata, content, styling, and asset contra
 
 | Path | Kind | Current title | Current description | Notes |
 | --- | --- | --- | --- | --- |
-| `/` | page | `Stephen Sawyer -- dunamismax` | `Building self-hostable systems software. Python, Go, Rust, and the web. Local-first, operator-friendly, relational data.` | Home page |
-| `/projects` | page | `Projects -- Stephen Sawyer` | `Active project roster. Self-hostable systems software in Python, Go, Rust, and the web.` | Grouped portfolio roster |
-| `/blog` | page | `Blog -- Stephen Sawyer` | `Technical writing on systems design, self-hosting, Go, Rust, and operational discipline.` | Blog index |
+| `/` | page | `Stephen Sawyer -- dunamismax` | `Building self-hostable software in Python, Go, and TypeScript. Astro-first web apps, local-first bias, relational data.` | Home page |
+| `/projects` | page | `Projects -- Stephen Sawyer` | `Active project roster across full-stack web apps, Go systems work, Python automation, and selective Rust maintenance.` | Grouped portfolio roster |
+| `/blog` | page | `Blog -- Stephen Sawyer` | `Technical writing on Bun and Astro web apps, Go systems work, Python automation, self-hosting, and operational discipline.` | Blog index |
 | `/blog/{slug}` | page | `{post.title} -- Stephen Sawyer` | `post.description` | Published posts only; missing slug returns 404 |
 | `/about` | page | `About -- Stephen Sawyer` | `Who I am, what I care about, and how I build durable software.` | Static page |
 | `/contact` | page | `Contact -- Stephen Sawyer` | `How to reach Stephen Sawyer. Email, Signal, GitHub, Twitter, Reddit.` | Static page |
@@ -37,7 +37,7 @@ This document is the current route, metadata, content, styling, and asset contra
 - Shared site identity:
   - `site_name`: `dunamismax.com`
   - `site_title`: `Stephen Sawyer`
-  - `site_description`: `Building self-hostable systems software. Python, Go, Rust, and the web.`
+  - `site_description`: `Building self-hostable software in Python, Go, and TypeScript.`
   - author: `Stephen Sawyer`
   - Twitter site handle: `@DunamisMax`
   - theme color: `#0a0a0b`
@@ -83,11 +83,13 @@ Schema today:
 
 | Field | Type | Notes |
 | --- | --- | --- |
+| `order` | `int` | Per-category display order |
 | `name` | `str` | Display name |
 | `tagline` | `str` | Primary summary copy |
 | `category` | `str` | Must match a known category key |
 | `status` | `str` | Must match a known status key |
-| `repo` | URL string | Required repository link |
+| `visibility` | `public \| private` | Controls whether the project shows a public repo link or a private-repo note |
+| `repo` | URL string or `None` | Optional public repository link |
 | `stack` | `list[str]` | Ordered display tags |
 | `url` | URL string or `None` | Optional public project URL |
 
@@ -105,6 +107,12 @@ Status labels:
 - `shipped` -> `Shipped`
 - `phase-0` -> `Phase 0`
 - `legacy` -> `Legacy`
+
+Visibility behavior:
+
+- `public` projects render a `repo ->` link when `repo` is present
+- `private` projects render a `private repo` note instead of a broken external link
+- `url`, when present, renders as `read it ->` regardless of repo visibility
 
 ## Styling and asset contract
 

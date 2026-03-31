@@ -1,9 +1,10 @@
 {
-  "order": 30,
+  "order": 60,
   "name": "cargo-async-doctor",
-  "tagline": "Catch async Rust bugs that compile fine and pass Clippy but deadlock at 2 AM.",
+  "tagline": "Spot async Rust hazards that compile cleanly and still blow up in production.",
   "category": "developer-tools",
   "status": "shipped",
+  "visibility": "private",
   "repo": "https://github.com/dunamismax/cargo-async-doctor",
   "stack": ["Rust"]
 }

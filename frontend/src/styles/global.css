@@ -564,6 +564,11 @@ main {
   color: var(--accent-hover);
 }
 
+.repo-link-muted,
+.repo-link-muted:hover {
+  color: var(--text-tertiary);
+}
+
 .empty {
   color: var(--text-tertiary);
 }

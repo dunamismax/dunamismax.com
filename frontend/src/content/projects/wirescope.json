@@ -1,9 +1,10 @@
 {
-  "order": 20,
+  "order": 10,
   "name": "wirescope",
-  "tagline": "Terminal-first network observability. Live capture, top talkers, DNS context, connection tables, PCAP on disk. Go core with Rust capture backend.",
+  "tagline": "Terminal-first network observability with live capture, DNS context, historical search, alerts, and PCAP export.",
   "category": "infrastructure",
   "status": "shipped",
+  "visibility": "public",
   "repo": "https://github.com/dunamismax/wirescope",
-  "stack": ["Go", "Rust", "SQLite", "PCAP"]
+  "stack": ["Go", "SQLite", "Astro", "Vue", "PCAP"]
 }

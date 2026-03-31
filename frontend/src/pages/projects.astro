@@ -18,8 +18,8 @@ const groups = groupProjects(projects)
   <div class="projects-page">
     <h1>Projects</h1>
     <p class="lead">
-      Everything is self-hostable, local-first, and designed to run on hardware you
-      control.
+      Current web apps, operator tools, and reference work. Public repo links show
+      up where they exist. Private repos are marked honestly.
     </p>
 
     {
@@ -46,9 +46,14 @@ const groups = groupProjects(projects)
                         read it →
                       </a>
                     )}
-                    <a class="repo-link" href={project.repo} rel="noopener noreferrer" target="_blank">
-                      repo →
-                    </a>
+                    {project.visibility === 'public' && project.repo && (
+                      <a class="repo-link" href={project.repo} rel="noopener noreferrer" target="_blank">
+                        repo →
+                      </a>
+                    )}
+                    {project.visibility === 'private' && (
+                      <span class="repo-link repo-link-muted">private repo</span>
+                    )}
                   </div>
                 </div>
               </li>
