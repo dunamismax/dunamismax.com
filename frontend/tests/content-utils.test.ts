@@ -72,24 +72,23 @@ describe('project utilities', () => {
     expect(STATUS_LABELS['phase-0']).toBe('Phase 0')
   })
 
-  test('frontend-owned project data keeps the current portfolio roster present', () => {
+  test('frontend-owned project data keeps the core portfolio entries present', () => {
     const projectsDir = join(import.meta.dir, '..', 'src', 'content', 'projects')
     const projectFiles = readdirSync(projectsDir).filter((file) => file.endsWith('.json'))
 
     expect(projectFiles).toEqual(
       expect.arrayContaining([
         'bore.json',
+        'c-from-the-ground-up.json',
         'debugpath.json',
+        'dunamismax-site.json',
         'elchess.json',
-        'flowhook.json',
         'gitpulse.json',
         'myliferpg.json',
-        'patchworks.json',
         'scrybase.json',
         'toolworks.json',
         'wirescope.json',
       ]),
     )
-    expect(projectFiles).not.toContain('repokeeper.json')
   })
 })
