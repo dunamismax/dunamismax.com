@@ -1,12 +1,12 @@
 # dunamismax.com
 #
 # Intended to sit behind an external Caddy reverse proxy that handles TLS.
-# The container runs Uvicorn on port 8000.
+# The container serves the Astro static build through Caddy on port 80.
 #
 # Build and run:
 #   docker compose up -d --build
 #
-# Rebuild after content or deploy-config changes:
+# Rebuild after frontend or deploy-config changes:
 #   docker compose build --no-cache web
 #   docker compose up -d --force-recreate web
 
@@ -15,7 +15,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "8080:8000"
+      - "8080:80"
     labels:
       - "app=dunamismax-com"
-      - "description=Personal site served by FastAPI + Uvicorn"
+      - "description=Personal site served by Astro static output + Caddy"

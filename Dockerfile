@@ -1,28 +1,20 @@
-# Stage 1: Install dependencies
-FROM python:3.12-slim AS build
+# Stage 1: Build the Astro site
+FROM oven/bun:1.3.10-alpine AS build
 
-WORKDIR /app
+WORKDIR /app/frontend
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY frontend/package.json frontend/bun.lock ./
+RUN bun install --frozen-lockfile
 
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-editable
+COPY frontend/ ./
+RUN bun run build
 
-COPY src/ src/
+# Stage 2: Serve the static build with Caddy
+FROM caddy:2.10-alpine
 
-# Stage 2: Runtime
-FROM python:3.12-slim
+COPY deploy/static-site.Caddyfile /etc/caddy/Caddyfile
+COPY --from=build /app/frontend/dist /srv
 
-WORKDIR /app
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1/health | grep -q '{"status":"ok"}' || exit 1
 
-COPY --from=build /app/.venv /app/.venv
-COPY --from=build /app/src /app/src
-
-ENV PATH="/app/.venv/bin:$PATH"
-ENV PYTHONUNBUFFERED=1
-
-HEALTHCHECK --interval=30s --timeout=3s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')" || exit 1
-
-EXPOSE 8000
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 80

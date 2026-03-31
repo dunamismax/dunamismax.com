@@ -2,36 +2,39 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. Today the live site in this repo is the Python server-rendered app under `src/app/`. A sibling Bun + Astro + Vue frontend under `frontend/` now owns the blog and project content, the public page routes, and the machine-readable surfaces, but deploy cutover is still not complete.
+dunamismax.com is the public-facing home for everything I build. The repo now ships the site as a Bun + Astro + Vue frontend built from `frontend/` and served as static output through Docker + Caddy. The legacy Python app under `src/app/` remains in-tree only for cleanup and comparison while the final migration phase deletes the old web stack.
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Launch-ready Python site in repo. FastAPI + Jinja2, tests, CI, Docker/Caddy deploy path, RSS, sitemap, robots, and local smoke coverage all exist in-repo today. The `frontend/` directory now contains the Astro + Vue migration site for the public HTML pages, machine-readable surfaces, and frontend-owned content, but serving cutover is still a later phase.
+> **Status:** Astro static site is now the default local, CI, and container deploy path in repo. The public HTML routes, machine-readable surfaces, and repo-owned content all live under `frontend/`. Legacy FastAPI + Jinja2 code is still present only until Phase 6 cleanup removes it.
 
 ## Stack
 
-### Current serving path
-
-- **Python 3.12+** with strict type checking
-- **FastAPI** for the web framework
-- **Jinja2** for server-rendered HTML templates
-- **htmx** available only if an interaction clearly earns it, with no JavaScript build step today
-- **Uvicorn** as the ASGI server
-- **Hand-written CSS** with design tokens (no Tailwind, no CSS framework)
-- **uv** for package management
-- **Ruff** for linting and formatting
-- **Pyright** for type checking
-- **pytest** for tests
-
-No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
-
-### Migration lane
+### Default serving path
 
 - **Bun**
 - **TypeScript**
 - **Astro**
 - **Vue** only for earned client islands
-- **Biome**
+- **Caddy** serving the built static output in Docker
+- **Biome** for linting and formatting
+- **`astro check`** for type and route validation
+- **`bun test`** for frontend utilities
+- **Python stdlib smoke check** for the built site artifact
+
+No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
+
+### Legacy cleanup lane
+
+- **Python 3.12+**
+- **FastAPI**
+- **Jinja2**
+- **uv**
+- **Ruff**
+- **Pyright**
+- **pytest**
+
+Those files remain only until the final cleanup phase removes the old serving stack.
 
 ## Domain strategy
 
@@ -51,7 +54,7 @@ The active project roster. Each entry links to the repo. Projects are grouped by
 
 ### Blog
 
-Long-form technical writing. Posts now live as frontend-owned Markdown in the repo and are still rendered by the current Python runtime until the Astro cutover happens. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Posts live as frontend-owned Markdown in the repo and build directly into the Astro site. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
@@ -73,29 +76,9 @@ How to reach me. Channels listed clearly, no contact form.
 dunamismax.com/
   src/
     app/
-      __init__.py
-      main.py
-      config.py
-      content/
-        blog.py
-        projects.py
-      routes/
-        pages.py
-      site.py
-      templates/
-        base.html
-        home.html
-        about.html
-        contact.html
-        projects.html
-        404.html
-        blog/
-          index.html
-          post.html
-      static/
-        css/
-        fonts/
-        og/
+      ... legacy FastAPI app kept only for cleanup
+  deploy/
+    static-site.Caddyfile
   frontend/
     src/
       components/
@@ -124,19 +107,13 @@ dunamismax.com/
 
 ### Prerequisites
 
-- Python 3.12+
-- uv
+- Bun
+- Python 3.11+ for the local smoke script
+- Docker (for the containerized deploy path)
 
 ### Local development
 
-Current Python app:
-
-```bash
-uv sync
-uv run uvicorn app.main:app --reload
-```
-
-Frontend migration app:
+Default site development:
 
 ```bash
 cd frontend
@@ -144,19 +121,23 @@ bun install
 bun run dev
 ```
 
-### Quality checks
-
-Current Python app:
+Preview the built site locally:
 
 ```bash
-uv run ruff check .
-uv run ruff format --check .
-uv run pyright
-uv run pytest
-uv run python scripts/smoke.py
+cd frontend
+bun run build
+bun run preview
 ```
 
-Frontend migration app:
+Containerized deploy path:
+
+```bash
+docker compose up -d --build
+```
+
+### Quality checks
+
+Default site checks:
 
 ```bash
 cd frontend
@@ -164,6 +145,18 @@ bun run lint
 bun run check
 bun run test
 bun run build
+cd ..
+python3 scripts/smoke.py
+```
+
+Legacy cleanup-only checks:
+
+```bash
+uv sync
+uv run ruff check .
+uv run ruff format --check .
+uv run pyright
+uv run pytest
 ```
 
 ## Machine-readable surfaces

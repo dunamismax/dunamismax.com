@@ -12,3 +12,6 @@ __pycache__/
 .pyright/
 .pytest_cache/
 tests/
+frontend/node_modules/
+frontend/dist/
+frontend/.astro/

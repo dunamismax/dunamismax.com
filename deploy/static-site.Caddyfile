@@ -1,9 +1,6 @@
-# Caddyfile for dunamismax.com
-#
-# Sits on the host as a reverse proxy in front of the Docker container.
-# TLS is handled by Caddy on the host. The container serves the Astro static site on port 8080.
+:80 {
+    root * /srv
 
-dunamismax.com {
     encode zstd gzip
 
     header {
@@ -15,5 +12,14 @@ dunamismax.com {
         -Server
     }
 
-    reverse_proxy localhost:8080
+    @health path /health
+    header @health Content-Type application/json
+    header @health Cache-Control no-store
+
+    file_server
+
+    handle_errors {
+        rewrite * /404.html
+        file_server
+    }
 }
