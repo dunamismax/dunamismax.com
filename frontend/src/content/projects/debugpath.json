@@ -1,7 +1,7 @@
 {
   "order": 10,
   "name": "DebugPath",
-  "tagline": "Browser-first investigation workspace for timelines, artifacts, notes, bundles, and the ugly evidence trails real production debugging creates.",
+  "tagline": "An investigation workspace for timelines, artifacts, notes, and debugging context collected during real production incidents.",
   "category": "apps",
   "status": "active",
   "visibility": "public",

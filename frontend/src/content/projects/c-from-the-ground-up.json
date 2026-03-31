@@ -1,7 +1,7 @@
 {
   "order": 20,
   "name": "C From The Ground Up",
-  "tagline": "Progressive C workbook that moves from beginner syntax to systems programming through small, readable lessons and larger capstone exercises.",
+  "tagline": "A progressive C workbook that moves from first principles to systems programming through readable lessons and capstone exercises.",
   "category": "reference",
   "status": "shipped",
   "visibility": "public",

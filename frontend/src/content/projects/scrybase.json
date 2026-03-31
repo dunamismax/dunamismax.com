@@ -1,7 +1,7 @@
 {
   "order": 20,
   "name": "Scrybase",
-  "tagline": "Commander workbench for decks, collections, pod history, matchup notes, and long-term tuning against an actual playgroup instead of generic averages.",
+  "tagline": "A Commander workbench for decks, collections, pod history, matchup notes, and long-term tuning around a real playgroup.",
   "category": "apps",
   "status": "active",
   "visibility": "public",

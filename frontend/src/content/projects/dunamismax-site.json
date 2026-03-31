@@ -1,7 +1,7 @@
 {
   "order": 30,
   "name": "dunamismax.com",
-  "tagline": "The live personal site, portfolio, and writing surface you are reading right now, deployed on an Ubuntu VM behind Docker, Caddy, and Cloudflare.",
+  "tagline": "My live portfolio and writing site, deployed on an Ubuntu VM with Astro, Docker, Caddy, and Cloudflare.",
   "category": "reference",
   "status": "shipped",
   "visibility": "public",

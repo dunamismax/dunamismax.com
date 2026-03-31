@@ -1,7 +1,7 @@
 {
   "order": 40,
   "name": "ElChess",
-  "tagline": "Browser-first multiplayer chess platform built around durable game history, ratings, auth, and post-game review instead of demo-grade chess UI theater.",
+  "tagline": "A multiplayer chess platform centered on durable game history, ratings, authentication, and post-game review.",
   "category": "apps",
   "status": "phase-0",
   "visibility": "public",

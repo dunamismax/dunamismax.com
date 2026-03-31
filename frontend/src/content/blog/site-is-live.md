@@ -1,6 +1,6 @@
 ---
 title: Shipping dunamismax.com to production
-description: "How this site went from repo to live production on an Ubuntu VM with Docker, Caddy, Cloudflare, and a Cloudflare Origin CA certificate."
+description: "How this site went from repo to production on an Ubuntu VM with Docker, Caddy, Cloudflare, and a Cloudflare Origin CA certificate."
 date: 2026-03-31
 tags:
   - self-hosting
@@ -10,7 +10,7 @@ tags:
   - docker
 draft: false
 ---
-Today this site stopped being a local build and became a real deployment.
+Today this site stopped being a local build and became a production deployment.
 
 The end state is intentionally boring:
 

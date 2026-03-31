@@ -10,71 +10,67 @@ const page = getPageContract('about')
     <h1>About</h1>
 
     <p>
-      I'm Stephen Sawyer. I build self-hostable software for people who want the
-      system to run on their hardware, keep inspectable data, and stay understandable
-      after the launch adrenaline wears off.
+      I'm Stephen Sawyer, a software engineer focused on practical systems and
+      products that hold up outside the demo. I care about software that solves a
+      real problem, can be operated by the people who own it, and stays legible
+      when it needs to change.
     </p>
 
     <p>
-      Most new work lives in three lanes. <strong>Python</strong> handles automation,
-      integrations, APIs, and backend logic where speed of iteration matters.
-      <strong>Go</strong> handles networking, daemons, observability, and long-running
-      operator runtimes. Browser-facing surfaces use <strong>TypeScript</strong>,
+      Most of my work lands in three lanes. <strong>Python</strong> is where I move
+      quickly on automation, integrations, APIs, and backend workflows.
+      <strong>Go</strong> is for systems work, networking, observability, and
+      long-running services. Browser-facing products use <strong>TypeScript</strong>,
       <strong>Bun</strong>, and <strong>Astro</strong>, with <strong>Vue</strong>
-      reserved for interactions that truly earn client-side state.
+      added only when the interface genuinely needs richer client-side state.
     </p>
 
     <h2>What I care about</h2>
 
     <p>
-      <strong>Ownership.</strong> If you can't run it yourself, you don't own it.
-      Every product I build is designed to run on a single machine under your control.
+      <strong>Ownership.</strong> I like software that can run on hardware you
+      control, with data you can inspect and move when you need to.
     </p>
 
     <p>
-      <strong>Boring infrastructure.</strong> Novel architecture is a liability until
-      proven otherwise. I want the deployment that survives Tuesday night, not the
-      diagram that looks clever on a whiteboard.
+      <strong>Boring infrastructure.</strong> I prefer the deployment that is easy
+      to explain and easy to recover, not the one that looks impressive in a diagram.
     </p>
 
     <p>
-      <strong>The data layer is the truth layer.</strong> Relational data, explicit
-      schema, query paths you can inspect. If you can't trace a value through the
-      system, it's too clever.
+      <strong>Explicit data models.</strong> Schemas, query paths, and storage
+      decisions should make the system easier to reason about, not harder.
     </p>
 
     <p>
-      <strong>Shipping beats planning.</strong> A working system you iterate on
-      outranks a perfect design doc. Complexity must be earned -- every abstraction
-      needs justification beyond "might be useful someday."
+      <strong>Shipping with discipline.</strong> I value iteration, but not chaos.
+      The goal is to ship useful software and keep the complexity justified.
     </p>
 
     <h2>The stack</h2>
 
     <p>
-      The default browser lane is <strong>TypeScript + Bun + Astro</strong>, with
-      Vue added only for substantial interactive UI. The default terminal lane is
-      <strong>OpenTUI + TypeScript + Bun</strong> when the operator workflow belongs
-      in a real terminal surface instead of a plain CLI.
+      The default browser stack is <strong>TypeScript + Bun + Astro</strong>, with
+      Vue reserved for interfaces that truly benefit from it. For terminal-heavy
+      workflows, I like <strong>OpenTUI + TypeScript + Bun</strong> when an operator
+      experience deserves more than a plain CLI.
     </p>
 
     <p>
-      For data, I reach for <strong>PostgreSQL</strong> by default on products that
-      are meant to grow, and <strong>SQLite</strong> when a tool is intentionally
-      local-first, embedded, or single-user. Either way, the schema is explicit and
-      the query paths stay inspectable.
+      For data, I default to <strong>PostgreSQL</strong> on products meant to grow
+      and <strong>SQLite</strong> for local-first or embedded tools. Either way, I
+      want the schema to be explicit and the data flow easy to trace.
     </p>
 
     <p>
-      On the browser side, Astro owns pages, delivery, and first render. Vue only
-      shows up when the browser UI needs real client-side state. No SPA shell by
-      reflex, no analytics junk, no gratuitous hydration.
+      On the frontend, Astro owns pages, delivery, and first render. I avoid adding
+      client-side complexity unless the product clearly benefits from it.
     </p>
 
     <p>
-      This site now runs live on an Ubuntu VM using Astro static output, a Docker
-      container, host-level Caddy, and Cloudflare in front. That is the kind of
-      deployment shape I like: explicit, inspectable, and boring enough to trust.
+      This site itself runs on an Ubuntu VM using Astro static output, Docker,
+      Caddy, and Cloudflare. That deployment shape says a lot about how I like to
+      work: simple, inspectable, and dependable.
     </p>
   </article>
 </BaseLayout>

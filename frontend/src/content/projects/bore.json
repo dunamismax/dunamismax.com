@@ -1,7 +1,7 @@
 {
   "order": 20,
   "name": "bore",
-  "tagline": "Peer-to-peer encrypted file transfer with direct hole-punching by default, relay fallback when needed, and both browser and terminal operator surfaces.",
+  "tagline": "Peer-to-peer encrypted file transfer with direct hole punching, relay fallback, and both browser and terminal interfaces.",
   "category": "infrastructure",
   "status": "shipped",
   "visibility": "public",

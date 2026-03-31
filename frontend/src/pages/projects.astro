@@ -18,15 +18,16 @@ const groups = groupProjects(projects)
   <div class="projects-page">
     <h1>Projects</h1>
     <p class="lead">
-      Public repos cloned in this workspace and worth showing. Active products,
-      shipped tools, and reference work, with descriptions aligned to the current
-      repo truth instead of stale placeholder copy.
+      A selection of public work across products, infrastructure, and developer
+      tooling. Some of these are actively evolving, others are shipped references,
+      but all reflect the kind of software I like to build.
     </p>
 
     {
       groups.map((group) => (
         <section class="category-group">
           <h2>{group.label}</h2>
+          <p class="group-description">{group.description}</p>
           <ul class="project-list">
             {group.projects.map((project) => (
               <li class="project-card">

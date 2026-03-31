@@ -32,7 +32,7 @@ export const siteConfig = {
   siteUrl: 'https://dunamismax.com',
   title: 'Stephen Sawyer',
   description:
-    'Building self-hostable software in Python, Go, and TypeScript: browser-first products, operator tooling, and local-first systems you can actually run yourself.',
+    'Stephen Sawyer builds practical software in Python, Go, and TypeScript: products, tooling, and self-hosted systems designed to stay understandable.',
   language: 'en',
   themeColor: '#0a0a0b',
   socialImagePath: '/og/default.png',
@@ -69,7 +69,7 @@ export const pageContracts: PageContract[] = [
     path: '/',
     title: 'Stephen Sawyer -- dunamismax',
     description:
-      'Building self-hostable software in Python, Go, and TypeScript. Astro-first browser surfaces, honest operator tooling, and local-first systems with relational data.',
+      'Stephen Sawyer builds practical software in Python, Go, and TypeScript, with a focus on durable products, tooling, and self-hosted systems.',
   },
   {
     id: 'projects',
@@ -77,7 +77,7 @@ export const pageContracts: PageContract[] = [
     path: '/projects',
     title: 'Projects -- Stephen Sawyer',
     description:
-      'Public project roster across browser-first apps, Go systems work, Python automation, developer tools, and reference repos.',
+      'Selected public projects across applications, infrastructure, developer tools, and reference work.',
   },
   {
     id: 'blog',
@@ -85,7 +85,7 @@ export const pageContracts: PageContract[] = [
     path: '/blog',
     title: 'Blog -- Stephen Sawyer',
     description:
-      'Technical writing on Astro and Bun products, Go systems work, Python automation, self-hosting, deployment, and operational discipline.',
+      'Writing on software engineering, self-hosting, technical tradeoffs, and production-minded development.',
   },
   {
     id: 'about',
@@ -99,7 +99,7 @@ export const pageContracts: PageContract[] = [
     label: 'Contact',
     path: '/contact',
     title: 'Contact -- Stephen Sawyer',
-    description: 'How to reach Stephen Sawyer. Email, Signal, GitHub, Twitter, Reddit.',
+    description: 'How to reach Stephen Sawyer by email, Signal, or public profiles.',
   },
   {
     id: 'not-found',
@@ -153,6 +153,11 @@ export const navLinks: NavLink[] = [
     href: '/about',
     label: 'About',
     matches: (path) => path === '/about',
+  },
+  {
+    href: '/contact',
+    label: 'Contact',
+    matches: (path) => path === '/contact',
   },
 ] as const
 

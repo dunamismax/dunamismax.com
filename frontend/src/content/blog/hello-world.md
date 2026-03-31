@@ -1,6 +1,6 @@
 ---
-title: Building this site
-description: "Why dunamismax.com exists, how it fits the actual stack I build with, and what this site is supposed to do."
+title: Why this site exists
+description: "Why dunamismax.com exists, how it fits the way I build software, and what I want this site to do well."
 date: 2026-03-23
 tags:
   - self-hosting
@@ -8,11 +8,11 @@ tags:
   - astro
 draft: false
 ---
-This site exists because the repos were no longer enough.
+This site exists because code repositories alone do not explain the work very well.
 
-GitHub is where the code lives. It is not where the story lives. A pile of
-repos can show activity, but it does not explain what I build, which stacks I
-actually trust, or how the projects relate to each other.
+GitHub is where the code lives. It is not where the context lives. A list of
+repositories can show activity, but it does not explain what I build, which
+tools I trust, or how the projects fit together.
 
 So this site has a narrow job:
 
@@ -21,8 +21,8 @@ So this site has a narrow job:
 - publish build logs and deployment notes
 - stay fast, simple, and easy to host
 
-Nothing here is meant to be ornamental. If a page does not help a reader
-understand the work, it should not exist.
+This site is meant to stay direct. If a page does not help a visitor understand
+the work, it should not be here.
 
 ## The stack
 
@@ -30,10 +30,10 @@ The site is built with **Astro** on **Bun**. It is a static-first frontend with
 hand-written CSS, self-hosted fonts, typed content files, and exactly enough
 JavaScript to support the places where Astro benefits from it.
 
-That matches the actual web lane I use elsewhere: **TypeScript + Bun + Astro**
-for browser surfaces, with **Vue** only when the product has enough
-statefulness to justify it. Browser code is not supposed to become a dumping
-ground for every idea that could have been a server-rendered page.
+That matches the web stack I use elsewhere: **TypeScript + Bun + Astro** for
+browser surfaces, with **Vue** only when the product has enough statefulness to
+justify it. I prefer browser code that stays focused instead of turning into a
+dumping ground for logic that should have stayed simpler.
 
 Outside the browser lane, the current stack is simple:
 
@@ -67,9 +67,9 @@ The blog will cover what I'm building and how I think about it:
 - **Craft**: Astro and Bun patterns, Go systems work, Python automation, and data modeling
 - **Stack philosophy**: why boring infrastructure wins and why self-hosting still matters
 
-No listicles. No engagement bait. No "10 things I learned" titles. I'll write
-like I'm explaining a decision to a colleague who will call me on it if the
-reasoning doesn't hold up.
+No listicles. No engagement bait. I want the writing to read like an honest
+explanation to another engineer who will notice if the reasoning does not hold
+up.
 
 The code for this site is open:
 [github.com/dunamismax/dunamismax.com](https://github.com/dunamismax/dunamismax.com).

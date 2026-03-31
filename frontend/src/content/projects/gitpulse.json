@@ -1,7 +1,7 @@
 {
   "order": 10,
   "name": "GitPulse",
-  "tagline": "Local-first git activity analytics that keeps live work, commit history, and push activity as separate ledgers instead of flattening them into fake productivity metrics.",
+  "tagline": "Local-first git analytics that separate active work, commit history, and push activity into a clearer picture of engineering output.",
   "category": "developer-tools",
   "status": "active",
   "visibility": "public",

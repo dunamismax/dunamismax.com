@@ -1,7 +1,7 @@
 {
   "order": 40,
   "name": "go-web-server",
-  "tagline": "Go-first web starter that embeds an Astro + Vue frontend into the Go binary and keeps sessions, CSRF, routing, and persistence owned by the backend.",
+  "tagline": "A Go-first web starter that embeds an Astro and Vue frontend while keeping routing, sessions, security, and persistence in the backend.",
   "category": "reference",
   "status": "shipped",
   "visibility": "public",

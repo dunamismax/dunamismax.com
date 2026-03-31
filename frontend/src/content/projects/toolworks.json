@@ -1,7 +1,7 @@
 {
   "order": 20,
   "name": "toolworks",
-  "tagline": "A curated workshop of automation, CLI helpers, and small tools that do enough useful work to justify existing as their own repo.",
+  "tagline": "A collection of automation scripts, CLI helpers, and small utilities that are useful enough to stand on their own.",
   "category": "developer-tools",
   "status": "active",
   "visibility": "public",
