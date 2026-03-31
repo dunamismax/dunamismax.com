@@ -1,9 +1,0 @@
-{
-  "order": 20,
-  "name": "Patchworks",
-  "tagline": "Git-style diffs for SQLite databases with schema, row, and reconciliation output you can actually inspect.",
-  "category": "developer-tools",
-  "status": "shipped",
-  "visibility": "private",
-  "stack": ["Python", "SQLite", "Astro", "Vue", "OpenTUI"]
-}

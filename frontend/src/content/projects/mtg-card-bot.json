@@ -1,0 +1,10 @@
+{
+  "order": 50,
+  "name": "MTG Card Bot",
+  "tagline": "Discord bot for fast Magic: The Gathering card lookup with pricing, legality, rulings, and embed-first responses powered by Scryfall.",
+  "category": "apps",
+  "status": "shipped",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/mtg-card-bot",
+  "stack": ["Python", "uv", "discord.py", "httpx"]
+}

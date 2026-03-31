@@ -1,0 +1,10 @@
+{
+  "order": 10,
+  "name": "dunamismax",
+  "tagline": "Profile and routing repo that documents the current stack lanes, project focus, and public entrypoints across the rest of the workspace.",
+  "category": "reference",
+  "status": "active",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/dunamismax",
+  "stack": ["Markdown", "Docs", "Portfolio"]
+}

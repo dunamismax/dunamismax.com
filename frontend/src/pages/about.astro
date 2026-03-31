@@ -10,18 +10,18 @@ const page = getPageContract('about')
     <h1>About</h1>
 
     <p>
-      I'm Stephen Sawyer. I build self-hostable software -- the kind of tools that
-      run on your hardware, store data you can actually inspect, and don't phone
-      home.
+      I'm Stephen Sawyer. I build self-hostable software for people who want the
+      system to run on their hardware, keep inspectable data, and stay understandable
+      after the launch adrenaline wears off.
     </p>
 
     <p>
-      Most new work is in <strong>Python</strong> and <strong>Go</strong>.
-      Browser-facing surfaces use <strong>TypeScript</strong>, <strong>Bun</strong>,
-      and <strong>Astro</strong>, with <strong>Vue</strong> only when an interaction
-      actually earns client-side state. I reach for <strong>PostgreSQL</strong> by
-      default and use <strong>SQLite</strong> when the product is intentionally
-      local-first. Rust stays in dedicated existing repos that still earn it.
+      Most new work lives in three lanes. <strong>Python</strong> handles automation,
+      integrations, APIs, and backend logic where speed of iteration matters.
+      <strong>Go</strong> handles networking, daemons, observability, and long-running
+      operator runtimes. Browser-facing surfaces use <strong>TypeScript</strong>,
+      <strong>Bun</strong>, and <strong>Astro</strong>, with <strong>Vue</strong>
+      reserved for interactions that truly earn client-side state.
     </p>
 
     <h2>What I care about</h2>
@@ -33,8 +33,8 @@ const page = getPageContract('about')
 
     <p>
       <strong>Boring infrastructure.</strong> Novel architecture is a liability until
-      proven otherwise. I want the system that wakes nobody up at 3am, not the one
-      that looks impressive on a whiteboard.
+      proven otherwise. I want the deployment that survives Tuesday night, not the
+      diagram that looks clever on a whiteboard.
     </p>
 
     <p>
@@ -52,22 +52,29 @@ const page = getPageContract('about')
     <h2>The stack</h2>
 
     <p>
-      Python for backends, automation, and glue code. Go for services, daemons,
-      CLIs, and networking-heavy work. TypeScript + Bun + Astro + Vue for web
-      products and browser-facing surfaces. Rust is now the lane for dedicated
-      existing Rust repos, not the default choice for new work.
+      The default browser lane is <strong>TypeScript + Bun + Astro</strong>, with
+      Vue added only for substantial interactive UI. The default terminal lane is
+      <strong>OpenTUI + TypeScript + Bun</strong> when the operator workflow belongs
+      in a real terminal surface instead of a plain CLI.
     </p>
 
     <p>
-      On the browser side: Astro-first pages with Vue kept to island-sized,
-      justified interactions. No SPA shell, no analytics junk, no gratuitous
-      hydration. If an interaction ever earns extra client-side behavior, it needs
-      to justify itself.
+      For data, I reach for <strong>PostgreSQL</strong> by default on products that
+      are meant to grow, and <strong>SQLite</strong> when a tool is intentionally
+      local-first, embedded, or single-user. Either way, the schema is explicit and
+      the query paths stay inspectable.
     </p>
 
     <p>
-      This site runs on that exact stack -- Astro static output on Bun, hand-written
-      CSS, and Caddy in front of a boring Docker container.
+      On the browser side, Astro owns pages, delivery, and first render. Vue only
+      shows up when the browser UI needs real client-side state. No SPA shell by
+      reflex, no analytics junk, no gratuitous hydration.
+    </p>
+
+    <p>
+      This site now runs live on an Ubuntu VM using Astro static output, a Docker
+      container, host-level Caddy, and Cloudflare in front. That is the kind of
+      deployment shape I like: explicit, inspectable, and boring enough to trust.
     </p>
   </article>
 </BaseLayout>

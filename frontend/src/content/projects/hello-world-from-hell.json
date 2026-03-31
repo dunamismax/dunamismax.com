@@ -1,0 +1,10 @@
+{
+  "order": 50,
+  "name": "hello-world-from-hell",
+  "tagline": "A deliberately overcommitted novelty C repo that turns Hello World into an audit-resistant ritual of macros, threads, and theatrical bad decisions.",
+  "category": "reference",
+  "status": "shipped",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/hello-world-from-hell",
+  "stack": ["C", "Make", "Testing"]
+}

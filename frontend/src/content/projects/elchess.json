@@ -1,7 +1,7 @@
 {
-  "order": 20,
+  "order": 40,
   "name": "ElChess",
-  "tagline": "Real-time multiplayer chess platform focused on fast play, durable game history, ratings, and post-game review.",
+  "tagline": "Browser-first multiplayer chess platform built around durable game history, ratings, auth, and post-game review instead of demo-grade chess UI theater.",
   "category": "apps",
   "status": "phase-0",
   "visibility": "public",

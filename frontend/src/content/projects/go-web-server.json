@@ -1,0 +1,10 @@
+{
+  "order": 40,
+  "name": "go-web-server",
+  "tagline": "Go-first web starter that embeds an Astro + Vue frontend into the Go binary and keeps sessions, CSRF, routing, and persistence owned by the backend.",
+  "category": "reference",
+  "status": "shipped",
+  "visibility": "public",
+  "repo": "https://github.com/dunamismax/go-web-server",
+  "stack": ["Go", "Echo", "PostgreSQL", "SQLC", "Astro", "Vue"]
+}

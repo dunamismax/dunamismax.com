@@ -1,10 +1,10 @@
 {
   "order": 20,
   "name": "bore",
-  "tagline": "Encrypted peer-to-peer file transfer over QUIC with direct hole-punching and automatic relay fallback.",
+  "tagline": "Peer-to-peer encrypted file transfer with direct hole-punching by default, relay fallback when needed, and both browser and terminal operator surfaces.",
   "category": "infrastructure",
   "status": "shipped",
   "visibility": "public",
   "repo": "https://github.com/dunamismax/bore",
-  "stack": ["Go", "QUIC", "Noise", "Astro", "Vue"]
+  "stack": ["Go", "QUIC", "Noise", "Astro", "Vue", "OpenTUI"]
 }

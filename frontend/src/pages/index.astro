@@ -9,32 +9,39 @@ const page = getPageContract('home')
   <div class="home">
     <section class="hero">
       <h1>Stephen Sawyer</h1>
-      <p class="tagline">I build self-hostable software.</p>
+      <p class="tagline">I build self-hostable software that earns its complexity.</p>
       <p class="stack">
-        Most new work lives in <strong>Python</strong> and <strong>Go</strong>, with
-        <strong>TypeScript</strong>, <strong>Bun</strong>, and <strong>Astro</strong>
-        on the browser-facing side and <strong>Vue</strong> only where interaction
-        earns it. Rust stays in dedicated repos that still justify it. Local-first,
-        operator-friendly, relational data, single-binary where possible.
+        The actual stack is straightforward: <strong>Python</strong> for automation,
+        APIs, and backend glue; <strong>Go</strong> for networking, daemons, and
+        operator-heavy runtimes; <strong>TypeScript</strong>, <strong>Bun</strong>,
+        and <strong>Astro</strong> for browser-facing products; <strong>Vue</strong>
+        only when the UI genuinely needs client-side state; <strong>OpenTUI</strong>
+        when a terminal workflow deserves a real frontend.
+      </p>
+      <p class="stack">
+        I default to <strong>PostgreSQL</strong> when a product needs a real system
+        of record, keep <strong>SQLite</strong> for intentionally local-first tools,
+        and deploy with boring infrastructure that can survive contact with
+        production.
       </p>
     </section>
 
     <nav class="home-nav" aria-label="Quick navigation">
       <a class="nav-card" href="/projects">
         <span class="nav-card-label">Projects</span>
-        <span class="nav-card-desc">What I'm building</span>
+        <span class="nav-card-desc">Public repos and current product bets</span>
       </a>
       <a class="nav-card" href="/blog">
         <span class="nav-card-label">Blog</span>
-        <span class="nav-card-desc">How I think about it</span>
+        <span class="nav-card-desc">Build logs, stack notes, and deployment write-ups</span>
       </a>
       <a class="nav-card" href="/about">
         <span class="nav-card-label">About</span>
-        <span class="nav-card-desc">Who I am</span>
+        <span class="nav-card-desc">How I choose stacks and ship systems</span>
       </a>
       <a class="nav-card" href="/contact">
         <span class="nav-card-label">Contact</span>
-        <span class="nav-card-desc">Get in touch</span>
+        <span class="nav-card-desc">Email, Signal, and public links</span>
       </a>
     </nav>
   </div>

@@ -1,10 +1,10 @@
 {
-  "order": 40,
+  "order": 20,
   "name": "Scrybase",
-  "tagline": "Local-first Commander workbench for decks, collection tracking, pod history, matchup notes, and tuning against a real playgroup.",
+  "tagline": "Commander workbench for decks, collections, pod history, matchup notes, and long-term tuning against an actual playgroup instead of generic averages.",
   "category": "apps",
   "status": "active",
   "visibility": "public",
   "repo": "https://github.com/dunamismax/scrybase",
-  "stack": ["Python", "Astro", "Vue", "PostgreSQL"]
+  "stack": ["Python", "Astro", "Vue", "PostgreSQL", "OpenTUI"]
 }

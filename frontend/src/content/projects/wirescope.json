@@ -1,10 +1,10 @@
 {
   "order": 10,
   "name": "wirescope",
-  "tagline": "Terminal-first network observability with live capture, DNS context, historical search, alerts, and PCAP export.",
+  "tagline": "Network observability for operators who need live capture, DNS context, historical search, alerts, and PCAP export without leaving their own infrastructure.",
   "category": "infrastructure",
   "status": "shipped",
   "visibility": "public",
   "repo": "https://github.com/dunamismax/wirescope",
-  "stack": ["Go", "SQLite", "Astro", "Vue", "PCAP"]
+  "stack": ["Go", "SQLite", "Astro", "Vue", "PCAP", "OpenTUI"]
 }

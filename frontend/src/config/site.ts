@@ -31,7 +31,8 @@ export const siteConfig = {
   author: 'Stephen Sawyer',
   siteUrl: 'https://dunamismax.com',
   title: 'Stephen Sawyer',
-  description: 'Building self-hostable software in Python, Go, and TypeScript.',
+  description:
+    'Building self-hostable software in Python, Go, and TypeScript: browser-first products, operator tooling, and local-first systems you can actually run yourself.',
   language: 'en',
   themeColor: '#0a0a0b',
   socialImagePath: '/og/default.png',
@@ -44,7 +45,21 @@ export const siteConfig = {
     'https://x.com/DunamisMax',
     'https://www.reddit.com/user/DunamisMax/',
   ],
-  knowsAbout: ['Python', 'Go', 'TypeScript', 'Bun', 'Astro', 'Vue', 'PostgreSQL', 'self-hosting'],
+  knowsAbout: [
+    'Python',
+    'Go',
+    'TypeScript',
+    'Bun',
+    'Astro',
+    'Vue',
+    'OpenTUI',
+    'PostgreSQL',
+    'SQLite',
+    'self-hosting',
+    'Docker',
+    'Caddy',
+    'Cloudflare',
+  ],
 } as const
 
 export const pageContracts: PageContract[] = [
@@ -54,7 +69,7 @@ export const pageContracts: PageContract[] = [
     path: '/',
     title: 'Stephen Sawyer -- dunamismax',
     description:
-      'Building self-hostable software in Python, Go, and TypeScript. Astro-first web apps, local-first bias, relational data.',
+      'Building self-hostable software in Python, Go, and TypeScript. Astro-first browser surfaces, honest operator tooling, and local-first systems with relational data.',
   },
   {
     id: 'projects',
@@ -62,7 +77,7 @@ export const pageContracts: PageContract[] = [
     path: '/projects',
     title: 'Projects -- Stephen Sawyer',
     description:
-      'Active project roster across full-stack web apps, Go systems work, Python automation, and selective Rust maintenance.',
+      'Public project roster across browser-first apps, Go systems work, Python automation, developer tools, and reference repos.',
   },
   {
     id: 'blog',
@@ -70,7 +85,7 @@ export const pageContracts: PageContract[] = [
     path: '/blog',
     title: 'Blog -- Stephen Sawyer',
     description:
-      'Technical writing on Bun and Astro web apps, Go systems work, Python automation, self-hosting, and operational discipline.',
+      'Technical writing on Astro and Bun products, Go systems work, Python automation, self-hosting, deployment, and operational discipline.',
   },
   {
     id: 'about',

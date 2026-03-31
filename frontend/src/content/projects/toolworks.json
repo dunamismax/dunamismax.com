@@ -1,10 +1,10 @@
 {
-  "order": 30,
+  "order": 20,
   "name": "toolworks",
-  "tagline": "Automation, CLI helpers, and scripts that earn their keep.",
+  "tagline": "A curated workshop of automation, CLI helpers, and small tools that do enough useful work to justify existing as their own repo.",
   "category": "developer-tools",
   "status": "active",
   "visibility": "public",
   "repo": "https://github.com/dunamismax/toolworks",
-  "stack": ["Python", "CLI", "Automation"]
+  "stack": ["Python", "uv", "CLI", "Automation"]
 }
