@@ -22,7 +22,8 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
 - [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
 - [ ] **Phase 6** is not complete. Deployment cutover is now done in repo configuration, but legacy Python web code and cleanup still remain.
-- [ ] Real local Docker verification is still blocked on this machine. On 2026-03-30, `docker compose build --no-cache web`, `docker pull oven/bun:1.3.10-alpine`, and `docker pull caddy:2.10-alpine` all stalled inside Docker Desktop while resolving remote image metadata. Direct host HTTPS probes to `registry-1.docker.io` and `auth.docker.io` still succeed, and `docker info` reports the engine is configured with `HTTPProxy=http.docker.internal:3128` and `HTTPSProxy=http.docker.internal:3128`.
+- [x] The earlier Docker image-metadata pull stall no longer reproduces on this machine. On 2026-03-30, `docker pull oven/bun:1.3.10-alpine`, `docker pull caddy:2.10-alpine`, and `docker compose build --no-cache web` all completed successfully.
+- [ ] A clean published-port host probe is still missing from repo notes. During `docker compose up -d --build`, the follow-up `curl http://127.0.0.1:8080/...` checks were not trustworthy because an unrelated local `flowhook dashboard` process was already listening on `127.0.0.1:8080` on this machine.
 
 ## Current state summary
 
@@ -264,12 +265,12 @@ Checklist:
 
 Goal: leave one obvious stack behind.
 
-Current blocker:
+Current remaining gap:
 
-- Real container verification is not yet repeatably green on this machine.
-- As of 2026-03-30, `docker compose build --no-cache web` still stalls at `[internal] load metadata for docker.io/library/caddy:2.10-alpine` and `docker.io/oven/bun:1.3.10-alpine`.
-- Standalone `docker pull oven/bun:1.3.10-alpine` and `docker pull caddy:2.10-alpine` reproduce the same hang with no layer progress.
-- Direct host `curl` probes to `https://registry-1.docker.io/v2/` and `https://auth.docker.io/token?...` succeed, `docker compose config` is clean, and `docker info` reports `HTTPProxy=http.docker.internal:3128` and `HTTPSProxy=http.docker.internal:3128`, so the blocker still looks like the Docker Desktop engine pull path or its configured proxy rather than the repo's Dockerfile or compose wiring.
+- The earlier Docker metadata pull blocker no longer reproduces. On 2026-03-30, `docker pull oven/bun:1.3.10-alpine`, `docker pull caddy:2.10-alpine`, and `docker compose build --no-cache web` all completed successfully.
+- `docker compose up -d --build` also reached `Container dunamismaxcom-web-1 Started`, so image build and compose startup are now real on this machine.
+- The remaining missing proof is a clean host-side HTTP probe through the published port. The follow-up `curl http://127.0.0.1:8080/health` and `curl -I http://127.0.0.1:8080/` checks were not repo-only verification because an unrelated local `flowhook dashboard` process was already bound to `127.0.0.1:8080` and answered those requests.
+- Frontend lint, check, test, build, `python3 scripts/smoke.py`, and `docker compose config` are green, so the next honest step is legacy cleanup plus one more container HTTP check on a free host port before deleting the old Python web stack.
 
 Checklist:
 
@@ -280,6 +281,7 @@ Checklist:
   - Stable repo docs can stay honest before code deletion, but `frontend/src/pages/about.astro`, `frontend/src/content/blog/hello-world.md`, and the retained Python templates still reference the retired FastAPI + Jinja2 stack and remain Phase 6 cleanup scope.
 - [x] run final smoke and route checks
   - Verification now includes `bun run lint`, `bun run check`, `bun run test`, `bun run build`, and `python3 scripts/smoke.py` against the built frontend artifact.
+- [ ] rerun the published-port container smoke on a host port that is actually free on this machine
 - [ ] leave the repo reading like one stack, not two
 - [ ] remove BUILD.md or collapse the still-useful parts into stable docs once the migration is finished
 
