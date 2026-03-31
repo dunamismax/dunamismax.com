@@ -170,6 +170,7 @@ python3 scripts/smoke.py --base-url http://127.0.0.1:8080
 - `/sitemap.xml` - XML sitemap for the public pages and blog posts
 - `/robots.txt` - crawler policy with sitemap location
 - `/health` - cheap uptime probe endpoint that returns `{"status": "ok"}`
+- Public HTML pages ship canonical metadata plus JSON-LD for site identity, and blog posts add `BlogPosting` structured data
 
 ## Design direction
 

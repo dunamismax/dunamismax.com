@@ -50,6 +50,11 @@ This document is the current route, metadata, content, styling, and asset contra
   - blog posts switch `og:type` to `article`
   - blog posts expose `article:published_time` as UTC ISO 8601 derived from the post date
   - blog posts emit one `article:tag` meta tag per post tag
+- Shared structured data behavior:
+  - every public HTML page emits `WebSite` and `Person` JSON-LD tied to `https://dunamismax.com/#website` and `https://dunamismax.com/#person`
+  - the person schema uses the public email plus GitHub, Twitter, and Reddit profile URLs as `sameAs`
+  - blog post pages emit `BlogPosting` JSON-LD with canonical URL, published time, default social image, and tag keywords
+  - `404.html` emits `meta name="robots" content="noindex, nofollow"`
 
 ## Blog content contract
 

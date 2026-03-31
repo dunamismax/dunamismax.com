@@ -32,8 +32,8 @@ bun run preview
 The frontend covers:
 
 - Astro page routing for the public HTML pages
-- Shared metadata and canonical URL handling
-- Article metadata support for blog posts
+- Shared metadata, canonical URL handling, and JSON-LD site identity
+- Article metadata and `BlogPosting` structured data for blog posts
 - Frontend-owned content collections for blog posts and projects
 - Self-hosted fonts and shared CSS carried over from the live site
 - Static machine surfaces for RSS, sitemap, robots, and health

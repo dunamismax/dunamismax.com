@@ -38,6 +38,13 @@ export const siteConfig = {
   faviconPath: '/favicon.svg',
   rssPath: '/feed.xml',
   twitterSite: '@DunamisMax',
+  email: 'dunamismax@tutamail.com',
+  sameAs: [
+    'https://github.com/dunamismax',
+    'https://x.com/DunamisMax',
+    'https://www.reddit.com/user/DunamisMax/',
+  ],
+  knowsAbout: ['Python', 'Go', 'TypeScript', 'Bun', 'Astro', 'Vue', 'PostgreSQL', 'self-hosting'],
 } as const
 
 export const pageContracts: PageContract[] = [
@@ -137,7 +144,7 @@ export const navLinks: NavLink[] = [
 export const socialLinks = [
   {
     label: 'Email',
-    href: 'mailto:dunamismax@tutamail.com',
+    href: `mailto:${siteConfig.email}`,
     rel: 'me',
   },
   {
@@ -155,8 +162,8 @@ export const socialLinks = [
 export const contactChannels: ContactChannel[] = [
   {
     label: 'Email',
-    href: 'mailto:dunamismax@tutamail.com',
-    display: 'dunamismax@tutamail.com',
+    href: `mailto:${siteConfig.email}`,
+    display: siteConfig.email,
     external: false,
   },
   {

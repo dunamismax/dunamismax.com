@@ -118,6 +118,13 @@ def run_checks(base_url: str) -> None:
     home = _check_ok(base_url, "/", "text/html")
     assert "Stephen Sawyer" in home
     assert 'href="/feed.xml"' in home
+    assert 'type="application/ld+json"' in home
+    assert '"@type":"WebSite"' in home
+    assert '"@type":"Person"' in home
+
+    post = _check_ok(base_url, "/blog/hello-world", "text/html")
+    assert '"@type":"BlogPosting"' in post
+    assert '"datePublished":"2026-03-23T00:00:00.000Z"' in post
 
     feed = _check_ok(base_url, "/feed.xml", ("application/xml", "text/xml"))
     assert "https://dunamismax.com/blog/hello-world" in feed
@@ -128,6 +135,7 @@ def run_checks(base_url: str) -> None:
     status, content_type, missing = _fetch(base_url, "/blog/nonexistent-slug")
     assert status == 404, f"/blog/nonexistent-slug returned {status}"
     assert content_type == "text/html"
+    assert 'content="noindex, nofollow" name="robots"' in missing
     assert "Page not found." in missing
 
 

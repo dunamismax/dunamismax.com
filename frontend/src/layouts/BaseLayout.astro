@@ -2,6 +2,7 @@
 import SiteFooter from '../components/SiteFooter.astro'
 import SiteHeader from '../components/SiteHeader.astro'
 import { siteConfig, toAbsoluteUrl } from '../config/site'
+import { buildPersonStructuredData, buildWebsiteStructuredData } from '../lib/structured-data'
 import '../styles/global.css'
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
   ogType?: 'website' | 'article'
   articlePublishedTime?: string
   articleTags?: string[]
+  robotsContent?: string
 }
 
 const {
@@ -20,10 +22,13 @@ const {
   ogType = 'website',
   articlePublishedTime,
   articleTags = [],
+  robotsContent,
 } = Astro.props as Props
 
 const canonicalUrl = toAbsoluteUrl(path)
 const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
+const websiteStructuredData = buildWebsiteStructuredData()
+const personStructuredData = buildPersonStructuredData()
 ---
 
 <!doctype html>
@@ -35,6 +40,7 @@ const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
     <meta content={description} name="description" />
     <meta content={siteConfig.author} name="author" />
     <meta content={siteConfig.themeColor} name="theme-color" />
+    {robotsContent && <meta content={robotsContent} name="robots" />}
 
     <meta content={ogType} property="og:type" />
     <meta content={pageTitle} property="og:title" />
@@ -61,6 +67,9 @@ const socialImageUrl = toAbsoluteUrl(siteConfig.socialImagePath)
     />
     <link href="/fonts/InterVariable.woff2" rel="preload" as="font" type="font/woff2" crossorigin />
     <link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteStructuredData)} />
+    <script type="application/ld+json" set:html={JSON.stringify(personStructuredData)} />
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
