@@ -1,7 +1,7 @@
 [project]
 name = "dunamismax-com"
 version = "1.0.0"
-description = "Personal site for Stephen Sawyer. FastAPI + Jinja2 + htmx."
+description = "Personal site for Stephen Sawyer. Astro static frontend with legacy Python cleanup tooling."
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [

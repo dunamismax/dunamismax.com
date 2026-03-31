@@ -22,6 +22,7 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
 - [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
 - [ ] **Phase 6** is not complete. Deployment cutover is now done in repo configuration, but legacy Python web code and cleanup still remain.
+- [ ] Real local Docker verification is still blocked on this machine. `docker pull oven/bun:1.3.10-alpine` and `docker pull caddy:2.10-alpine` currently hang inside the Docker Desktop engine before layer transfer, even though direct host HTTPS probes to Docker Hub succeed.
 
 ## Current state summary
 
@@ -262,6 +263,12 @@ Checklist:
 ### [ ] Phase 6: clean up and retire legacy web code
 
 Goal: leave one obvious stack behind.
+
+Current blocker:
+
+- Real container verification is not yet repeatably green on this machine.
+- As of 2026-03-30, `docker compose build --no-cache web` stalls while resolving remote metadata for `oven/bun:1.3.10-alpine` and `caddy:2.10-alpine`.
+- Direct `curl` probes to `https://registry-1.docker.io/v2/` and `https://auth.docker.io/token` succeed from the host, so the blocker currently looks like the Docker engine pull path or its proxy configuration rather than the repo's Dockerfile or compose wiring.
 
 Checklist:
 
