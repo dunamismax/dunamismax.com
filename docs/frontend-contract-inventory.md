@@ -1,13 +1,14 @@
 # Frontend Contract Inventory
 
-Status on 2026-03-30: the deployed site in this repo is still the Python `FastAPI + Jinja2` app under `src/app/`. This document freezes the current frontend contract so the Astro migration can continue without guessing.
+Status on 2026-03-30: the repo default site path is the Astro static frontend under `frontend/`, built into Docker and served by Caddy. This document now serves as the frozen migration contract extracted from the legacy Python app plus the frontend-owned content that replaced it; the Python app remains in-tree only for Phase 6 cleanup and comparison.
 
 ## Phase boundary
 
-- Phase 1 is only a Bun + Astro + Vue scaffold.
-- Content and page parity are later phases.
-- The new frontend should stay a sibling app until it reaches parity and replaces the Python serving path on purpose.
-- Static output is the default migration assumption. No current feature justifies Astro SSR, a backend, or a database.
+- Phases 1 through 5 are complete in repo configuration.
+- This file remains useful as the frozen parity and cleanup contract for routes, metadata, content, styling anchors, and assets.
+- The default site path is now the Astro static build under `frontend/`.
+- The legacy Python web app remains only until final cleanup removes it.
+- Static output remains the default deployment assumption. No current feature justifies Astro SSR, a backend, or a database.
 
 ## Public route contract
 
@@ -55,7 +56,7 @@ Status on 2026-03-30: the deployed site in this repo is still the Python `FastAP
 
 Current source: frontend-owned Markdown files under `frontend/src/content/blog/`
 
-The live Python app currently reads those files through `src/app/content/blog.py` while the Astro page port is still pending.
+The Astro frontend now owns the default blog route path. The retained Python cleanup copy still reads the same files through `src/app/content/blog.py`, which is why this contract remains useful until Phase 6 deletes the old web stack.
 
 Schema today:
 
@@ -81,7 +82,7 @@ Behavior today:
 
 Current source: frontend-owned JSON files under `frontend/src/content/projects/`
 
-The live Python app currently reads those files through `src/app/content/projects.py` while the Astro page port is still pending.
+The Astro frontend now owns the default projects route path. The retained Python cleanup copy still reads the same files through `src/app/content/projects.py`, which is why this contract remains useful until Phase 6 deletes the old web stack.
 
 Schema today:
 

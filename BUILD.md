@@ -22,7 +22,7 @@ This repo should migrate to **TypeScript + Bun + Astro + Vue**. Do **not** add a
 - [x] **Phase 0** is complete. The current route, metadata, content, and styling contract is frozen in `docs/frontend-contract-inventory.md`.
 - [x] **Phase 1** is complete. A sibling **Bun + Astro + Vue** scaffold exists under `frontend/` with static Astro output, centralized site config, content schemas, shared layout shell, and frontend CI checks.
 - [ ] **Phase 6** is not complete. Deployment cutover is now done in repo configuration, but legacy Python web code and cleanup still remain.
-- [ ] Real local Docker verification is still blocked on this machine. `docker pull oven/bun:1.3.10-alpine` and `docker pull caddy:2.10-alpine` currently hang inside the Docker Desktop engine before layer transfer, even though direct host HTTPS probes to Docker Hub succeed.
+- [ ] Real local Docker verification is still blocked on this machine. On 2026-03-30, `docker compose build --no-cache web`, `docker pull oven/bun:1.3.10-alpine`, and `docker pull caddy:2.10-alpine` all stalled inside Docker Desktop while resolving remote image metadata. Direct host HTTPS probes to `registry-1.docker.io` and `auth.docker.io` still succeed, and `docker info` reports the engine is configured with `HTTPProxy=http.docker.internal:3128` and `HTTPSProxy=http.docker.internal:3128`.
 
 ## Current state summary
 
@@ -267,16 +267,17 @@ Goal: leave one obvious stack behind.
 Current blocker:
 
 - Real container verification is not yet repeatably green on this machine.
-- As of 2026-03-30, `docker compose build --no-cache web` stalls while resolving remote metadata for `oven/bun:1.3.10-alpine` and `caddy:2.10-alpine`.
-- Direct `curl` probes to `https://registry-1.docker.io/v2/` and `https://auth.docker.io/token` succeed from the host, so the blocker currently looks like the Docker engine pull path or its proxy configuration rather than the repo's Dockerfile or compose wiring.
+- As of 2026-03-30, `docker compose build --no-cache web` still stalls at `[internal] load metadata for docker.io/library/caddy:2.10-alpine` and `docker.io/oven/bun:1.3.10-alpine`.
+- Standalone `docker pull oven/bun:1.3.10-alpine` and `docker pull caddy:2.10-alpine` reproduce the same hang with no layer progress.
+- Direct host `curl` probes to `https://registry-1.docker.io/v2/` and `https://auth.docker.io/token?...` succeed, `docker compose config` is clean, and `docker info` reports `HTTPProxy=http.docker.internal:3128` and `HTTPSProxy=http.docker.internal:3128`, so the blocker still looks like the Docker Desktop engine pull path or its configured proxy rather than the repo's Dockerfile or compose wiring.
 
 Checklist:
 
 - [ ] remove unused Python web app files, templates, and dependencies
 - [x] update README and deployment docs to current truth
   - `README.md`, `frontend/README.md`, `Dockerfile`, `docker-compose.yml`, `Caddyfile`, and the new `deploy/static-site.Caddyfile` now document the Astro-first serving path and legacy cleanup status honestly.
-- [x] verify there is no stale documentation claiming FastAPI + Jinja2 is still the live path
-  - Targeted doc search now leaves only this cleanup checklist referring to the old live path.
+- [ ] verify there is no stale repo copy claiming FastAPI + Jinja2 is still the live path
+  - Stable repo docs can stay honest before code deletion, but `frontend/src/pages/about.astro`, `frontend/src/content/blog/hello-world.md`, and the retained Python templates still reference the retired FastAPI + Jinja2 stack and remain Phase 6 cleanup scope.
 - [x] run final smoke and route checks
   - Verification now includes `bun run lint`, `bun run check`, `bun run test`, `bun run build`, and `python3 scripts/smoke.py` against the built frontend artifact.
 - [ ] leave the repo reading like one stack, not two
