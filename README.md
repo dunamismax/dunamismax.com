@@ -7,6 +7,8 @@ dunamismax.com is the public-facing home for everything I build. The repo ships 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
 > **Status:** Astro static site is the default local, CI, and container deploy path in repo. The public HTML routes, machine-readable surfaces, and repo-owned content all live under `frontend/`.
+>
+> This repo intentionally uses the frontend-only slice of Stephen's broader Bun + TypeScript + Astro + Vue web lane. It does not currently justify a Bun API, auth layer, or PostgreSQL database.
 
 ## Stack
 
@@ -48,7 +50,7 @@ The active project roster. Each entry links to the repo. Projects are grouped by
 
 ### Blog
 
-Long-form technical writing. Posts live as frontend-owned Markdown in the repo and build directly into the Astro site. No CMS, no database, no comment system. Topics: systems design, self-hosting, Go/Rust craft, operational discipline, product thinking, and lessons from shipping.
+Long-form technical writing. Posts live as frontend-owned Markdown in the repo and build directly into the Astro site. No CMS, no database, no comment system. Topics: TypeScript + Bun web apps, Go systems work, Python automation, self-hosting, operational discipline, product thinking, and lessons from shipping.
 
 ### About
 
