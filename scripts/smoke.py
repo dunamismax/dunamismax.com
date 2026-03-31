@@ -10,12 +10,20 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
 from urllib.error import HTTPError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 DIST_DIR = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 HTML_PATHS = ["/", "/projects", "/blog", "/blog/hello-world", "/about", "/contact"]
 TEXT_PATHS = ["/feed.xml", "/sitemap.xml", "/robots.txt"]
 JSON_PATHS = ["/health"]
+REQUEST_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+    ),
+}
 
 
 class DistHandler(SimpleHTTPRequestHandler):
@@ -87,8 +95,9 @@ def resolve_base_url(base_url: str | None) -> str:
 
 
 def _fetch(base_url: str, path: str) -> tuple[int, str, str]:
+    request = Request(f"{base_url}{path}", headers=REQUEST_HEADERS)
     try:
-        with urlopen(f"{base_url}{path}") as response:
+        with urlopen(request) as response:
             return response.status, response.headers.get_content_type(), response.read().decode("utf-8")
     except HTTPError as error:
         return error.code, error.headers.get_content_type(), error.read().decode("utf-8")

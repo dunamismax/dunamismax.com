@@ -132,6 +132,22 @@ Containerized deploy path:
 docker compose up -d --build
 ```
 
+Production host deploy path:
+
+```bash
+./deploy/deploy-prod.sh
+```
+
+Cloudflare Origin CA switch:
+
+```bash
+./deploy/generate-cloudflare-origin-csr.sh
+# Create the Origin CA cert in Cloudflare using the generated CSR,
+# save the signed PEM to deploy/origin-ca/dunamismax-origin.crt,
+# then:
+./deploy/switch-to-cloudflare-origin.sh
+```
+
 If `8080` is already in use on the host, publish the site on another port:
 
 ```bash
@@ -163,6 +179,13 @@ Container smoke against an already running published port:
 ```bash
 python3 scripts/smoke.py --base-url http://127.0.0.1:8080
 ```
+
+## Production notes
+
+- The container is intended to publish only on `127.0.0.1:8080`, with host Caddy handling ports `80/443`.
+- `www.dunamismax.com` should redirect permanently to `https://dunamismax.com`.
+- If Cloudflare proxying is enabled for the DNS records, stock Caddy automatic HTTPS will not be able to complete its normal ACME challenge flow. Use DNS-only records for this setup, or switch to a Cloudflare DNS-challenge capable Caddy build before re-enabling the proxy.
+- For permanent Cloudflare proxying, prefer a Cloudflare Origin CA certificate installed at the host Caddy layer.
 
 ## Machine-readable surfaces
 

@@ -11,5 +11,7 @@ dist/
 frontend/node_modules/
 frontend/dist/
 frontend/.astro/
+deploy/origin-ca/
+.codex
 *.egg
 .DS_Store

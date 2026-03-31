@@ -1,13 +1,14 @@
-# Caddyfile for dunamismax.com
-#
-# Sits on the host as a reverse proxy in front of the Docker container.
-# TLS is handled by Caddy on the host. The container serves the Astro static site on port 8080.
+(origin_tls) {
+    tls /etc/caddy/certs/dunamismax-origin.crt /etc/caddy/certs/dunamismax-origin.key
+}
 
 www.dunamismax.com {
+    import origin_tls
     redir https://dunamismax.com{uri} permanent
 }
 
 dunamismax.com {
+    import origin_tls
     encode zstd gzip
 
     header {

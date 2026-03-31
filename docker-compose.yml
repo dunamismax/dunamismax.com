@@ -16,9 +16,10 @@
 services:
   web:
     build: .
+    container_name: dunamismax-web
     restart: unless-stopped
     ports:
-      - "${DUNAMISMAX_HOST_PORT:-8080}:80"
+      - "127.0.0.1:${DUNAMISMAX_HOST_PORT:-8080}:80"
     labels:
       - "app=dunamismax-com"
       - "description=Personal site served by Astro static output + Caddy"
