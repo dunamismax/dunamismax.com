@@ -62,7 +62,7 @@ export function buildRobotsTxt(): string {
 export function buildRssFeed(posts: MachineSurfacePost[]): string {
   const lastBuildDate = posts[0] ? formatRssDate(posts[0].data.date) : formatRssDate(new Date())
   const items = posts.map((post) => {
-    const postUrl = toAbsoluteUrl(`/blog/${post.slug}`)
+    const postUrl = toAbsoluteUrl(`/blog/${post.slug}/`)
     const categories = post.data.tags
       .map((tag) => `      <category>${escapeXml(tag)}</category>`)
       .join('\n')
@@ -103,7 +103,7 @@ export function buildSitemap(posts: MachineSurfacePost[]): string {
   const blogEntries = posts.map((post) =>
     [
       '  <url>',
-      `    <loc>${toAbsoluteUrl(`/blog/${post.slug}`)}</loc>`,
+      `    <loc>${toAbsoluteUrl(`/blog/${post.slug}/`)}</loc>`,
       `    <lastmod>${post.data.date.toISOString().slice(0, 10)}</lastmod>`,
       '  </url>',
     ].join('\n'),

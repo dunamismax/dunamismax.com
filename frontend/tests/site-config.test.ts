@@ -11,17 +11,17 @@ import {
 describe('site config', () => {
   test('builds absolute URLs from bare paths', () => {
     expect(toAbsoluteUrl('blog')).toBe('https://dunamismax.com/blog')
-    expect(toAbsoluteUrl('/projects')).toBe('https://dunamismax.com/projects')
+    expect(toAbsoluteUrl('/projects/')).toBe('https://dunamismax.com/projects/')
   })
 
   test('freezes current public page contracts', () => {
     expect(pageContracts.map((page) => page.path)).toEqual([
       '/',
-      '/projects',
-      '/blog',
-      '/about',
-      '/contact',
-      '/404',
+      '/projects/',
+      '/blog/',
+      '/about/',
+      '/contact/',
+      '/404/',
     ])
     expect(getPageContract('home').title).toBe('Stephen Sawyer -- dunamismax')
   })

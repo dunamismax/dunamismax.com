@@ -24,7 +24,7 @@ const posts: MachineSurfacePost[] = [
 
 describe('machine surface helpers', () => {
   test('keeps the sitemap page set aligned with the public route contract', () => {
-    expect(sitemapPagePaths).toEqual(['/', '/projects', '/blog', '/about', '/contact'])
+    expect(sitemapPagePaths).toEqual(['/', '/projects/', '/blog/', '/about/', '/contact/'])
   })
 
   test('formats RSS dates in UTC RFC 2822 form', () => {
@@ -44,7 +44,7 @@ describe('machine surface helpers', () => {
 
     expect(feed).toContain('<rss version="2.0"')
     expect(feed).toContain('<title>Building this site</title>')
-    expect(feed).toContain('<link>https://dunamismax.com/blog/hello-world</link>')
+    expect(feed).toContain('<link>https://dunamismax.com/blog/hello-world/</link>')
     expect(feed).toContain('<category>self-hosting</category>')
     expect(feed).toContain('<category>meta</category>')
     expect(feed).toContain('<lastBuildDate>Mon, 23 Mar 2026 00:00:00 +0000</lastBuildDate>')
@@ -54,8 +54,8 @@ describe('machine surface helpers', () => {
     const sitemap = buildSitemap(posts)
 
     expect(sitemap).toContain('https://dunamismax.com/')
-    expect(sitemap).toContain('https://dunamismax.com/projects')
-    expect(sitemap).toContain('https://dunamismax.com/blog/hello-world')
+    expect(sitemap).toContain('https://dunamismax.com/projects/')
+    expect(sitemap).toContain('https://dunamismax.com/blog/hello-world/')
     expect(sitemap).toContain('<lastmod>2026-03-23</lastmod>')
   })
 })

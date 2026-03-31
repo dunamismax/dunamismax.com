@@ -1,8 +1,12 @@
 ---
+import { getCollection } from 'astro:content'
+
 import { getPageContract } from '../config/site'
 import BaseLayout from '../layouts/BaseLayout.astro'
+import { formatDate, getReadingTime, isPublishedPost, sortPosts } from '../lib/blog'
 
 const page = getPageContract('home')
+const latestPost = sortPosts(await getCollection('blog', isPublishedPost))[0]
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
@@ -25,20 +29,33 @@ const page = getPageContract('home')
       </p>
     </section>
 
+    {
+      latestPost && (
+        <a class="latest-note" href={`/blog/${latestPost.slug}/`}>
+          <span class="latest-note-kicker">Latest note</span>
+          <span class="latest-note-title">{latestPost.data.title}</span>
+          <span class="latest-note-meta">
+            {formatDate(latestPost.data.date)} · {getReadingTime(latestPost.body)}
+          </span>
+          <span class="latest-note-desc">{latestPost.data.description}</span>
+        </a>
+      )
+    }
+
     <nav class="home-nav" aria-label="Quick navigation">
-      <a class="nav-card" href="/projects">
+      <a class="nav-card" href="/projects/">
         <span class="nav-card-label">Projects</span>
         <span class="nav-card-desc">Selected work across apps, systems, and tooling</span>
       </a>
-      <a class="nav-card" href="/blog">
+      <a class="nav-card" href="/blog/">
         <span class="nav-card-label">Blog</span>
         <span class="nav-card-desc">Notes on building, shipping, and self-hosting software</span>
       </a>
-      <a class="nav-card" href="/about">
+      <a class="nav-card" href="/about/">
         <span class="nav-card-label">About</span>
         <span class="nav-card-desc">What I care about and how I approach the work</span>
       </a>
-      <a class="nav-card" href="/contact">
+      <a class="nav-card" href="/contact/">
         <span class="nav-card-label">Contact</span>
         <span class="nav-card-desc">Ways to reach me and where to find me online</span>
       </a>

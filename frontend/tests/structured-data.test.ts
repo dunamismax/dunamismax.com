@@ -30,16 +30,16 @@ describe('structured data helpers', () => {
     const structuredData = buildBlogPostingStructuredData({
       title: 'Building this site',
       description: 'Why the site is static-first.',
-      path: '/blog/hello-world',
+      path: '/blog/hello-world/',
       publishedTime: '2026-03-23T00:00:00.000Z',
       tags: ['self-hosting', 'meta'],
     })
 
     expect(structuredData['@type']).toBe('BlogPosting')
-    expect(structuredData.url).toBe('https://dunamismax.com/blog/hello-world')
+    expect(structuredData.url).toBe('https://dunamismax.com/blog/hello-world/')
     expect(structuredData.mainEntityOfPage).toEqual({
       '@type': 'WebPage',
-      '@id': 'https://dunamismax.com/blog/hello-world',
+      '@id': 'https://dunamismax.com/blog/hello-world/',
     })
     expect(structuredData.author).toEqual({ '@id': PERSON_SCHEMA_ID })
     expect(structuredData.isPartOf).toEqual({ '@id': WEBSITE_SCHEMA_ID })

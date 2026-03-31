@@ -43,10 +43,15 @@ const personStructuredData = buildPersonStructuredData()
     {robotsContent && <meta content={robotsContent} name="robots" />}
 
     <meta content={ogType} property="og:type" />
+    <meta content="en_US" property="og:locale" />
     <meta content={pageTitle} property="og:title" />
     <meta content={description} property="og:description" />
     <meta content={canonicalUrl} property="og:url" />
     <meta content={socialImageUrl} property="og:image" />
+    <meta content="image/png" property="og:image:type" />
+    <meta content={String(siteConfig.socialImageWidth)} property="og:image:width" />
+    <meta content={String(siteConfig.socialImageHeight)} property="og:image:height" />
+    <meta content={siteConfig.socialImageAlt} property="og:image:alt" />
     <meta content={siteConfig.name} property="og:site_name" />
     {articlePublishedTime && <meta content={articlePublishedTime} property="article:published_time" />}
     {articleTags.map((tag) => <meta content={tag} property="article:tag" />)}
@@ -55,7 +60,9 @@ const personStructuredData = buildPersonStructuredData()
     <meta content={pageTitle} name="twitter:title" />
     <meta content={description} name="twitter:description" />
     <meta content={socialImageUrl} name="twitter:image" />
+    <meta content={siteConfig.socialImageAlt} name="twitter:image:alt" />
     <meta content={siteConfig.twitterSite} name="twitter:site" />
+    <meta content={siteConfig.twitterCreator} name="twitter:creator" />
 
     <link href={canonicalUrl} rel="canonical" />
     <link href={siteConfig.faviconPath} rel="icon" type="image/svg+xml" />
@@ -67,8 +74,8 @@ const personStructuredData = buildPersonStructuredData()
     />
     <link href="/fonts/InterVariable.woff2" rel="preload" as="font" type="font/woff2" crossorigin />
     <link href="/fonts/JetBrainsMono-Regular.woff2" rel="preload" as="font" type="font/woff2" crossorigin />
-    <script type="application/ld+json" set:html={JSON.stringify(websiteStructuredData)} />
-    <script type="application/ld+json" set:html={JSON.stringify(personStructuredData)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteStructuredData)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personStructuredData)} />
     <slot name="head" />
   </head>
   <body>

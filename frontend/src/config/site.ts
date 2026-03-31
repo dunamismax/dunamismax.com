@@ -36,9 +36,14 @@ export const siteConfig = {
   language: 'en',
   themeColor: '#0a0a0b',
   socialImagePath: '/og/default.png',
+  socialImageWidth: 1200,
+  socialImageHeight: 630,
+  socialImageAlt:
+    'Stephen Sawyer. Practical software, durable systems, and clear execution across Python, Go, TypeScript, and self-hosted infrastructure.',
   faviconPath: '/favicon.svg',
   rssPath: '/feed.xml',
   twitterSite: '@DunamisMax',
+  twitterCreator: '@DunamisMax',
   email: 'dunamismax@tutamail.com',
   sameAs: [
     'https://github.com/dunamismax',
@@ -74,7 +79,7 @@ export const pageContracts: PageContract[] = [
   {
     id: 'projects',
     label: 'Projects',
-    path: '/projects',
+    path: '/projects/',
     title: 'Projects -- Stephen Sawyer',
     description:
       'Selected public projects across applications, infrastructure, developer tools, and reference work.',
@@ -82,7 +87,7 @@ export const pageContracts: PageContract[] = [
   {
     id: 'blog',
     label: 'Blog',
-    path: '/blog',
+    path: '/blog/',
     title: 'Blog -- Stephen Sawyer',
     description:
       'Writing on software engineering, self-hosting, technical tradeoffs, and production-minded development.',
@@ -90,21 +95,21 @@ export const pageContracts: PageContract[] = [
   {
     id: 'about',
     label: 'About',
-    path: '/about',
+    path: '/about/',
     title: 'About -- Stephen Sawyer',
     description: 'Who I am, what I care about, and how I build durable software.',
   },
   {
     id: 'contact',
     label: 'Contact',
-    path: '/contact',
+    path: '/contact/',
     title: 'Contact -- Stephen Sawyer',
     description: 'How to reach Stephen Sawyer by email, Signal, or public profiles.',
   },
   {
     id: 'not-found',
     label: '404',
-    path: '/404',
+    path: '/404/',
     title: '404 -- Not Found',
     description: 'Page not found.',
   },
@@ -140,24 +145,24 @@ export const navLinks: NavLink[] = [
     matches: (path) => path === '/',
   },
   {
-    href: '/projects',
+    href: '/projects/',
     label: 'Projects',
-    matches: (path) => path === '/projects',
+    matches: (path) => path === '/projects/',
   },
   {
-    href: '/blog',
+    href: '/blog/',
     label: 'Blog',
-    matches: (path) => path === '/blog' || path.startsWith('/blog/'),
+    matches: (path) => path === '/blog/' || path.startsWith('/blog/'),
   },
   {
-    href: '/about',
+    href: '/about/',
     label: 'About',
-    matches: (path) => path === '/about',
+    matches: (path) => path === '/about/',
   },
   {
-    href: '/contact',
+    href: '/contact/',
     label: 'Contact',
-    matches: (path) => path === '/contact',
+    matches: (path) => path === '/contact/',
   },
 ] as const
 

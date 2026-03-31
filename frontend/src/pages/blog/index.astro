@@ -28,7 +28,7 @@ const posts = sortPosts(await getCollection('blog', isPublishedPost))
                 </time>
                 <span class="reading-time">{getReadingTime(post.body)}</span>
               </div>
-              <a class="post-title" href={`/blog/${post.slug}`}>
+              <a class="post-title" href={`/blog/${post.slug}/`}>
                 {post.data.title}
               </a>
               <p class="post-excerpt">{post.data.description}</p>

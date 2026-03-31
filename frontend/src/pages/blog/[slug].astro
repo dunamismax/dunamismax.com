@@ -21,7 +21,7 @@ type Props = {
 const { post } = Astro.props as Props
 const { Content } = await render(post)
 const pageTitle = `${post.data.title} -- Stephen Sawyer`
-const articlePath = `/blog/${post.slug}`
+const articlePath = `/blog/${post.slug}/`
 const blogPostingStructuredData = buildBlogPostingStructuredData({
   title: post.data.title,
   description: post.data.description,
@@ -40,7 +40,7 @@ const blogPostingStructuredData = buildBlogPostingStructuredData({
   path={articlePath}
 >
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(blogPostingStructuredData)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(blogPostingStructuredData)} />
   </Fragment>
   <article class="blog-post">
     <header class="post-header">
@@ -64,7 +64,7 @@ const blogPostingStructuredData = buildBlogPostingStructuredData({
     </div>
 
     <footer class="post-footer">
-      <a href="/blog">← All posts</a>
+      <a href="/blog/">← All posts</a>
     </footer>
   </article>
 </BaseLayout>

@@ -386,6 +386,46 @@ main {
   gap: var(--space-4);
 }
 
+.latest-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--bg-secondary);
+  padding: var(--space-6);
+  text-decoration: none;
+  transition:
+    border-color var(--duration-fast) var(--easing),
+    background-color var(--duration-fast) var(--easing);
+}
+
+.latest-note:hover {
+  border-color: var(--accent);
+  background-color: var(--bg-tertiary);
+}
+
+.latest-note-kicker,
+.latest-note-meta {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.latest-note-title {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: 500;
+}
+
+.latest-note-desc {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
 .nav-card {
   display: flex;
   flex-direction: column;
