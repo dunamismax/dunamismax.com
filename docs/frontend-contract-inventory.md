@@ -1,13 +1,13 @@
 # Frontend Contract Inventory
 
-Status on 2026-03-30: the repo default site path is the Astro static frontend under `frontend/`, built into Docker and served by Caddy. This document now serves as the frozen migration contract extracted from the legacy Python app plus the frontend-owned content that replaced it; the Python app remains in-tree only for Phase 6 cleanup and comparison.
+Status on 2026-03-30: the repo default site path is the Astro static frontend under `frontend/`, built into Docker and served by Caddy. This document now serves as the frozen route, metadata, content, styling, and asset contract for the shipped site.
 
 ## Phase boundary
 
 - Phases 1 through 5 are complete in repo configuration.
-- This file remains useful as the frozen parity and cleanup contract for routes, metadata, content, styling anchors, and assets.
+- Phase 6 cleanup is now complete. The repo reads as one Astro-first stack.
+- This file remains useful as the frozen current-state contract for routes, metadata, content, styling anchors, and assets.
 - The default site path is now the Astro static build under `frontend/`.
-- The legacy Python web app remains only until final cleanup removes it.
 - Static output remains the default deployment assumption. No current feature justifies Astro SSR, a backend, or a database.
 
 ## Public route contract
@@ -43,8 +43,8 @@ Status on 2026-03-30: the repo default site path is the Astro static frontend un
   - Twitter site handle: `@DunamisMax`
   - theme color: `#0a0a0b`
 - Shared metadata assets:
-  - favicon: `/static/favicon.svg`
-  - default Open Graph image: `/static/og/default.png`
+  - favicon: `/favicon.svg`
+  - default Open Graph image: `/og/default.png`
   - RSS alternate link: `/feed.xml`
 - Shared Open Graph behavior:
   - default `og:type` is `website`
@@ -55,8 +55,6 @@ Status on 2026-03-30: the repo default site path is the Astro static frontend un
 ## Blog content contract
 
 Current source: frontend-owned Markdown files under `frontend/src/content/blog/`
-
-The Astro frontend now owns the default blog route path. The retained Python cleanup copy still reads the same files through `src/app/content/blog.py`, which is why this contract remains useful until Phase 6 deletes the old web stack.
 
 Schema today:
 
@@ -81,8 +79,6 @@ Behavior today:
 ## Project content contract
 
 Current source: frontend-owned JSON files under `frontend/src/content/projects/`
-
-The Astro frontend now owns the default projects route path. The retained Python cleanup copy still reads the same files through `src/app/content/projects.py`, which is why this contract remains useful until Phase 6 deletes the old web stack.
 
 Schema today:
 
@@ -115,11 +111,10 @@ Status labels:
 
 Current style sources:
 
-- shared tokens: `src/app/static/css/tokens.css`
-- shared structure: `src/app/static/css/base.css`, `src/app/static/css/layout.css`
-- page files: `home.css`, `projects.css`, `blog.css`, `blog-post.css`, `about.css`, `contact.css`
+- shared tokens: `frontend/src/styles/tokens.css`
+- shared structure and page styles: `frontend/src/styles/global.css`
 
-Carry-forward anchors for the frontend port:
+Carry-forward anchors for the shipped frontend:
 
 - Palette variables:
   - `--bg-primary`, `--bg-secondary`, `--bg-tertiary`
@@ -147,25 +142,21 @@ Carry-forward anchors for the frontend port:
 
 Assets that should remain self-hosted:
 
-- `src/app/static/favicon.svg`
-- `src/app/static/og/default.png`
-- `src/app/static/fonts/InterVariable.woff2`
-- `src/app/static/fonts/InterVariable-Italic.woff2`
-- `src/app/static/fonts/JetBrainsMono-Regular.woff2`
-- `src/app/static/fonts/JetBrainsMono-Medium.woff2`
-- `src/app/static/fonts/JetBrainsMono-Bold.woff2`
-- `src/app/static/fonts/JetBrainsMono-Italic.woff2`
+- `frontend/public/favicon.svg`
+- `frontend/public/og/default.png`
+- `frontend/public/fonts/InterVariable.woff2`
+- `frontend/public/fonts/InterVariable-Italic.woff2`
+- `frontend/public/fonts/JetBrainsMono-Regular.woff2`
+- `frontend/public/fonts/JetBrainsMono-Medium.woff2`
+- `frontend/public/fonts/JetBrainsMono-Bold.woff2`
+- `frontend/public/fonts/JetBrainsMono-Italic.woff2`
 
 ## Source of truth
 
 This inventory was extracted from:
 
-- `src/app/routes/pages.py`
-- `src/app/site.py`
-- `src/app/config.py`
-- `src/app/content/blog.py`
-- `src/app/content/projects.py`
+- `frontend/src/config/site.ts`
 - `frontend/src/content/blog/`
 - `frontend/src/content/projects/`
-- `src/app/static/css/tokens.css`
-- `src/app/static/css/layout.css`
+- `frontend/src/styles/tokens.css`
+- `frontend/src/styles/global.css`

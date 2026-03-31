@@ -8,5 +8,8 @@ __pycache__/
 .pyright/
 .pytest_cache/
 dist/
+frontend/node_modules/
+frontend/dist/
+frontend/.astro/
 *.egg
 .DS_Store

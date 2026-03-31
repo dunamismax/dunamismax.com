@@ -7,7 +7,6 @@ Current truth:
 - This frontend is now the default local, CI, and container deploy path for the repo.
 - The Astro frontend owns the public HTML routes, machine-readable surfaces, styling system, and repo-owned content.
 - Blog posts and project data are single-sourced under `frontend/src/content/`.
-- The legacy Python app still exists only until the final cleanup phase removes the old web stack.
 
 ## Commands
 
@@ -33,7 +32,3 @@ The frontend currently covers:
 - Static machine surfaces for RSS, sitemap, robots, and health
 - The build artifact used by Docker/Caddy deploys
 
-Still not complete here:
-
-- legacy Python web-app cleanup under `src/app/`
-- final documentation cleanup once the old stack is removed

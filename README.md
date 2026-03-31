@@ -2,11 +2,11 @@
 
 **The personal site, portfolio, and writing surface for Stephen Sawyer.**
 
-dunamismax.com is the public-facing home for everything I build. The repo now ships the site as a Bun + Astro + Vue frontend built from `frontend/` and served as static output through Docker + Caddy. The legacy Python app under `src/app/` remains in-tree only for cleanup and comparison while the final migration phase deletes the old web stack.
+dunamismax.com is the public-facing home for everything I build. The repo ships the site as a Bun + Astro + Vue frontend built from `frontend/` and served as static output through Docker + Caddy.
 
 The site itself is the portfolio entry. If the page loads in under a second, looks good on a phone, and does not ask for cookies, that is the pitch.
 
-> **Status:** Astro static site is now the default local, CI, and container deploy path in repo. The public HTML routes, machine-readable surfaces, and repo-owned content all live under `frontend/`. Legacy FastAPI + Jinja2 code is still present only until Phase 6 cleanup removes it.
+> **Status:** Astro static site is the default local, CI, and container deploy path in repo. The public HTML routes, machine-readable surfaces, and repo-owned content all live under `frontend/`.
 
 ## Stack
 
@@ -24,17 +24,11 @@ The site itself is the portfolio entry. If the page loads in under a second, loo
 
 No database. No CMS. No analytics scripts. No cookie banners. No framework theater.
 
-### Legacy cleanup lane
+### Local verification helper
 
-- **Python 3.12+**
-- **FastAPI**
-- **Jinja2**
-- **uv**
-- **Ruff**
-- **Pyright**
-- **pytest**
+- **Python 3.11+** for `scripts/smoke.py`
 
-Those files remain only until the final cleanup phase removes the old serving stack.
+The smoke script uses only the Python standard library. No Python web stack remains in the repo.
 
 ## Domain strategy
 
@@ -74,12 +68,10 @@ How to reach me. Channels listed clearly, no contact form.
 
 ```text
 dunamismax.com/
-  src/
-    app/
-      ... legacy FastAPI app kept only for cleanup
   deploy/
     static-site.Caddyfile
   frontend/
+    public/
     src/
       components/
       config/
@@ -91,15 +83,13 @@ dunamismax.com/
       styles/
     tests/
     package.json
+  docs/
+    frontend-contract-inventory.md
   scripts/
     smoke.py
-  tests/
-  pyproject.toml
-  uv.lock
   Dockerfile
   Caddyfile
   docker-compose.yml
-  BUILD.md
   README.md
 ```
 
@@ -135,6 +125,13 @@ Containerized deploy path:
 docker compose up -d --build
 ```
 
+If `8080` is already in use on the host, publish the site on another port:
+
+```bash
+DUNAMISMAX_HOST_PORT=18080 docker compose up -d --build
+python3 scripts/smoke.py --base-url http://127.0.0.1:18080
+```
+
 ### Quality checks
 
 Default site checks:
@@ -149,14 +146,10 @@ cd ..
 python3 scripts/smoke.py
 ```
 
-Legacy cleanup-only checks:
+Container smoke against an already running published port:
 
 ```bash
-uv sync
-uv run ruff check .
-uv run ruff format --check .
-uv run pyright
-uv run pytest
+python3 scripts/smoke.py --base-url http://127.0.0.1:8080
 ```
 
 ## Machine-readable surfaces

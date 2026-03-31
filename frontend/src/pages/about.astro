@@ -17,10 +17,11 @@ const page = getPageContract('about')
 
     <p>
       Most of my work is in <strong>Python</strong>, <strong>Go</strong>, and
-      <strong>Rust</strong>. Browser-facing surfaces use server-rendered templates with
-      <strong>FastAPI</strong> and <strong>Jinja2</strong>. I reach for
-      <strong>SQLite</strong> by default and move to PostgreSQL only when the product
-      clearly earns it.
+      <strong>Rust</strong>. Browser-facing surfaces use <strong>TypeScript</strong>,
+      <strong>Bun</strong>, and <strong>Astro</strong>, with <strong>Vue</strong> only
+      when an interaction actually earns client-side state. I reach for
+      <strong>PostgreSQL</strong> by default and use <strong>SQLite</strong> when the
+      product is intentionally local-first.
     </p>
 
     <h2>What I care about</h2>
@@ -51,21 +52,22 @@ const page = getPageContract('about')
     <h2>The stack</h2>
 
     <p>
-      Python for web surfaces, automation, and operational tools. Go for services,
-      daemons, CLIs, APIs, and most application logic. Rust for native runtimes,
+      Python for backends, automation, and operational tools. Go for services,
+      daemons, CLIs, and networking-heavy work. Rust for native runtimes,
       auditable boundary work, capture paths, custody code, and shared-core systems
       tools.
     </p>
 
     <p>
-      On the browser side: server-rendered Jinja2 templates served by FastAPI. No
-      JavaScript framework, no build toolchain, no SPA. If an interaction ever earns
-      extra client-side behavior, it needs to justify itself.
+      On the browser side: Astro-first pages with Vue kept to island-sized,
+      justified interactions. No SPA shell, no analytics junk, no gratuitous
+      hydration. If an interaction ever earns extra client-side behavior, it needs
+      to justify itself.
     </p>
 
     <p>
-      This site runs on that exact stack -- FastAPI, Jinja2, hand-written CSS, and
-      Uvicorn behind Caddy.
+      This site runs on that exact stack -- Astro static output on Bun, hand-written
+      CSS, and Caddy in front of a boring Docker container.
     </p>
   </article>
 </BaseLayout>

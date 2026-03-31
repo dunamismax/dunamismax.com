@@ -1,6 +1,6 @@
 ---
 title: Building this site
-description: "Why I built dunamismax.com with a server-rendered approach and hand-written CSS, and what to expect from this blog."
+description: "Why I built dunamismax.com with a static-first Astro stack and hand-written CSS, and what to expect from this blog."
 date: 2026-03-23
 tags:
   - self-hosting
@@ -20,29 +20,29 @@ something earns its spot.
 
 ## The stack
 
-The site is built with **FastAPI** and **Jinja2**. The current launch surface is
-fully server-rendered HTML with hand-written CSS and design tokens, keeping the
-dark, minimal aesthetic that feels like a terminal that learned typography.
+The site is built with **Astro** on **Bun**. The current launch surface is
+static HTML with hand-written CSS and design tokens, keeping the dark, minimal
+aesthetic that feels like a terminal that learned typography.
 
 Fonts are self-hosted. There are no third-party scripts, no analytics, no
 tracking pixels, no cookie banner (because there are no cookies). The entire
 home page transfers under 100KB.
 
-The broader product stack uses **Python** for web surfaces and automation,
+The broader product stack uses **Python** for backends and automation,
 **Go** for services and CLIs, and **Rust** for systems-level work.
 
-## Why server-rendered
+## Why static-first
 
 Every URL on this site returns complete HTML on the first response. No
 JavaScript framework, no client-side routing, no hydration step. The browser
 gets exactly what it needs and nothing more.
 
-The build is simple. FastAPI serves templates with Jinja2. Uvicorn runs the
-server. Deployment is a Docker container with Caddy in front. No build step, no
-bundler, no transpiler.
+The build is simple. Astro renders the site ahead of time. Bun handles the
+tooling. Deployment is a Docker container with Caddy in front. There is a build
+step now, but it stays boring and fully local.
 
-Blog posts and project data live in the repo as Python data files. No database.
-No CMS. Just code.
+Blog posts and project data live in the repo as Markdown and typed content
+files. No database. No CMS. Just code.
 
 ## What to expect
 
