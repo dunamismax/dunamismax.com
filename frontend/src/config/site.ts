@@ -40,7 +40,7 @@ export const siteConfig = {
   socialImageHeight: 630,
   socialImageAlt:
     'Stephen Sawyer. Practical software, durable systems, and clear execution across Python, Go, TypeScript, and self-hosted infrastructure.',
-  faviconPath: '/favicon.svg',
+  faviconPath: '/favicon.ico',
   rssPath: '/feed.xml',
   twitterSite: '@DunamisMax',
   twitterCreator: '@DunamisMax',
