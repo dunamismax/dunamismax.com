@@ -2,10 +2,8 @@
 
 This is the Bun + Astro + Vue site for `dunamismax.com`.
 
-Current truth:
-
-- This frontend is now the default local, CI, and container deploy path for the repo.
-- The Astro frontend owns the public HTML routes, machine-readable surfaces, styling system, and repo-owned content.
+- This frontend is the default local, CI, and container deploy path for the repo.
+- It owns the public HTML routes, machine-readable surfaces, styling system, and repo-owned content.
 - Blog posts and project data are single-sourced under `frontend/src/content/`.
 
 ## Commands
@@ -22,7 +20,7 @@ bun run preview
 
 ## Scope
 
-The frontend currently covers:
+The frontend covers:
 
 - Astro page routing for the public HTML pages
 - Shared metadata and canonical URL handling

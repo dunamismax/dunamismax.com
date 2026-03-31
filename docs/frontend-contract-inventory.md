@@ -1,13 +1,12 @@
 # Frontend Contract Inventory
 
-Status on 2026-03-30: the repo default site path is the Astro static frontend under `frontend/`, built into Docker and served by Caddy. This document now serves as the frozen route, metadata, content, styling, and asset contract for the shipped site.
+This document is the current route, metadata, content, styling, and asset contract for the shipped `dunamismax.com` site.
 
-## Phase boundary
+## Site boundary
 
-- Phases 1 through 5 are complete in repo configuration.
-- Phase 6 cleanup is now complete. The repo reads as one Astro-first stack.
-- This file remains useful as the frozen current-state contract for routes, metadata, content, styling anchors, and assets.
-- The default site path is now the Astro static build under `frontend/`.
+- The repo default site path is the Astro static frontend under `frontend/`.
+- Public HTML routes, machine-readable surfaces, styling, and repo-owned content live in the frontend.
+- Docker packages the built static output and Caddy serves it.
 - Static output remains the default deployment assumption. No current feature justifies Astro SSR, a backend, or a database.
 
 ## Public route contract
