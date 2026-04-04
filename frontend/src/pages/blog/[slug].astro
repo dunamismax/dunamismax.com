@@ -42,21 +42,21 @@ const blogPostingStructuredData = buildBlogPostingStructuredData({
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(blogPostingStructuredData)} />
   </Fragment>
-  <article class="mx-auto max-w-[--width-content]">
+  <article class="mx-auto max-w-(--width-content)">
     <header class="mb-14">
       <h1 class="mb-4 text-3xl tracking-tight sm:text-4xl">{post.data.title}</h1>
-      <div class="flex items-center gap-2 font-[--font-mono] text-sm text-[--color-text-tertiary]">
+      <div class="flex items-center gap-2 font-mono text-sm text-(--color-text-tertiary)">
         <time datetime={post.data.date.toISOString().slice(0, 10)}>
           {formatDateLong(post.data.date)}
         </time>
-        <span class="text-[--color-border]">·</span>
+        <span class="text-(--color-border)">·</span>
         <span>{getReadingTime(post.body)}</span>
       </div>
       {
         post.data.tags.length > 0 && (
           <div class="mt-4 flex flex-wrap gap-2">
             {post.data.tags.map((tag: string) => (
-              <span class="rounded-[--radius-md] border border-[--color-border] px-2 py-0.5 font-[--font-mono] text-xs text-[--color-text-tertiary]">
+              <span class="rounded-(--radius-md) border border-(--color-border) px-2 py-0.5 font-mono text-xs text-(--color-text-tertiary)">
                 {tag}
               </span>
             ))}
@@ -69,9 +69,9 @@ const blogPostingStructuredData = buildBlogPostingStructuredData({
       <Content />
     </div>
 
-    <footer class="mt-16 border-t border-[--color-border] pt-8">
+    <footer class="mt-16 border-t border-(--color-border) pt-8">
       <a
-        class="font-[--font-mono] text-sm text-[--color-accent] no-underline hover:text-[--color-accent-hover]"
+        class="font-mono text-sm text-(--color-accent) no-underline hover:text-(--color-accent-hover)"
         href="/blog/"
       >
         ← All posts

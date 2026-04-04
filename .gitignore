@@ -15,3 +15,4 @@ deploy/origin-ca/
 .codex
 *.egg
 .DS_Store
+screenshots/
