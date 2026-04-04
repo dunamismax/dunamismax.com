@@ -10,54 +10,80 @@ const latestPost = sortPosts(await getCollection('blog', isPublishedPost))[0]
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
-  <div class="home">
-    <section class="hero">
-      <h1>Stephen Sawyer</h1>
-      <p class="tagline">Software engineer focused on practical products, durable systems, and clear execution.</p>
-      <p class="stack">
+  <div class="mx-auto max-w-[--width-content]">
+    <!-- Hero -->
+    <section class="mb-14">
+      <h1 class="mb-4 text-4xl tracking-tight sm:text-5xl">Stephen Sawyer</h1>
+      <p class="mb-6 text-xl leading-relaxed text-[--color-text-secondary]">
+        Software engineer focused on practical products, durable systems, and clear execution.
+      </p>
+      <p class="text-base leading-relaxed text-[--color-text-secondary]">
         I build software for people who want control over their stack: products
         that can run on their own infrastructure, keep their data close, and stay
         understandable after launch.
       </p>
-      <p class="stack">
-        My default toolset is <strong>Python</strong> for automation and backend
-        glue, <strong>Go</strong> for systems and long-running services, and
-        <strong>TypeScript</strong>, <strong>Bun</strong>, and <strong>Astro</strong>
-        for the web. I use <strong>PostgreSQL</strong> when the product needs a real
-        system of record, <strong>SQLite</strong> when local-first fits better, and
+      <p class="mt-4 text-base leading-relaxed text-[--color-text-secondary]">
+        My default toolset is <strong class="font-medium text-[--color-text-primary]">Python</strong> for automation and backend
+        glue, <strong class="font-medium text-[--color-text-primary]">Go</strong> for systems and long-running services, and
+        <strong class="font-medium text-[--color-text-primary]">TypeScript</strong>, <strong class="font-medium text-[--color-text-primary]">Bun</strong>, and <strong class="font-medium text-[--color-text-primary]">Astro</strong>
+        for the web. I use <strong class="font-medium text-[--color-text-primary]">PostgreSQL</strong> when the product needs a real
+        system of record, <strong class="font-medium text-[--color-text-primary]">SQLite</strong> when local-first fits better, and
         infrastructure simple enough to trust in production.
       </p>
     </section>
 
+    <!-- Latest post -->
     {
       latestPost && (
-        <a class="latest-note" href={`/blog/${latestPost.slug}/`}>
-          <span class="latest-note-kicker">Latest note</span>
-          <span class="latest-note-title">{latestPost.data.title}</span>
-          <span class="latest-note-meta">
+        <a
+          class="mb-8 flex flex-col gap-1.5 rounded-[--radius-md] border border-[--color-border] bg-[--color-bg-secondary] p-6 no-underline transition-all duration-[--duration-normal] ease-[--ease-out] hover:border-[--color-border-hover] hover:bg-[--color-bg-tertiary]"
+          href={`/blog/${latestPost.slug}/`}
+        >
+          <span class="font-[--font-mono] text-xs tracking-wide text-[--color-text-tertiary] uppercase">
+            Latest note
+          </span>
+          <span class="text-lg font-semibold tracking-tight text-[--color-text-primary]">
+            {latestPost.data.title}
+          </span>
+          <span class="font-[--font-mono] text-xs text-[--color-text-tertiary]">
             {formatDate(latestPost.data.date)} · {getReadingTime(latestPost.body)}
           </span>
-          <span class="latest-note-desc">{latestPost.data.description}</span>
+          <span class="text-sm leading-normal text-[--color-text-secondary]">
+            {latestPost.data.description}
+          </span>
         </a>
       )
     }
 
-    <nav class="home-nav" aria-label="Quick navigation">
-      <a class="nav-card" href="/projects/">
-        <span class="nav-card-label">Projects</span>
-        <span class="nav-card-desc">Selected work across apps, systems, and tooling</span>
+    <!-- Navigation cards -->
+    <nav class="grid grid-cols-1 gap-4 sm:grid-cols-2" aria-label="Quick navigation">
+      <a
+        class="group flex flex-col gap-1.5 rounded-[--radius-md] border border-[--color-border] bg-[--color-bg-secondary] p-6 no-underline transition-all duration-[--duration-normal] ease-[--ease-out] hover:border-[--color-border-hover] hover:bg-[--color-bg-tertiary] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-accent]"
+        href="/projects/"
+      >
+        <span class="text-base font-semibold tracking-tight text-[--color-text-primary]">Projects</span>
+        <span class="text-sm text-[--color-text-secondary]">Selected work across apps, systems, and tooling</span>
       </a>
-      <a class="nav-card" href="/blog/">
-        <span class="nav-card-label">Blog</span>
-        <span class="nav-card-desc">Notes on building, shipping, and self-hosting software</span>
+      <a
+        class="group flex flex-col gap-1.5 rounded-[--radius-md] border border-[--color-border] bg-[--color-bg-secondary] p-6 no-underline transition-all duration-[--duration-normal] ease-[--ease-out] hover:border-[--color-border-hover] hover:bg-[--color-bg-tertiary] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-accent]"
+        href="/blog/"
+      >
+        <span class="text-base font-semibold tracking-tight text-[--color-text-primary]">Blog</span>
+        <span class="text-sm text-[--color-text-secondary]">Notes on building, shipping, and self-hosting software</span>
       </a>
-      <a class="nav-card" href="/about/">
-        <span class="nav-card-label">About</span>
-        <span class="nav-card-desc">What I care about and how I approach the work</span>
+      <a
+        class="group flex flex-col gap-1.5 rounded-[--radius-md] border border-[--color-border] bg-[--color-bg-secondary] p-6 no-underline transition-all duration-[--duration-normal] ease-[--ease-out] hover:border-[--color-border-hover] hover:bg-[--color-bg-tertiary] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-accent]"
+        href="/about/"
+      >
+        <span class="text-base font-semibold tracking-tight text-[--color-text-primary]">About</span>
+        <span class="text-sm text-[--color-text-secondary]">What I care about and how I approach the work</span>
       </a>
-      <a class="nav-card" href="/contact/">
-        <span class="nav-card-label">Contact</span>
-        <span class="nav-card-desc">Ways to reach me and where to find me online</span>
+      <a
+        class="group flex flex-col gap-1.5 rounded-[--radius-md] border border-[--color-border] bg-[--color-bg-secondary] p-6 no-underline transition-all duration-[--duration-normal] ease-[--ease-out] hover:border-[--color-border-hover] hover:bg-[--color-bg-tertiary] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--color-accent]"
+        href="/contact/"
+      >
+        <span class="text-base font-semibold tracking-tight text-[--color-text-primary]">Contact</span>
+        <span class="text-sm text-[--color-text-secondary]">Ways to reach me and where to find me online</span>
       </a>
     </nav>
   </div>

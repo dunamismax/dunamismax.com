@@ -2,24 +2,41 @@
 import { siteConfig, socialLinks } from '../config/site'
 ---
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <p class="footer-text">{siteConfig.author} · Projects, writing, and software built to be understood.</p>
-    <ul class="footer-links">
+<footer class="mt-auto border-t border-[--color-border] py-10 px-4 sm:px-6">
+  <div class="mx-auto flex max-w-[--width-wide] flex-col items-center gap-4 text-center">
+    <p class="m-0 text-sm text-[--color-text-secondary]">
+      {siteConfig.author} · Projects, writing, and software built to be understood.
+    </p>
+    <ul class="flex flex-wrap justify-center gap-4 list-none p-0">
       {
         socialLinks.map((link) => (
           <li>
-            <a href={link.href} rel={link.rel} target={link.href.startsWith('http') ? '_blank' : undefined}>
+            <a
+              class="font-[--font-mono] text-xs text-[--color-text-tertiary] no-underline transition-colors duration-[--duration-fast] hover:text-[--color-text-primary]"
+              href={link.href}
+              rel={link.rel}
+              target={link.href.startsWith('http') ? '_blank' : undefined}
+            >
               {link.label}
             </a>
           </li>
         ))
       }
       <li>
-        <a href="/contact/">Contact</a>
+        <a
+          class="font-[--font-mono] text-xs text-[--color-text-tertiary] no-underline transition-colors duration-[--duration-fast] hover:text-[--color-text-primary]"
+          href="/contact/"
+        >
+          Contact
+        </a>
       </li>
       <li>
-        <a href={siteConfig.rssPath}>RSS</a>
+        <a
+          class="font-[--font-mono] text-xs text-[--color-text-tertiary] no-underline transition-colors duration-[--duration-fast] hover:text-[--color-text-primary]"
+          href={siteConfig.rssPath}
+        >
+          RSS
+        </a>
       </li>
     </ul>
   </div>

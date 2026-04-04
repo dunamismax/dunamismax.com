@@ -12,12 +12,19 @@ const projects: ProjectRecord[] = projectEntries.map((entry: CollectionEntry<'pr
   ...entry.data,
 }))
 const groups = groupProjects(projects)
+
+const statusClasses: Record<string, string> = {
+  active: 'bg-emerald-400/6 text-[--color-success]',
+  shipped: 'bg-[--color-accent-muted] text-[--color-accent]',
+  'phase-0': 'bg-amber-400/6 text-[--color-warning]',
+  legacy: 'bg-[--color-bg-tertiary] text-[--color-text-tertiary]',
+}
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
-  <div class="projects-page">
-    <h1>Projects</h1>
-    <p class="lead">
+  <div class="mx-auto max-w-[--width-content]">
+    <h1 class="mb-4 text-4xl tracking-tight">Projects</h1>
+    <p class="mb-14 text-[--color-text-secondary]">
       A selection of public work across products, infrastructure, and developer
       tooling. Some of these are actively evolving, others are shipped references,
       but all reflect the kind of software I like to build.
@@ -25,36 +32,61 @@ const groups = groupProjects(projects)
 
     {
       groups.map((group) => (
-        <section class="category-group">
-          <h2>{group.label}</h2>
-          <p class="group-description">{group.description}</p>
-          <ul class="project-list">
+        <section class="mb-14">
+          <h2 class="mb-2 border-b border-[--color-border] pb-2 text-lg text-[--color-text-secondary]">
+            {group.label}
+          </h2>
+          <p class="mb-6 text-sm text-[--color-text-tertiary]">{group.description}</p>
+          <ul class="flex list-none flex-col gap-4 p-0">
             {group.projects.map((project) => (
-              <li class="project-card">
-                <div class="project-header">
-                  <h3 class="project-name">{project.name}</h3>
-                  <span class={`status-badge status-${project.status}`}>
+              <li class="rounded-[--radius-md] border border-[--color-border] bg-[--color-bg-secondary] p-6">
+                <div class="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                  <h3 class="text-base font-medium">{project.name}</h3>
+                  <span
+                    class:list={[
+                      'shrink-0 rounded-[--radius-md] font-[--font-mono] text-xs px-2 py-0.5',
+                      statusClasses[project.status] ?? '',
+                    ]}
+                  >
                     {STATUS_LABELS[project.status]}
                   </span>
                 </div>
-                <p class="project-tagline">{project.tagline}</p>
-                <div class="project-meta">
-                  <div class="project-stack">
-                    {project.stack.map((tech) => <span class="tech-tag">{tech}</span>)}
+                <p class="mb-4 text-sm leading-normal text-[--color-text-secondary]">
+                  {project.tagline}
+                </p>
+                <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                  <div class="flex flex-wrap gap-2">
+                    {project.stack.map((tech) => (
+                      <span class="rounded-[--radius-md] border border-[--color-border] px-2 py-0.5 font-[--font-mono] text-xs text-[--color-text-tertiary]">
+                        {tech}
+                      </span>
+                    ))}
                   </div>
-                  <div class="project-links">
+                  <div class="flex shrink-0 flex-wrap gap-4">
                     {project.url && (
-                      <a class="repo-link" href={project.url} rel="noopener noreferrer" target="_blank">
+                      <a
+                        class="font-[--font-mono] text-sm text-[--color-accent] no-underline hover:text-[--color-accent-hover]"
+                        href={project.url}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
                         read it →
                       </a>
                     )}
                     {project.visibility === 'public' && project.repo && (
-                      <a class="repo-link" href={project.repo} rel="noopener noreferrer" target="_blank">
+                      <a
+                        class="font-[--font-mono] text-sm text-[--color-accent] no-underline hover:text-[--color-accent-hover]"
+                        href={project.repo}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
                         repo →
                       </a>
                     )}
                     {project.visibility === 'private' && (
-                      <span class="repo-link repo-link-muted">private repo</span>
+                      <span class="font-[--font-mono] text-sm text-[--color-text-tertiary]">
+                        private repo
+                      </span>
                     )}
                   </div>
                 </div>

@@ -6,19 +6,27 @@ const page = getPageContract('contact')
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
-  <div class="contact">
-    <h1>Contact</h1>
-    <p class="lead">
+  <div class="mx-auto max-w-[--width-content]">
+    <h1 class="mb-4 text-4xl tracking-tight">Contact</h1>
+    <p class="mb-10 text-[--color-text-secondary]">
       Email is the best place to start. Signal works well for direct outreach, and
       GitHub is the right place for public discussion around code.
     </p>
 
-    <ul class="channels">
+    <ul class="flex list-none flex-col gap-0 p-0">
       {
-        contactChannels.map((channel) => (
-          <li class="channel">
-            <span class="channel-label">{channel.label}</span>
+        contactChannels.map((channel, i) => (
+          <li
+            class:list={[
+              'flex flex-col gap-1 border-b border-[--color-border] py-3 sm:flex-row sm:items-baseline sm:gap-4',
+              i === contactChannels.length - 1 && 'border-b-0',
+            ]}
+          >
+            <span class="min-w-24 shrink-0 font-[--font-mono] text-sm text-[--color-text-tertiary]">
+              {channel.label}
+            </span>
             <a
+              class="break-all text-base"
               href={channel.href}
               rel={channel.external ? 'noopener noreferrer' : undefined}
               target={channel.external ? '_blank' : undefined}

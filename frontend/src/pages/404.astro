@@ -6,9 +6,14 @@ const page = getPageContract('not-found')
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path} robotsContent="noindex, nofollow">
-  <div class="not-found">
-    <h1>404</h1>
-    <p>The page you were looking for does not exist, or it moved.</p>
-    <a href="/">← Home</a>
+  <div class="mx-auto max-w-[--width-content] pt-24 text-center">
+    <h1 class="mb-4 text-4xl tracking-tight">404</h1>
+    <p class="mb-8 text-[--color-text-secondary]">The page you were looking for does not exist, or it moved.</p>
+    <a
+      class="font-[--font-mono] text-sm text-[--color-accent] no-underline hover:text-[--color-accent-hover]"
+      href="/"
+    >
+      ← Home
+    </a>
   </div>
 </BaseLayout>

@@ -81,10 +81,10 @@ const personStructuredData = buildPersonStructuredData()
     <script is:inline type="application/ld+json" set:html={JSON.stringify(personStructuredData)} />
     <slot name="head" />
   </head>
-  <body>
+  <body class="flex min-h-dvh flex-col text-base leading-relaxed">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader currentPath={path} />
-    <main id="main-content">
+    <main id="main-content" class="flex-1 pt-[calc(var(--height-nav)+3rem)] pr-4 pb-16 pl-4 sm:pr-6 sm:pl-6">
       <slot />
     </main>
     <SiteFooter />

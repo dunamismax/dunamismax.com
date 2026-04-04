@@ -8,14 +8,31 @@ type Props = {
 const { currentPath } = Astro.props as Props
 ---
 
-<nav class="site-nav" aria-label="Main navigation">
-  <div class="nav-inner">
-    <a class="nav-logo" href="/">dunamismax</a>
-    <ul class="nav-links">
+<nav
+  class="fixed top-0 right-0 left-0 z-50 flex h-[--height-nav] items-center border-b border-[--color-border] bg-[--color-bg-primary]/95 backdrop-blur-sm"
+  aria-label="Main navigation"
+>
+  <div class="mx-auto flex w-full max-w-[--width-wide] items-center justify-between px-4 sm:px-6">
+    <a
+      class="font-[--font-mono] text-base font-bold tracking-tight text-[--color-text-primary] no-underline transition-colors duration-[--duration-fast] hover:text-[--color-accent]"
+      href="/"
+    >
+      dunamismax
+    </a>
+    <ul class="flex list-none gap-4 p-0 sm:gap-6">
       {
         navLinks.map((link) => (
           <li>
-            <a aria-current={link.matches(currentPath) ? 'page' : undefined} href={link.href}>
+            <a
+              class:list={[
+                'font-[--font-mono] text-xs no-underline transition-colors duration-[--duration-fast] sm:text-sm',
+                link.matches(currentPath)
+                  ? 'text-[--color-text-primary]'
+                  : 'text-[--color-text-secondary] hover:text-[--color-text-primary]',
+              ]}
+              aria-current={link.matches(currentPath) ? 'page' : undefined}
+              href={link.href}
+            >
               {link.label}
             </a>
           </li>

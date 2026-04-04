@@ -10,33 +10,43 @@ const posts = sortPosts(await getCollection('blog', isPublishedPost))
 ---
 
 <BaseLayout description={page.description} pageTitle={page.title} path={page.path}>
-  <div class="blog-index">
-    <h1>Blog</h1>
-    <p class="lead">
+  <div class="mx-auto max-w-[--width-content]">
+    <h1 class="mb-4 text-4xl tracking-tight">Blog</h1>
+    <p class="mb-14 text-[--color-text-secondary]">
       Writing on building software, making technical tradeoffs, and shipping
       systems that have to work in the real world.
     </p>
 
     {
       posts.length > 0 ? (
-        <ul class="post-list">
+        <ul class="flex list-none flex-col gap-10 p-0">
           {posts.map((post) => (
-            <li class="post-row">
-              <div class="post-meta">
-                <time datetime={post.data.date.toISOString().slice(0, 10)}>
+            <li class="border-b border-[--color-border] pb-10 last:border-b-0 last:pb-0">
+              <div class="mb-2 flex gap-4">
+                <time
+                  class="font-[--font-mono] text-sm text-[--color-text-tertiary]"
+                  datetime={post.data.date.toISOString().slice(0, 10)}
+                >
                   {formatDate(post.data.date)}
                 </time>
-                <span class="reading-time">{getReadingTime(post.body)}</span>
+                <span class="font-[--font-mono] text-sm text-[--color-text-tertiary]">
+                  {getReadingTime(post.body)}
+                </span>
               </div>
-              <a class="post-title" href={`/blog/${post.slug}/`}>
+              <a
+                class="mb-2 block text-lg font-semibold tracking-tight text-[--color-text-primary] no-underline transition-colors duration-[--duration-fast] hover:text-[--color-accent]"
+                href={`/blog/${post.slug}/`}
+              >
                 {post.data.title}
               </a>
-              <p class="post-excerpt">{post.data.description}</p>
+              <p class="m-0 text-sm leading-normal text-[--color-text-secondary]">
+                {post.data.description}
+              </p>
             </li>
           ))}
         </ul>
       ) : (
-        <p class="empty">No posts yet. Check back soon.</p>
+        <p class="text-[--color-text-tertiary]">No posts yet. Check back soon.</p>
       )
     }
   </div>
