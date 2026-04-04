@@ -132,4 +132,4 @@ Cloudflare Origin CA setup:
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+GPL-3.0. See [LICENSE](LICENSE).
