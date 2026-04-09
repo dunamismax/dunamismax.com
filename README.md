@@ -12,6 +12,7 @@ Caddy handling the deployment path.
 - **TypeScript**
 - **Astro**
 - **Vue** for small client islands where needed
+- **Tailwind CSS v4** with local design tokens
 - **Caddy** serving the built static output in Docker
 - **Biome** for linting and formatting
 - **`astro check`** for type and route validation
@@ -45,6 +46,7 @@ dunamismax.com/
   scripts/
     smoke.py
     verify.sh
+  BUILD.md
   Dockerfile
   Caddyfile
   docker-compose.yml
