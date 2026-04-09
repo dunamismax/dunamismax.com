@@ -3,7 +3,7 @@
 This is the Bun + Astro + Vue site for `dunamismax.com`.
 
 - This frontend is the default local, CI, and container deploy path for the repo.
-- It owns the public HTML routes, machine-readable surfaces, styling system, and repo-owned content.
+- It owns the public HTML routes, machine-readable surfaces, Tailwind v4 plus token-driven styling system, and repo-owned content.
 - It intentionally represents the frontend-only slice of Stephen's broader web lane. The repo does not currently justify a Bun API or database.
 - Blog posts and project data are single-sourced under `frontend/src/content/`.
 
