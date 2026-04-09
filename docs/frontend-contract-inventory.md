@@ -123,34 +123,24 @@ Visibility behavior:
 
 Current style sources:
 
-- shared tokens: `frontend/src/styles/tokens.css`
-- shared structure and page styles: `frontend/src/styles/global.css`
+- Tailwind CSS v4 import and base/component layers: `frontend/src/styles/global.css`
+- design tokens consumed through Tailwind's `@theme`: `frontend/src/styles/tokens.css`
 
 Carry-forward anchors for the shipped frontend:
 
-- Palette variables:
-  - `--bg-primary`, `--bg-secondary`, `--bg-tertiary`
-  - `--border`
-  - `--text-primary`, `--text-secondary`, `--text-tertiary`
-  - `--accent`, `--accent-hover`, `--accent-muted`
-  - `--success`, `--warning`, `--error`
-  - `--code-bg`
-- Typography variables:
-  - `--font-body`: `Inter`
-  - `--font-mono`: `JetBrains Mono`
-  - `--font-heading`: mono by default
-- Layout variables:
-  - `--wide-width: 80rem`
-  - `--content-width: 65ch`
-  - `--nav-height: 3.5rem`
-  - `--radius: 0.375rem`
-- Motion variables:
-  - `--duration-fast`, `--duration-normal`, `--duration-slow`, `--easing`
-  - reduced-motion mode zeros them out
-- Shared layout behavior:
+- Tailwind v4 is loaded through `@import "tailwindcss";` in `frontend/src/styles/global.css`
+- local design tokens are defined in `frontend/src/styles/tokens.css` and provide the canonical color, typography, width, radius, and motion values
+- key token families:
+  - color: `--color-bg-*`, `--color-border*`, `--color-text-*`, `--color-accent*`, `--color-success`, `--color-warning`, `--color-error`, `--color-code-bg`
+  - typography: `--font-body`, `--font-mono`, `--font-heading`
+  - layout: `--width-content`, `--width-wide`, `--height-nav`
+  - radius: `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-full`
+  - motion: `--duration-fast`, `--duration-normal`, `--duration-slow`, `--ease-out`
+- shared layout behavior:
   - fixed top navigation
   - main content padded below nav height
   - centered footer with lightweight utility links
+  - reduced-motion mode zeros out transition durations through token overrides
 
 Assets that should remain self-hosted:
 
@@ -158,10 +148,8 @@ Assets that should remain self-hosted:
 - `frontend/public/og/default.png`
 - `frontend/public/fonts/InterVariable.woff2`
 - `frontend/public/fonts/InterVariable-Italic.woff2`
-- `frontend/public/fonts/JetBrainsMono-Regular.woff2`
-- `frontend/public/fonts/JetBrainsMono-Medium.woff2`
-- `frontend/public/fonts/JetBrainsMono-Bold.woff2`
-- `frontend/public/fonts/JetBrainsMono-Italic.woff2`
+- `frontend/public/fonts/JetBrainsMonoVariable.woff2`
+- `frontend/public/fonts/JetBrainsMonoVariable-Italic.woff2`
 
 ## Source of truth
 
