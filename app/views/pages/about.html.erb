@@ -1,0 +1,93 @@
+<% content_for :title, "About · dunamismax" %>
+<% content_for :description, "Stephen Sawyer. Practical software, durable systems, and clear execution. Ruby on Rails, Hotwire, SQLite and PostgreSQL, self-hosted on a single box." %>
+
+<section class="page-hero">
+  <div class="section-inner">
+    <p class="eyebrow">About</p>
+    <h1>Practical software in Ruby on Rails.</h1>
+    <p class="lede">
+      I'm Stephen Sawyer, a software engineer focused on practical systems and
+      products that hold up outside the demo. I care about software that solves
+      a real problem, can be operated by the people who own it, and stays
+      legible when it needs to change.
+    </p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-inner">
+    <div class="prose">
+      <p>
+        Most of my work lands in two lanes. <strong>Ruby on Rails</strong> is
+        where I move quickly on products: APIs, dashboards, admin surfaces,
+        and the kind of full-stack web apps that should not need a separate
+        SPA. <strong>Self-hosted infrastructure</strong> is where the apps
+        actually run: a real Linux box, a Puma process under systemd, Caddy
+        on the host, and Cloudflare at the edge.
+      </p>
+      <p>
+        On smaller, terminal-heavy or system-level work I still reach for
+        <strong>Go</strong> for daemons and observability, and
+        <strong>Python</strong> for automation and one-off scripts. But the
+        default for anything that has a UI or an API is Rails.
+      </p>
+
+      <h2>What I care about</h2>
+
+      <p>
+        <strong>Ownership.</strong> I like software that can run on hardware
+        you control, with data you can inspect and move when you need to.
+      </p>
+
+      <p>
+        <strong>Boring infrastructure.</strong> I prefer the deployment that
+        is easy to explain and easy to recover, not the one that looks
+        impressive in a diagram. One box, one service, one redeploy script.
+      </p>
+
+      <p>
+        <strong>Explicit data models.</strong> Schemas, query paths, and
+        storage decisions should make the system easier to reason about, not
+        harder. Active Record migrations are the changelog for the application
+        as much as Git is.
+      </p>
+
+      <p>
+        <strong>Shipping with discipline.</strong> I value iteration, but not
+        chaos. The goal is to ship useful software and keep the complexity
+        justified.
+      </p>
+
+      <h2>The stack</h2>
+
+      <p>
+        The default web stack is <strong>Ruby on Rails 8</strong> with
+        <strong>Hotwire</strong> (Turbo + Stimulus) over import maps,
+        <strong>Tailwind CSS</strong> for utility classes, and
+        <strong>Propshaft</strong> as the asset pipeline. I lean on the Solid
+        family — Solid Queue, Solid Cache, and Solid Cable — so a small Rails
+        app does not need a Redis just to do background jobs and caching.
+      </p>
+
+      <p>
+        For data, I default to <strong>SQLite</strong> for products that fit
+        on one box and <strong>PostgreSQL</strong> when the product is meant
+        to grow. Either way, I want the schema to be explicit and the data
+        flow easy to trace.
+      </p>
+
+      <p>
+        On the frontend, Rails owns rendering. Hotwire turns most of what
+        people reach for SPAs to do into server-rendered partials with small
+        Stimulus controllers around them. I add JavaScript only when the
+        product clearly benefits from it.
+      </p>
+
+      <p>
+        This site itself runs on an Ubuntu VM as a Rails 8 app behind Caddy,
+        with Cloudflare in front. That deployment shape says a lot about how
+        I like to work: simple, inspectable, and dependable.
+      </p>
+    </div>
+  </div>
+</section>

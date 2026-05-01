@@ -1,0 +1,31 @@
+<header class="site-header">
+  <nav class="primary-nav" aria-label="Primary navigation">
+    <%= link_to root_path, class: "brand-link", aria: { label: "dunamismax home" } do %>
+      <span class="brand-mark" aria-hidden="true">DM</span>
+      <span class="brand-word">dunamismax</span>
+    <% end %>
+
+    <div class="desktop-nav">
+      <%= link_to "Projects", projects_path, class: ("is-current" if current_page?(projects_path)) %>
+      <%= link_to "Blog",     posts_path,    class: ("is-current" if request.path.start_with?(posts_path)) %>
+      <%= link_to "About",    about_path,    class: ("is-current" if current_page?(about_path)) %>
+      <%= link_to "Contact",  contact_path,  class: ("is-current" if current_page?(contact_path)) %>
+    </div>
+
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" data-controller="theme" data-action="theme#toggle" aria-pressed="true">
+        <span class="theme-toggle__track" aria-hidden="true">
+          <span class="theme-toggle__thumb"></span>
+        </span>
+        <span data-theme-target="label">Dark</span>
+      </button>
+    </div>
+  </nav>
+
+  <nav class="mobile-nav" aria-label="Section navigation">
+    <%= link_to "Projects", projects_path, class: ("is-current" if current_page?(projects_path)) %>
+    <%= link_to "Blog",     posts_path,    class: ("is-current" if request.path.start_with?(posts_path)) %>
+    <%= link_to "About",    about_path,    class: ("is-current" if current_page?(about_path)) %>
+    <%= link_to "Contact",  contact_path,  class: ("is-current" if current_page?(contact_path)) %>
+  </nav>
+</header>

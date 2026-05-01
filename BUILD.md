@@ -1,302 +1,233 @@
-# BUILD.md
+# dunamismax.com · Build & Deploy Runbook
 
-## Purpose
+This is the operational runbook for the Rails 8 version of `dunamismax.com`.
+The site is self-hosted on a single Ubuntu box. Puma under systemd, SQLite on
+disk, Caddy in front for TLS and HTTP/2, Cloudflare at the edge.
 
-This file is the living execution manual for `dunamismax.com` while the site is being realigned to Stephen Sawyer's current portfolio direction.
+For the architectural rationale (why this site is Rails now), see the blog
+post at `/blog/rewriting-dunamismax-in-rails`.
 
-If you are a future agent working in this repo, start here.
+## 1. Toolchain
 
-1. Read `README.md`, `frontend/README.md`, `docs/frontend-contract-inventory.md`, and this file before making changes.
-2. Work through the phases in order unless current repo reality clearly justifies a different sequence.
-3. Keep this file current as the repo changes.
-4. Check boxes only after the work is actually done in the repo and verified.
-5. Leave aspirational, partial, or debated work unchecked.
-6. If a phase item becomes wrong, rewrite or remove it instead of letting this file drift.
+The repo pins Ruby `4.0.3` and Node `24.13.1` via `.mise.toml` and
+`.ruby-version`. The expectation is that mise manages both.
 
-This file is temporary by design. Once the site exits this active realignment phase, fold any enduring guidance into stable docs and remove `BUILD.md`.
+System dependencies on Ubuntu (one-time, plus when bumping Ruby):
 
-## Decision
-
-`dunamismax.com` remains a **static-first Astro site** unless a concrete product need proves otherwise.
-
-Stephen's broader full-stack web lane is Bun + TypeScript + Astro + Vue, with Elysia + Zod + PostgreSQL when a product genuinely needs backend logic and durable state.
-
-This repo should align with that stack honestly, not theatrically.
-
-For this repo, alignment means:
-
-- keep the public site fast, static-first, and frontend-owned
-- use Bun, TypeScript, Astro, and selective Vue where they improve the site without turning it into an app-shaped costume
-- keep the existing Tailwind v4 plus token-driven styling system coherent instead of churning it for fashion
-- make the portfolio and copy accurately reflect Stephen's current build lanes and active project mix
-- keep deployment boring with Docker and Caddy
-
-Alignment does **not** mean forcing this repo into a fake full-stack rewrite.
-
-Right now, adding a Bun API, Elysia service, auth layer, PostgreSQL database, CMS, or admin backend would be cargo-cult architecture for a portfolio site.
-
-## Current repo truth
-
-The shipped repo today is:
-
-- a Bun-managed Astro frontend rooted at `frontend/`
-- repo-owned blog and project content under `frontend/src/content/`
-- Tailwind CSS v4 utilities layered on top of local design tokens in `frontend/src/styles/`
-- static HTML pages plus RSS, sitemap, robots, and health surfaces
-- a root `bun run verify` wrapper that runs the frontend checks and Python smoke pass
-- Docker plus Caddy serving the built static output
-- no auth, no private admin surface, no analytics scripts, no CMS, and no database
-
-### Current repo shape
-
-```text
-dunamismax.com/
-  BUILD.md
-  README.md
-  docs/
-    frontend-contract-inventory.md
-  frontend/
-    astro.config.mjs
-    package.json
-    src/
-      components/
-      config/
-      content/
-        blog/
-        projects/
-      layouts/
-      pages/
-      styles/
-  scripts/
-    smoke.py
-    verify.sh
-  Caddyfile
-  Dockerfile
-  docker-compose.yml
-  package.json
+```sh
+sudo apt-get update
+sudo apt-get install -y build-essential autoconf bison \
+  libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev libgmp-dev \
+  libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev \
+  libgdbm-dev libncurses-dev libdb-dev pkg-config rustc \
+  curl git ca-certificates
 ```
 
-### Current verification commands
+mise install:
 
-The repo already has a root verification entrypoint:
-
-```bash
-bun run verify
+```sh
+curl -fsSL https://mise.run | sh
+echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+cd /path/to/dunamismax.com
+mise trust
+mise install        # builds Ruby 4.0.3, fetches Node 24.13.1
 ```
 
-Equivalent manual commands today:
+## 2. Gem install
 
-```bash
-bun --cwd frontend install --frozen-lockfile
-bun --cwd frontend run lint
-bun --cwd frontend run check
-bun --cwd frontend run test
-bun --cwd frontend run build
-python3 scripts/smoke.py
+Production gems are installed deployment-style under `vendor/bundle`:
+
+```sh
+gem install bundler -v 4.0.11 --no-document
+bundle config set --local deployment true
+bundle config set --local without 'development test'
+bundle config set --local path vendor/bundle
+bundle config set --local frozen true
+bundle install
 ```
 
-## Fit boundary with Stephen's current stack
+For development on the same box, run `bundle install` without the deployment
+flags, or use a separate working directory.
 
-This repo is a public portfolio and writing surface, not a product app with inherent backend state.
+## 3. Secrets and env
 
-### What should stay as-is unless there is a strong reason to change it
+```sh
+sudo install -d -m 0750 -o "$USER" -g "$USER" /etc/dunamismax-web
+SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bundle exec bin/rails secret
+```
 
-- Astro owns page routing, layouts, page rendering, RSS, sitemap, robots, health, and first response.
-- Content stays repo-owned in Markdown and JSON under `frontend/src/content/`.
-- Tailwind v4 and local tokens remain the current styling system unless a specific problem earns a change.
-- Docker plus Caddy remain the default shipping path.
-- The site stays fast, readable, and low-JavaScript.
-- No third-party analytics, trackers, or cookie-banner theater.
+Put the result, plus the env vars listed in `README.md`, into
+`/etc/dunamismax-web/env` (root:sawyer, mode 0640). Suggested baseline:
 
-### What can evolve within the current static-first boundary
+```ini
+RAILS_ENV=production
+SECRET_KEY_BASE=...
+APP_HOST=dunamismax.com
+RAILS_HOSTS=dunamismax.com,www.dunamismax.com
+RAILS_FORCE_SSL=true
+RAILS_SERVE_STATIC_FILES=1
+RAILS_LOG_LEVEL=info
+PORT=8082
+WEB_CONCURRENCY=2
+RAILS_MAX_THREADS=5
+SOLID_QUEUE_IN_PUMA=true
+```
 
-- project roster accuracy
-- project ordering and featured presentation
-- page copy and metadata
-- project content schema fields such as featured state, screenshots, or richer status notes
-- tighter content and metadata validation
-- small Vue islands for earned interaction such as filters or lightweight inspectors
+## 4. Database and assets
 
-### What must be earned before adding backend state
+```sh
+set -a && . /etc/dunamismax-web/env && set +a
+bundle exec bin/rails db:prepare
+bundle exec bin/rails db:seed
+bundle exec bin/rails assets:precompile
+```
 
-- authenticated private content or admin workflows
-- dynamic ingestion that should not be flattened into checked-in content
-- stateful search or filtering that cannot be handled well at build time
-- a contact or intake workflow that truly needs server-side ownership in this repo
-- a documented product reason that static output cannot satisfy cleanly
+`db:prepare` is the right command: it creates the database if missing and runs
+pending migrations otherwise. `db:seed` is idempotent — every record uses
+`find_or_initialize_by(...).update!(...)` so re-seeding is safe.
 
-If one of those becomes real, document the need here first and compare a static-first solution against one simple Bun API service before changing architecture.
+## 5. systemd unit
 
-## Current portfolio direction to reflect
+`/etc/systemd/system/dunamismax-web.service`:
 
-Source-of-truth references:
+```ini
+[Unit]
+Description=dunamismax.com Rails Web (Puma)
+After=network-online.target
+Wants=network-online.target
 
-- `/Users/sawyer/github/dunamismax/README.md`
-- `/Users/sawyer/github/dunamismax/tech-stacks/web-fullstack-tech-stack.md`
+[Service]
+Type=simple
+User=sawyer
+Group=sawyer
+WorkingDirectory=/home/sawyer/github/dunamismax.com
+EnvironmentFile=/etc/dunamismax-web/env
+Environment=HOME=/home/sawyer
+Environment=PATH=/home/sawyer/.local/share/mise/installs/ruby/4.0.3/bin:/home/sawyer/.local/share/mise/installs/node/24.13.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=BUNDLE_GEMFILE=/home/sawyer/github/dunamismax.com/Gemfile
+ExecStart=/home/sawyer/.local/share/mise/installs/ruby/4.0.3/bin/bundle exec puma -C config/puma.rb -b tcp://127.0.0.1:8082
+Restart=on-failure
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=20
 
-The current public direction should foreground:
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/sawyer/github/dunamismax.com/storage
+ReadWritePaths=/home/sawyer/github/dunamismax.com/tmp
+ReadWritePaths=/home/sawyer/github/dunamismax.com/log
+PrivateTmp=true
 
-- **TypeScript + Bun + Astro + Vue** as the default web lane
-- **Go** for networking, daemons, systems tooling, and operator products
-- **Python** for automation, scripting, APIs, and glue where it fits best
-- **Rust** as a dedicated existing-repo or maintenance lane, not the default forward path for new portfolio emphasis
+[Install]
+WantedBy=multi-user.target
+```
 
-The current repo already reflects part of that direction through `DebugPath`, `MyLifeRPG`, `ElChess`, `GitPulse`, `Scrybase`, `Wirescope`, `bore`, `toolworks`, and the site itself.
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now dunamismax-web.service
+sudo systemctl status dunamismax-web.service
+```
 
-The remaining portfolio work is mostly curation and emphasis, not an architectural rewrite.
+## 6. Caddy
 
-Likely gaps to review first:
+The repo ships a `Caddyfile` block to drop into `/etc/caddy/Caddyfile`:
 
-- whether `flowhook` and `patchworks` should now be represented on the public projects roster
-- whether the flagship active web and operator-facing projects are visually prominent enough
-- whether older shipped references or maintenance-lane work need clearer positioning so they do not pull the site's center of gravity backward
+```caddyfile
+www.dunamismax.com {
+    redir https://dunamismax.com{uri} permanent
+}
 
-## Target state
+dunamismax.com {
+    encode zstd gzip
 
-The target end state for this repo is:
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        X-XSS-Protection "0"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+    }
 
-- a fast static Astro site that still feels deliberate and current
-- a portfolio that honestly highlights Stephen's active build lanes and current flagship projects
-- page copy and metadata that match the parent portfolio README closely enough to avoid mixed-era drift
-- repo-owned content that is easy to review and update in git
-- stable docs that describe the actual current repo shape, including the Tailwind v4 token setup and root verification flow
-- no backend or database unless a specific site need justifies it
+    reverse_proxy 127.0.0.1:8082 {
+        header_up X-Forwarded-Proto https
+        header_up X-Real-IP {remote_host}
+    }
+}
+```
 
-## Non-goals
+```sh
+sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl reload caddy
+```
 
-Do not do these by default:
+If the apex is proxied by Cloudflare with **Full (strict)**, install the
+Cloudflare Origin CA cert at the host Caddy layer instead of relying on
+public Let's Encrypt certificates. This was set up for the prior Astro
+deployment and is unchanged.
 
-- do not split this repo into frontend and backend services just to mirror the broader full-stack template
-- do not add SSR, auth, a database, or an API for brochure-style content
-- do not add a CMS for content that already works well as repo-owned files
-- do not turn the site into a client-heavy SPA
-- do not rewrite the styling system just to chase a different aesthetic or stack fashion
-- do not add third-party analytics, cookie banners, or unnecessary client scripts
-- do not migrate frameworks out of habit or ecosystem FOMO
+## 7. Redeploy / update flow
 
-## Phase 0 - Reconfirm the boundary before changing architecture
+```sh
+cd /home/sawyer/github/dunamismax.com && git pull
+eval "$(~/.local/bin/mise activate bash)"
+bundle install
+set -a && . /etc/dunamismax-web/env && set +a
+bundle exec bin/rails db:prepare
+bundle exec bin/rails db:seed
+bundle exec bin/rails assets:precompile
+sudo systemctl restart dunamismax-web
+```
 
-### Work items
+That is the whole production deploy path. No image registry, no CI deploy
+job, no Capistrano. The box pulls its own code.
 
-- [ ] Re-read the parent portfolio README and the current web full-stack stack document before making structural changes.
-- [ ] Audit the local repo docs, metadata, and public copy for where they drift from Stephen's current stack and portfolio direction.
-- [ ] Record any newly discovered mismatch in this file before expanding scope.
-- [ ] Confirm that the requested change can stay inside the current static Astro boundary.
-- [ ] If a requested feature appears to need a backend, stop and document the justification test here before implementing it.
+## 8. Health checks
 
-### Acceptance criteria
+```sh
+curl -s http://127.0.0.1:8082/up                              # local Puma
+curl -s --resolve dunamismax.com:443:127.0.0.1 \
+     https://dunamismax.com/up                                # via Caddy
+sudo journalctl -u dunamismax-web -f                          # tail logs
+```
 
-- [ ] A future agent can explain in two or three sentences why this repo is static-first today.
-- [ ] A future agent can explain what alignment with Stephen's broader web lane means for this repo without claiming it should become a full-stack app by default.
-- [ ] Any proposal to add backend state has a written reason in this file.
+`/up` is the Rails-built health endpoint. It is exempt from the SSL redirect
+and from host authorization so a loopback probe can hit it without ceremony.
 
-## Phase 1 - Close project-roster gaps and sharpen emphasis
+## 9. Backups
 
-### Work items
+The SQLite databases live in `storage/`. Until they are moved to PostgreSQL,
+an off-host backup of that directory is the entire backup policy. Anything
+important (this is a pre-production marketing site, so not very much)
+should be snapshotted before migrations or schema changes.
 
-- [ ] Audit `frontend/src/content/projects/` against the current project list in `/Users/sawyer/github/dunamismax/README.md`.
-- [ ] Decide whether `flowhook` and `patchworks` now belong on the public project roster.
-- [ ] Review whether flagship current work such as `DebugPath`, `MyLifeRPG`, `ElChess`, `GitPulse`, and `Scrybase` is ordered and labeled strongly enough.
-- [ ] Reclassify categories and statuses only where the current taxonomy no longer tells the truth.
-- [ ] Remove, demote, or de-emphasize entries that no longer represent the current portfolio direction.
-- [ ] Keep every tagline, stack label, and visibility flag current enough that the roster can stand on its own.
+```sh
+sudo systemctl stop dunamismax-web
+tar -czf "dunamismax-storage-$(date +%F).tgz" -C /home/sawyer/github/dunamismax.com storage
+sudo systemctl start dunamismax-web
+```
 
-### Acceptance criteria
+A live backup with `sqlite3 .backup` is also fine because SQLite supports
+hot online backups; the stop/start above is the simplest version that does
+not require remembering the right `.backup` invocation.
 
-- [ ] The projects page reflects current active work more accurately than the parent README's raw list alone.
-- [ ] The site clearly surfaces the current web-app and operator-tool direction.
-- [ ] No project status overstates maturity, activity, or completeness.
-- [ ] A reader can infer Stephen's current build lanes from the portfolio data without outside context.
+## 10. Active phase plan
 
-## Phase 2 - Tighten public narrative and metadata
+Current focus, in order:
 
-### Work items
+1. **Rails 8 site.** Done — this repo. Public pages, projects, blog,
+   RSS feed, contact.
+2. **Authoring quality.** Move blog post bodies from raw HTML files in
+   `db/seeds/posts/` to a Markdown renderer with code highlighting.
+3. **Tags and series.** Add a tags index page and per-tag pages backed by
+   `Post#tag_list`.
+4. **Now / Uses.** A small Rails-managed `/now` page that the site can
+   update without a deploy.
+5. **Observability.** Set up Cloudflare access logs to a sink, add a tiny
+   `lib/tasks/health.rake` runbook task, and verify journalctl retention.
+6. **Postgres path.** Only when a feature actually requires it. The schema
+   is already written in a way that maps cleanly.
 
-- [ ] Keep the home page focused on Stephen's actual product, systems, and local-first posture.
-- [ ] Keep the about page aligned with the current stack philosophy and deployment bias.
-- [ ] Refresh blog framing when needed so it continues to match Bun and Astro web apps, Go systems work, Python automation, self-hosting, and operational discipline.
-- [ ] Review shared metadata in `frontend/src/config/site.ts` whenever the public narrative shifts.
-- [ ] Keep contact, navigation, route paths, structured data, and machine-readable surfaces stable while copy evolves.
-
-### Acceptance criteria
-
-- [ ] Home, projects, blog, and about read like one current portfolio instead of a mix of old eras.
-- [ ] Shared metadata does not materially contradict Stephen's current public README.
-- [ ] Rust is framed honestly as part of the body of work, not the default forward lane.
-- [ ] Public copy stays short, direct, and operator-friendly.
-
-## Phase 3 - Deepen content structure without adding backend sprawl
-
-### Work items
-
-- [ ] Keep blog posts and project data repo-owned under `frontend/src/content/`.
-- [ ] Add richer project fields such as featured state, screenshots, or short status notes only if they make the current portfolio easier to understand.
-- [ ] Reuse existing screenshots only when they improve clarity and remain easy to maintain.
-- [ ] Add schema checks or helper utilities only where they reduce drift and duplication.
-- [ ] Update `docs/frontend-contract-inventory.md` whenever route, metadata, content, or asset contracts materially change.
-
-### Acceptance criteria
-
-- [ ] Content remains easy to audit in git.
-- [ ] The content model stays simple enough for a future agent to understand quickly.
-- [ ] Stable docs continue to describe current repo truth rather than stale intentions.
-- [ ] No new content system introduces hidden operational cost.
-
-## Phase 4 - Preserve verification and docs hygiene
-
-### Work items
-
-- [ ] Keep `bun run verify` aligned with the actual frontend commands and smoke script.
-- [ ] Keep `README.md`, `frontend/README.md`, and `docs/frontend-contract-inventory.md` in agreement on the deployment shape, styling system, and ownership boundaries.
-- [ ] Keep Docker and Caddy docs aligned with the real static deployment path.
-- [ ] Add or tighten narrow tests only where they catch actual regressions in routes, content, metadata, or structured data.
-- [ ] Remove stale documentation details as soon as the repo shape changes.
-
-### Acceptance criteria
-
-- [ ] A fresh contributor can run the documented verification flow from the repo root without guesswork.
-- [ ] Docs agree on where the site lives, how it builds, how it ships, and how styling is organized.
-- [ ] Verification catches broken routes or machine-readable surfaces before deploy.
-- [ ] The repo stays easy to operate without adding ceremony.
-
-## Phase 5 - Use Vue only where it earns itself
-
-### Work items
-
-- [ ] Keep Astro as the page owner for all public routes.
-- [ ] Add Vue islands only for clearly valuable interaction such as filters, inspectors, or lightweight portfolio affordances.
-- [ ] Keep any Vue code island-scoped and avoid moving whole pages into client-side app mode.
-- [ ] Keep the JavaScript budget modest and intentional.
-- [ ] Verify that any added client-side behavior still respects the site's performance goals.
-
-### Acceptance criteria
-
-- [ ] The site still feels static-first and fast.
-- [ ] Any Vue usage is easy to justify in one sentence.
-- [ ] No new interaction requires cookies, analytics, or server state by accident.
-- [ ] JavaScript payload stays modest and intentional.
-
-## Phase 6 - Earned dynamic expansion, only if reality forces it
-
-### Work items
-
-- [ ] Document the exact user or operator need that static output can no longer satisfy.
-- [ ] Compare static-first alternatives before reaching for a backend.
-- [ ] If a backend is truly needed, define one clear boundary for it and keep the public site architecture coherent.
-- [ ] If persistence is required, justify PostgreSQL with the actual state model that needs to exist.
-- [ ] Update this file, the root README, and the contract inventory before landing the structural change.
-
-### Acceptance criteria
-
-- [ ] No backend lands in this repo without written justification.
-- [ ] Any added backend follows Stephen's current preferred web lane instead of ad hoc stack drift.
-- [ ] Astro still owns the public page shell unless a documented exception replaces that model.
-- [ ] The repo remains explainable to a future agent in a single pass.
-
-## Working rules for future agents
-
-- Update this file when phases, boundaries, or success criteria materially change.
-- Keep stable docs current-state oriented.
-- Do not mark a box complete because the work seems close.
-- If you intentionally reject a phase item, rewrite or remove it so the file stays truthful.
-- If the repo exits this active realignment phase, fold the enduring guidance into stable docs and remove `BUILD.md` rather than letting it rot.
+When a step ships, this list moves up.

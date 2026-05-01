@@ -1,18 +1,39 @@
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
+# See https://help.github.com/articles/ignoring-files for more about ignoring files.
+
+# Ignore bundler config and vendored gems.
+/.bundle
+/vendor/bundle
+
+# Ignore Rails generated files and runtime artifacts.
+/log/*
+!/log/.keep
+/tmp/*
+!/tmp/.keep
+!/tmp/pids
+/tmp/pids/*
+!/tmp/pids/.keep
+/storage/*
+!/storage/.keep
+
+# Ignore master key for credentials.
+/config/master.key
+/.kamal/secrets
+
+# Ignore precompiled assets.
+/public/assets
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Ignore node_modules from any local tool installs.
+/node_modules
+
+# Ignore environment files.
 .env
 .env.*
-.ruff_cache/
-.pyright/
-.pytest_cache/
-dist/
-frontend/node_modules/
-frontend/dist/
-frontend/.astro/
-deploy/origin-ca/
-.codex
-*.egg
+!.env.example
+
+# Local editor folders.
+.idea
+.vscode
 .DS_Store
-screenshots/
+.codex

@@ -1,0 +1,273 @@
+<p>
+  This site used to be an Astro static build. As of today, it is a
+  Ruby on Rails 8 application. The pages, the projects list, the blog you are
+  reading right now, and the RSS feed all come from Active Record models served
+  by ERB templates. The <code>frontend/</code> directory is gone, the Bun
+  toolchain is gone, the Docker container is gone, and the static-output
+  pipeline is gone with them.
+</p>
+
+<p>
+  The short version: I just shipped a Rails site for SentryPact, I liked the
+  shape of it more than the Astro shape I had here, and I wanted my personal
+  site to use the stack I am actually building products in. So this is the
+  rewrite log.
+</p>
+
+<h2>Why move off Astro</h2>
+
+<p>
+  Astro was a fine choice for this site when I made it. It produces clean
+  static HTML, the islands model is honest about where JavaScript actually
+  belongs, and the build is fast. None of that has changed.
+</p>
+
+<p>
+  What changed is what the site is for. dunamismax.com is supposed to be a
+  long-running personal site that explains the work I do, hosts a blog I keep
+  writing in, and links to projects I keep building. Almost every project in
+  that list is now a Rails app. SentryPact is a Rails control plane. Scrybase,
+  DebugPath, MyLifeRPG, and the chess platform are all converging on Rails 8
+  on SQLite for the small versions and Rails on PostgreSQL once they need it.
+  Keeping my own site on a different stack from everything else I ship had
+  stopped making sense.
+</p>
+
+<p>
+  The other thing was the content model. Astro's content collections are good,
+  but they are Markdown files in a folder. That is fine, until you want a real
+  list view, a real ordering, a real "featured" flag, or a real JSON or RSS
+  feed driven from the same source of truth. Active Record gives me all of
+  that with a single seed file and two tables.
+</p>
+
+<h2>What the stack is now</h2>
+
+<ul>
+  <li><strong>Ruby 4.0.3</strong> on <strong>Rails 8.1.3</strong></li>
+  <li><strong>Hotwire</strong> (Turbo + Stimulus) over import maps</li>
+  <li><strong>Propshaft</strong> for the asset pipeline</li>
+  <li><strong>Tailwind CSS</strong> via <code>tailwindcss-rails</code>, layered on top of a small hand-written CSS sheet</li>
+  <li><strong>SQLite</strong> for primary, cache, queue, and cable databases</li>
+  <li><strong>Puma</strong> with Solid Queue running in-process</li>
+  <li><strong>Caddy</strong> on the host for TLS and reverse proxy, then Cloudflare at the edge</li>
+  <li><strong>systemd</strong> as the process supervisor, no containers in production</li>
+</ul>
+
+<p>
+  This is the same shape that runs sentrypact.com. One box, one Git checkout,
+  one redeploy script, one set of operational commands. If something breaks on
+  one site I already know how to debug it on the other.
+</p>
+
+<h2>The repository, before and after</h2>
+
+<p>
+  Before, the layout looked like this:
+</p>
+
+<pre><code>dunamismax.com/
+  frontend/
+    src/
+      pages/
+      content/blog/
+      content/projects/
+      ...
+  scripts/smoke.py
+  deploy/
+  Dockerfile
+  Caddyfile
+  docker-compose.yml
+  package.json</code></pre>
+
+<p>
+  After, it looks like a stock Rails app:
+</p>
+
+<pre><code>dunamismax.com/
+  app/
+    controllers/
+    helpers/
+    models/
+    views/
+  bin/
+  config/
+  db/
+    migrate/
+    seeds.rb
+    seeds/posts/*.html
+  lib/
+  test/
+  Gemfile
+  Procfile.dev
+  Rakefile
+  config.ru</code></pre>
+
+<p>
+  The Astro <code>frontend/</code> tree, the Python smoke script, the
+  <code>Dockerfile</code>, the <code>Caddyfile</code> in the repo, and the
+  <code>docker-compose.yml</code> are all deleted. There is nothing to build
+  ahead of time and ship to a CDN. Rails renders pages on request, Caddy on
+  the host handles TLS and the cache layer, and Cloudflare proxies in front of
+  it.
+</p>
+
+<h2>Routes and controllers</h2>
+
+<p>
+  The URL surface stayed almost identical, on purpose. Old links should still
+  work.
+</p>
+
+<pre><code>GET  /          pages#home
+GET  /about     pages#about
+GET  /contact   pages#contact
+GET  /projects  projects#index
+GET  /blog      posts#index
+GET  /blog/:id  posts#show
+GET  /feed.xml  feeds#index
+GET  /robots.txt feeds#robots
+GET  /up        rails/health#show</code></pre>
+
+<p>
+  <code>PagesController</code> is intentionally tiny — three actions, all of
+  them static. <code>ProjectsController#index</code> groups projects by
+  category. <code>PostsController</code> uses friendly slugs via
+  <code>to_param</code>. <code>FeedsController</code> hands back an RSS feed
+  and a <code>robots.txt</code>. The Rails health endpoint at <code>/up</code>
+  is what Caddy and any uptime monitor hit.
+</p>
+
+<h2>Content as Active Record</h2>
+
+<p>
+  The blog and the projects list are both database-backed now. Two models, two
+  migrations, one seed file:
+</p>
+
+<pre><code>class Post &lt; ApplicationRecord
+  scope :published, -&gt; { where(published: true) }
+  scope :recent,    -&gt; { order(published_on: :desc, id: :desc) }
+  def to_param = slug
+end
+
+class Project &lt; ApplicationRecord
+  scope :ordered,  -&gt; { order(:position, :name) }
+  scope :featured, -&gt; { where(featured: true) }
+end</code></pre>
+
+<p>
+  Posts have a slug, title, description, body HTML, tag list, publish date,
+  and a published flag. Projects have a slug, name, tagline, category, status,
+  visibility, repo URL, optional product URL, stack list, position for
+  ordering, and a featured flag.
+</p>
+
+<p>
+  Blog post bodies live as HTML files under <code>db/seeds/posts/</code>. The
+  seed file reads them at <code>db:seed</code> time and writes them into the
+  <code>posts.body_html</code> column. That gives me the lightest possible
+  authoring story (open a file in an editor, paste HTML), keeps the source of
+  truth in Git, and lets the database be the read path.
+</p>
+
+<p>
+  When I want a richer authoring story later, I can swap that for Action Text,
+  for a Markdown renderer, or for a real CMS surface that writes to the same
+  table. The Active Record schema is the contract; the seed pipeline is just
+  one way to populate it.
+</p>
+
+<h2>Layout and styling</h2>
+
+<p>
+  The layout is one ERB file, <code>app/views/layouts/application.html.erb</code>,
+  with a shared header and footer partial. Tailwind is in via
+  <code>tailwindcss-rails</code> for utility classes. A hand-written sheet at
+  <code>app/assets/stylesheets/application.css</code> defines the design
+  tokens: colors, radii, shadows, spacing, and the dark-and-light theme
+  variables.
+</p>
+
+<p>
+  A single Stimulus controller flips the theme between dark and light and
+  remembers the choice in <code>localStorage</code>. The page paints in the
+  user's last theme on first load via a tiny inline script in the head, before
+  any CSS arrives, so there is no light flash on a dark page.
+</p>
+
+<p>
+  This is the same approach the SentryPact site uses. The two sites share a
+  family of CSS variables, a similar grid system, and the same theme
+  controller pattern. They look distinct because the colors are different,
+  not because the underlying mechanics are different.
+</p>
+
+<h2>Deployment</h2>
+
+<p>
+  Deployment is the same shape that runs sentrypact.com:
+</p>
+
+<ul>
+  <li>The repo lives in <code>/home/sawyer/github/dunamismax.com</code></li>
+  <li>Ruby and Node come from <a href="https://mise.jdx.dev">mise</a>, pinned by <code>.mise.toml</code></li>
+  <li>Gems are installed deployment-style under <code>vendor/bundle</code></li>
+  <li>Production env lives in <code>/etc/dunamismax-web/env</code></li>
+  <li>Puma is launched by a systemd unit and binds to <code>127.0.0.1:8082</code></li>
+  <li>Caddy on the host terminates TLS and reverse-proxies to Puma</li>
+  <li>Cloudflare proxies the public domain</li>
+</ul>
+
+<p>
+  Redeploy is a five-line script: <code>git pull</code>, <code>bundle
+  install</code>, source the env file, <code>bin/rails db:prepare</code>,
+  <code>bin/rails assets:precompile</code>, <code>systemctl restart
+  dunamismax-web</code>. There is no container build, no image registry, no CI
+  deploy job. The box pulls its own code.
+</p>
+
+<p>
+  Cloudflare keeps doing what it was already doing for the Astro site. The
+  origin certificate is the same Cloudflare Origin CA cert in
+  <strong>Full (strict)</strong> mode. The only change at the edge is that the
+  origin now serves dynamic HTML from Rails instead of static HTML from a
+  built Astro site.
+</p>
+
+<h2>What I gave up</h2>
+
+<p>
+  A static-only site is faster than a Rails site at handing out the first byte
+  of <code>/</code>. That difference is real, and I gave it up. In return I
+  get a real data model behind the content, a real admin path I can grow into,
+  background jobs available as soon as I want them, a console I can drop into,
+  ActiveRecord migrations as the changelog for the site, and the same
+  developer experience I am using on the products that live on this site.
+</p>
+
+<p>
+  The site is also no longer purely static, which means I need Caddy to be up,
+  Puma to be up, and the SQLite databases to be on disk. That trade is worth
+  it for what I want this site to do over the next few years.
+</p>
+
+<h2>What is next</h2>
+
+<p>
+  Short list:
+</p>
+
+<ul>
+  <li>Move blog post bodies from raw HTML files to a Markdown renderer with proper code highlighting.</li>
+  <li>Add a tags index and per-tag pages.</li>
+  <li>Add a small <code>/uses</code> or <code>/now</code> page that the Rails app can update without a deploy.</li>
+  <li>Wire <code>bin/ci</code> up to GitHub Actions the same way SentryPact does, with RuboCop, Brakeman, bundler-audit, and the test suite.</li>
+  <li>Promote the site to PostgreSQL only once a feature actually requires it.</li>
+</ul>
+
+<p>
+  None of that is urgent. The site is a Rails app now, the deployment shape is
+  the one I trust, and the writing surface is unblocked. That was the whole
+  point of the rewrite.
+</p>

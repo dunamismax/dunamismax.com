@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Stephen Sawyer · dunamismax" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= content_for(:description) || "Stephen Sawyer builds practical software in Ruby on Rails. dunamismax.com is a Rails 8 site for projects, writing on self-hosted systems, and contact." %>">
+    <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="dunamismax">
+    <meta property="og:site_name" content="dunamismax">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<%= content_for(:title) || "Stephen Sawyer · dunamismax" %>">
+    <meta property="og:description" content="<%= content_for(:description) || "Practical software in Ruby on Rails. Projects, writing, and self-hosted systems." %>">
+    <meta name="twitter:card" content="summary">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <script>
+      (() => {
+        const theme = localStorage.getItem("dunamismax-theme") || "dark";
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="alternate" type="application/rss+xml" title="dunamismax · Blog" href="<%= rss_feed_path %>">
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="antialiased">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <%= render "shared/header" %>
+
+    <main id="main-content">
+      <%= yield %>
+    </main>
+
+    <%= render "shared/footer" %>
+  </body>
+</html>

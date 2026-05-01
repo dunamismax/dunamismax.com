@@ -1,0 +1,139 @@
+<% content_for :title, "Stephen Sawyer · dunamismax" %>
+<% content_for :description, "Stephen Sawyer builds practical software in Ruby on Rails, with self-hosted infrastructure and a bias toward systems that stay legible after launch." %>
+
+<section class="hero-section">
+  <div class="hero-background" aria-hidden="true"></div>
+
+  <div class="section-inner hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Practical software · self-hosted · Ruby on Rails</p>
+      <h1>Stephen Sawyer.</h1>
+      <p class="lede">
+        I build software for people who want control over their stack: products
+        that can run on their own infrastructure, keep their data close, and
+        stay understandable after launch.
+      </p>
+      <p class="lede">
+        My default toolset is <strong>Ruby on Rails</strong> for products and
+        web surfaces, <strong>Hotwire</strong> over import maps for the
+        client side, <strong>SQLite</strong> when the workload fits, and
+        <strong>PostgreSQL</strong> when the product needs a real system of
+        record. Infrastructure is intentionally simple: one VM, Puma under
+        systemd, Caddy on the host, Cloudflare at the edge.
+      </p>
+
+      <div class="hero-actions">
+        <%= link_to "See projects", projects_path, class: "button button-primary" %>
+        <%= link_to "Read the blog", posts_path, class: "button button-secondary" %>
+      </div>
+
+      <div class="stack-row" aria-label="Primary stack">
+        <span class="stack-chip stack-chip--strong">Ruby</span>
+        <span class="stack-chip stack-chip--strong">Rails 8</span>
+        <span class="stack-chip">Hotwire</span>
+        <span class="stack-chip">Tailwind CSS</span>
+        <span class="stack-chip">SQLite</span>
+        <span class="stack-chip">PostgreSQL</span>
+        <span class="stack-chip">Puma</span>
+        <span class="stack-chip">Caddy</span>
+      </div>
+
+      <p class="fine-print">
+        This site is a Rails 8.1 application. Rendered on request, served by Puma
+        on a loopback port, terminated by Caddy on the host, and proxied by
+        Cloudflare. The source lives at
+        <%= link_to "github.com/dunamismax/dunamismax.com", "https://github.com/dunamismax/dunamismax.com", rel: "noopener noreferrer me", target: "_blank" %>.
+      </p>
+    </div>
+
+    <div>
+      <% if @latest_post %>
+        <%= link_to posts_path(@latest_post), class: "latest-card" do %>
+          <span class="latest-card__kicker">Latest post</span>
+          <span class="latest-card__title"><%= @latest_post.title %></span>
+          <span class="latest-card__meta">
+            <%= @latest_post.published_on.strftime("%b %-d, %Y") %> ·
+            <%= reading_time(@latest_post.body_html) %>
+          </span>
+          <span class="latest-card__description"><%= @latest_post.description %></span>
+        <% end %>
+      <% end %>
+
+      <nav class="nav-card-grid" aria-label="Quick navigation">
+        <%= link_to projects_path, class: "nav-card" do %>
+          <span class="nav-card__title">Projects</span>
+          <span class="nav-card__detail">Selected work across Rails apps, infrastructure, and developer tooling.</span>
+        <% end %>
+        <%= link_to posts_path, class: "nav-card" do %>
+          <span class="nav-card__title">Blog</span>
+          <span class="nav-card__detail">Notes on building, shipping, and self-hosting software in Ruby on Rails.</span>
+        <% end %>
+        <%= link_to about_path, class: "nav-card" do %>
+          <span class="nav-card__title">About</span>
+          <span class="nav-card__detail">What I care about and how I approach the work.</span>
+        <% end %>
+        <%= link_to contact_path, class: "nav-card" do %>
+          <span class="nav-card__title">Contact</span>
+          <span class="nav-card__detail">Ways to reach me and where to find me online.</span>
+        <% end %>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<section class="signal-bar">
+  <div class="section-inner signal-grid">
+    <p><span></span>Rails on Puma</p>
+    <p><span></span>SQLite by default</p>
+    <p><span></span>Self-hosted on a single box</p>
+    <p><span></span>Boring infrastructure</p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-inner">
+    <div class="section-heading">
+      <p class="eyebrow">Featured projects</p>
+      <h2>What I am building right now.</h2>
+      <p>
+        A short list of the projects I am putting the most time into. The full
+        catalogue lives on the projects page.
+      </p>
+    </div>
+
+    <ul class="post-list">
+      <% @featured_projects.each do |project| %>
+        <li>
+          <article class="project-card">
+            <div class="project-card__head">
+              <h3 class="project-card__name"><%= project.name %></h3>
+              <span class="project-status project-status--<%= project.status %>">
+                <%= project_status_label(project.status) %>
+              </span>
+            </div>
+            <p class="project-card__tagline"><%= project.tagline %></p>
+            <div class="project-card__foot">
+              <div class="project-card__stack">
+                <% project.stack_list.each do |tech| %>
+                  <span class="stack-chip"><%= tech %></span>
+                <% end %>
+              </div>
+              <div class="project-card__links">
+                <% if project.url.present? %>
+                  <%= link_to "live ↗", project.url, rel: "noopener noreferrer", target: "_blank" %>
+                <% end %>
+                <% if project.public_repo? %>
+                  <%= link_to "repo ↗", project.repo, rel: "noopener noreferrer", target: "_blank" %>
+                <% end %>
+              </div>
+            </div>
+          </article>
+        </li>
+      <% end %>
+    </ul>
+
+    <p class="section-foot">
+      <%= link_to "See every project", projects_path, class: "section-link" %>
+    </p>
+  </div>
+</section>

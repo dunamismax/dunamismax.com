@@ -1,0 +1,298 @@
+<p>
+  This is the build log for getting <a href="https://sentrypact.com">sentrypact.com</a>
+  online. The site itself is a Rails 8.1 app — the public marketing surface and the
+  control plane that the future native clients will eventually sit on top of. The
+  goal here was to get it served on a real domain, on real hardware, in a shape
+  I can keep running for a long time without thinking about it.
+</p>
+
+<p>
+  The end state is intentionally boring:
+</p>
+
+<ul>
+  <li>Rails 8.1 + Puma, listening on a loopback-only port</li>
+  <li>SQLite on disk for primary, cache, queue, and cable databases</li>
+  <li>systemd as the process supervisor</li>
+  <li>Caddy in front of it terminating TLS and proxying back to localhost</li>
+  <li>One Ubuntu VM, one Git checkout, one <code>git pull</code> to redeploy</li>
+</ul>
+
+<p>
+  No platform layer, no managed Rails host, no separate database server, no
+  Redis. Just Rails the way Rails is happy to run.
+</p>
+
+<h2>The Rails app</h2>
+
+<p>
+  SentryPact is a monorepo. The web surface lives in <code>apps/web</code>. It
+  is a stock Rails 8.1 app with the defaults turned on: Hotwire (Turbo +
+  Stimulus) over import maps, Propshaft, Tailwind via
+  <code>tailwindcss-rails</code>, Solid Queue, Solid Cache, and Solid Cable.
+  Everything that used to require a Redis is now a SQLite database.
+</p>
+
+<p>
+  The four production SQLite databases live next to each other:
+</p>
+
+<pre><code>apps/web/storage/production.sqlite3
+apps/web/storage/production_cache.sqlite3
+apps/web/storage/production_queue.sqlite3
+apps/web/storage/production_cable.sqlite3</code></pre>
+
+<p>
+  The point of using all four is that I do not need a separate cache, queue, or
+  pubsub service to run the app. They are local files I can copy off the host
+  with <code>rsync</code> if I have to. That is the whole disaster recovery story
+  for v0.1, and that is fine for a pre-launch site.
+</p>
+
+<h2>The toolchain</h2>
+
+<p>
+  Ruby 4.0.3 and Node 24.13.1 are pinned by <code>.mise.toml</code> and
+  <code>.ruby-version</code>. <a href="https://mise.jdx.dev">mise</a> manages
+  both. The first install on the box looked like this:
+</p>
+
+<pre><code>curl -fsSL https://mise.run | sh
+echo 'eval "$(~/.local/bin/mise activate bash)"' &gt;&gt; ~/.bashrc
+cd /path/to/sentrypact
+mise trust
+mise install</code></pre>
+
+<p>
+  Building Ruby 4.0.3 from source needs the usual list of headers and
+  toolchains. On Ubuntu, that means a one-time <code>apt-get install</code> of
+  <code>build-essential</code>, <code>libssl-dev</code>,
+  <code>libreadline-dev</code>, <code>zlib1g-dev</code>,
+  <code>libyaml-dev</code>, <code>libffi-dev</code>, <code>libgmp-dev</code>,
+  <code>libsqlite3-dev</code>, and friends. I do this once and then forget about
+  it.
+</p>
+
+<p>
+  Gems are installed deployment-style under
+  <code>apps/web/vendor/bundle</code>:
+</p>
+
+<pre><code>cd apps/web
+gem install bundler -v 4.0.11 --no-document
+bundle config set --local deployment true
+bundle config set --local without 'development test'
+bundle config set --local path vendor/bundle
+bundle config set --local frozen true
+bundle install</code></pre>
+
+<p>
+  This keeps gems off the system path, which means the box can host more than
+  one Rails app later without their dependencies bleeding into each other.
+</p>
+
+<h2>Secrets and environment</h2>
+
+<p>
+  Production env lives in a single file, <code>/etc/sentrypact-web/env</code>,
+  owned <code>root:sawyer</code> with mode <code>0640</code>. It carries
+  <code>SECRET_KEY_BASE</code>, <code>RAILS_ENV=production</code>,
+  <code>PORT=8081</code>, <code>APP_HOST=sentrypact.com</code>,
+  <code>RAILS_HOSTS</code>, <code>RAILS_SERVE_STATIC_FILES=1</code>,
+  <code>WEB_CONCURRENCY=2</code>, <code>RAILS_MAX_THREADS=5</code>, and
+  <code>SOLID_QUEUE_IN_PUMA=true</code>.
+</p>
+
+<p>
+  The Solid Queue inside Puma flag is the concession to running on one box.
+  Instead of a separate jobs process, the Puma plugin runs the Solid Queue
+  supervisor in-process. For a single-server deployment that is the simplest
+  shape that works.
+</p>
+
+<p>
+  <code>SECRET_KEY_BASE</code> was generated on the box with
+  <code>SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bundle exec bin/rails
+  secret</code> and then pasted into the env file. The dummy variable on the
+  generation step is the Rails 8 idiom that lets you boot enough of the app to
+  print a secret without having one yet.
+</p>
+
+<h2>systemd</h2>
+
+<p>
+  Puma runs under systemd. The unit lives at
+  <code>/etc/systemd/system/sentrypact-web.service</code>. The interesting
+  parts are:
+</p>
+
+<ul>
+  <li>
+    <code>EnvironmentFile=/etc/sentrypact-web/env</code> so Rails sees the
+    production env without anything baked into the unit
+  </li>
+  <li>
+    <code>ExecStart</code> uses the absolute path to the mise-installed Ruby's
+    <code>bundle</code> so systemd does not depend on shell activation
+  </li>
+  <li>
+    <code>BUNDLE_GEMFILE</code> is set explicitly because systemd does not
+    inherit the working-directory bundler magic
+  </li>
+  <li>
+    <code>ProtectSystem=full</code>, <code>ProtectHome=read-only</code>,
+    <code>PrivateTmp=true</code>, and <code>NoNewPrivileges=true</code> are on
+  </li>
+  <li>
+    <code>ReadWritePaths</code> is whitelisted explicitly to
+    <code>storage</code>, <code>tmp</code>, and <code>log</code> under the app
+    directory
+  </li>
+</ul>
+
+<p>
+  Puma binds to <code>127.0.0.1:8081</code>. There is no public listener on the
+  Rails process. The whole point of the systemd hardening is that even if
+  something inside the app tries to scribble outside its directories, systemd
+  refuses.
+</p>
+
+<p>
+  Boot looks like:
+</p>
+
+<pre><code>sudo systemctl daemon-reload
+sudo systemctl enable --now sentrypact-web.service
+sudo systemctl status sentrypact-web.service</code></pre>
+
+<h2>Caddy</h2>
+
+<p>
+  Caddy is the only thing on the public network. It owns ports 80 and 443,
+  handles TLS via Let's Encrypt automatically, and reverse-proxies to the Puma
+  socket. The vhost is two blocks: <code>www</code> redirects to apex, apex
+  proxies through.
+</p>
+
+<pre><code>www.sentrypact.com {
+    redir https://sentrypact.com{uri} permanent
+}
+
+sentrypact.com {
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        X-XSS-Protection "0"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+    }
+
+    reverse_proxy 127.0.0.1:8081 {
+        header_up X-Forwarded-Proto https
+        header_up X-Real-IP {remote_host}
+    }
+}</code></pre>
+
+<p>
+  The Rails side trusts that header set because the production environment has
+  <code>config.assume_ssl = true</code> and <code>config.force_ssl = true</code>,
+  with <code>/up</code> exempted so the loopback health probe still works on
+  plain HTTP.
+</p>
+
+<p>
+  After a config change Caddy gets <code>caddy validate</code> first, then
+  <code>systemctl reload caddy</code>. <code>reload</code>, not
+  <code>restart</code> — Caddy is happy to swap configs without dropping
+  connections.
+</p>
+
+<h2>The redeploy loop</h2>
+
+<p>
+  Once the host was set up, redeploys collapsed to a five-line shell script:
+</p>
+
+<pre><code>cd /home/sawyer/github/sentrypact && git pull
+cd apps/web
+eval "$(~/.local/bin/mise activate bash)"
+bundle install
+set -a && . /etc/sentrypact-web/env && set +a
+bundle exec bin/rails db:prepare
+bundle exec bin/rails assets:precompile
+sudo systemctl restart sentrypact-web</code></pre>
+
+<p>
+  No Capistrano, no Kamal, no GitHub Actions deploying anything. The box pulls
+  its own code, runs migrations against SQLite (effectively a no-op most of the
+  time), precompiles assets through Propshaft, and bounces the service.
+</p>
+
+<p>
+  <code>db:prepare</code> is the right Rails command here, not
+  <code>db:migrate</code>. It creates the database if it does not exist and
+  runs pending migrations otherwise. On a fresh box the first deploy and every
+  later deploy use the same command.
+</p>
+
+<h2>What I left out</h2>
+
+<p>
+  Two things were tempting and I deliberately skipped them.
+</p>
+
+<p>
+  <strong>Kamal.</strong> The Rails 8 default deploy story is Kamal, and the
+  <code>kamal</code> gem is in the Gemfile so it is available. The checked-in
+  <code>config/deploy.yml</code> is still scaffold configuration. For one box
+  with one app and one domain, Kamal is more moving parts than I want today.
+  When SentryPact gets a second host, or has to coordinate the Rails control
+  plane with a separate jobs host, Kamal becomes the better answer. Until
+  then, systemd plus Caddy is fewer abstractions to debug.
+</p>
+
+<p>
+  <strong>PostgreSQL.</strong> The Solid trio (Queue, Cache, Cable) all run
+  fine on SQLite, and the marketing site has no real write volume. When the
+  control plane starts holding subscriptions, devices, pact state, and audit
+  events, that is the cue to move primary off SQLite. The data layout here is
+  designed to make that move boring, not to delay it forever.
+</p>
+
+<h2>Health checks</h2>
+
+<p>
+  Three commands cover the day-to-day:
+</p>
+
+<pre><code>curl -s http://127.0.0.1:8081/up                              # local Puma
+curl -s --resolve sentrypact.com:443:127.0.0.1 \
+     https://sentrypact.com/up                                # via Caddy
+sudo journalctl -u sentrypact-web -f                          # tail logs</code></pre>
+
+<p>
+  <code>/up</code> is the Rails-built health endpoint. It returns 200 when the
+  process is running and the framework boots cleanly. That is what a load
+  balancer or uptime monitor should hit. It is excluded from the SSL redirect
+  and from host authorization so it works behind any front door.
+</p>
+
+<h2>What this stack is good for</h2>
+
+<p>
+  The shape above is good for a small, real product that needs to keep running.
+  The whole site is a directory I can <code>tar</code>, an env file I can
+  <code>scp</code>, a systemd unit I can <code>cat</code>, and a Caddyfile I
+  can read. There is no part of the deployment that I cannot explain in one
+  sitting, and there is no part of the deployment that requires a vendor to be
+  online for the site to be up.
+</p>
+
+<p>
+  That is the standard for the rest of the public work too. If a deployment
+  needs a slide deck to explain, it is doing too much.
+</p>
