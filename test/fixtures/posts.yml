@@ -1,0 +1,8 @@
+hello_rails:
+  slug: hello-rails
+  title: Hello, Rails
+  description: A short test fixture for the posts controller.
+  body_html: "<p>Hello from a fixture.</p>"
+  tags: "rails, fixtures"
+  published_on: 2026-04-29
+  published: true

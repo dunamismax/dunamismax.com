@@ -1,0 +1,12 @@
+site:
+  slug: dunamismax-site
+  name: dunamismax.com
+  category: reference
+  status: shipped
+  visibility: public
+  tagline: A Rails 8 fixture for the projects controller.
+  repo: https://github.com/dunamismax/dunamismax.com
+  url: https://dunamismax.com
+  stack: "Ruby, Rails 8, Hotwire, Tailwind, SQLite"
+  position: 10
+  featured: true

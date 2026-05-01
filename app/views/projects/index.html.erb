@@ -1,0 +1,64 @@
+<% content_for :title, "Projects · dunamismax" %>
+<% content_for :description, "Selected public projects across applications, infrastructure, developer tools, and reference work. Most of the active work is Ruby on Rails." %>
+
+<section class="page-hero">
+  <div class="section-inner">
+    <p class="eyebrow">Projects</p>
+    <h1>Selected public work.</h1>
+    <p class="lede">
+      A selection of public work across products, infrastructure, and
+      developer tooling. The active products are converging on Ruby on Rails;
+      the systems work is mostly Go; the reference repos are kept around
+      because they are still useful.
+    </p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-inner">
+    <% Project::CATEGORIES.each do |category| %>
+      <% projects = @projects_by_category[category] %>
+      <% next if projects.blank? %>
+
+      <section class="project-group">
+        <header class="project-group__heading">
+          <h2><%= project_category_label(category) %></h2>
+          <% if (description = project_category_description(category)) %>
+            <p><%= description %></p>
+          <% end %>
+        </header>
+
+        <ul class="post-list">
+          <% projects.each do |project| %>
+            <li>
+              <article class="project-card">
+                <div class="project-card__head">
+                  <h3 class="project-card__name"><%= project.name %></h3>
+                  <span class="project-status project-status--<%= project.status %>">
+                    <%= project_status_label(project.status) %>
+                  </span>
+                </div>
+                <p class="project-card__tagline"><%= project.tagline %></p>
+                <div class="project-card__foot">
+                  <div class="project-card__stack">
+                    <% project.stack_list.each do |tech| %>
+                      <span class="stack-chip"><%= tech %></span>
+                    <% end %>
+                  </div>
+                  <div class="project-card__links">
+                    <% if project.url.present? %>
+                      <%= link_to "live ↗", project.url, rel: "noopener noreferrer", target: "_blank" %>
+                    <% end %>
+                    <% if project.public_repo? %>
+                      <%= link_to "repo ↗", project.repo, rel: "noopener noreferrer", target: "_blank" %>
+                    <% end %>
+                  </div>
+                </div>
+              </article>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+  </div>
+</section>

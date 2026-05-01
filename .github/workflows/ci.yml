@@ -14,35 +14,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend-site:
+  web:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: frontend
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-      - name: Install frontend dependencies
-        run: bun install --frozen-lockfile
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-      - name: Frontend lint
-        run: bun run lint
+      - name: Run web CI
+        env:
+          CI: true
+          RAILS_ENV: test
+        run: bin/ci
 
-      - name: Frontend type check
-        run: bun run check
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-      - name: Frontend tests
-        run: bun run test
-
-      - name: Frontend build
-        run: bun run build
-
-      - name: Smoke check built site
-        working-directory: .
-        run: python3 scripts/smoke.py
+      - name: Build production image
+        run: docker build -t dunamismax-web:ci .

@@ -2,135 +2,179 @@
 
 Personal site, portfolio, and blog for Stephen Sawyer.
 
-dunamismax.com is the public home for Stephen's projects, writing, and contact
-surface. The repo ships a static Astro site from `frontend/`, with Docker and
-Caddy handling the deployment path.
+`dunamismax.com` is the public home for Stephen's projects, writing, and
+contact surface. The site is a **Ruby on Rails 8.1** application: server-rendered
+HTML, Hotwire on top of import maps, Tailwind via `tailwindcss-rails`, and SQLite
+on disk for storage.
+
+The previous version of this site was an Astro static build; it was rewritten
+in Rails so that the site uses the same stack as the products linked from it.
+For the rationale, see [the rewrite blog post](app/views/posts) or read it on
+the site at `/blog/rewriting-dunamismax-in-rails`.
 
 ## Stack
 
-- **Bun**
-- **TypeScript**
-- **Astro**
-- **Vue** for small client islands where needed
-- **Tailwind CSS v4** with local design tokens
-- **Caddy** serving the built static output in Docker
-- **Biome** for linting and formatting
-- **`astro check`** for type and route validation
-- **`bun test`** for frontend utilities
-- **Python 3.11+** for the smoke test in `scripts/smoke.py`
+- Ruby 4.0.3
+- Rails 8.1.3
+- Hotwire (Turbo + Stimulus) over importmap-rails
+- Propshaft asset pipeline
+- Tailwind CSS via `tailwindcss-rails`
+- SQLite for primary, cache, queue, and cable databases
+- Solid Queue, Solid Cache, Solid Cable
+- Puma cluster, Thruster, and Kamal scaffolding
+- Caddy on the host as the public TLS terminator
+- Cloudflare in front of the apex domain
+- Minitest, RuboCop (Rails Omakase), Brakeman, and bundler-audit
 
-The site is intentionally simple: no CMS, no database, and no third-party
-analytics.
+The repo's `.mise.toml` pins Ruby `4.0.3` and Node `24.13.1`. Use
+[mise](https://mise.jdx.dev) to match the toolchain.
 
-## Repository Layout
+## Repository layout
 
 ```text
 dunamismax.com/
-  deploy/
-    static-site.Caddyfile
-  frontend/
-    public/
-    src/
-      components/
-      config/
-      content/
-        blog/
-        projects/
-      layouts/
-      pages/
-      styles/
-    tests/
-    package.json
-  docs/
-    frontend-contract-inventory.md
-  scripts/
-    smoke.py
-    verify.sh
-  BUILD.md
+  app/
+    assets/
+      stylesheets/application.css   # Hand-written design tokens
+      tailwind/application.css      # @import "tailwindcss";
+    controllers/                    # PagesController, PostsController, ProjectsController, FeedsController
+    helpers/
+    javascript/                     # Stimulus controllers including theme_controller.js
+    models/                         # Post, Project
+    views/
+      layouts/application.html.erb
+      pages/                        # home, about, contact
+      posts/                        # index, show
+      projects/                     # index
+      feeds/index.rss.builder
+      shared/                       # _header, _footer
+  bin/                              # setup, dev, ci, rails, rake, rubocop, brakeman, bundler-audit
+  config/                           # routes.rb, application.rb, environments/, initializers/, *.yml
+  db/
+    migrate/                        # CreatePosts, CreateProjects
+    seeds.rb
+    seeds/posts/*.html              # Authored blog post bodies
+  test/
+  Gemfile
+  Procfile.dev
+  Rakefile
+  config.ru
+  Caddyfile                         # Production reverse-proxy vhost
   Dockerfile
-  Caddyfile
-  docker-compose.yml
-  package.json
   README.md
+  BUILD.md
 ```
 
-## Local Development
+## Local development
 
 ### Prerequisites
 
-- Bun
-- Python 3.11+
-- Docker for the containerized deploy path
+- Ruby 4.0.3 (via mise: `mise install`)
+- Node 24.13.1 (via mise, used by the Tailwind CLI)
+- SQLite
+- Foreman (auto-installed by `bin/dev` on first run)
 
-Install dependencies:
+### Quick start
 
-```bash
-bun --cwd frontend install
+```sh
+bin/setup
+bin/dev
 ```
 
-Start local development:
+Then open [http://localhost:3000](http://localhost:3000).
 
-```bash
-bun run dev
+`bin/setup` runs `bundle install`, prepares the SQLite databases, clears stale
+logs, and (unless `--skip-server` is passed) execs into `bin/dev`. `bin/dev`
+starts the Rails server alongside the Tailwind watcher via `Procfile.dev`.
+
+### Seeds
+
+The blog posts and projects shown on the site come from `db/seeds.rb`. To
+re-seed against your dev database:
+
+```sh
+bin/rails db:seed
 ```
 
-Build and preview:
+To replant from scratch (drops all rows in seeded tables and reloads):
 
-```bash
-bun run build
-bun run preview
+```sh
+bin/rails db:seed:replant
 ```
 
-Run the containerized path locally:
+## Routes
 
-```bash
-docker compose up -d --build
+```text
+GET  /             pages#home
+GET  /about        pages#about
+GET  /contact      pages#contact
+GET  /projects     projects#index
+GET  /blog         posts#index
+GET  /blog/:slug   posts#show
+GET  /feed.xml     feeds#index   (RSS 2.0)
+GET  /robots.txt   feeds#robots
+GET  /up           rails/health#show (excluded from SSL redirect and host auth)
 ```
 
-Deploy on the production host:
+## Checks
 
-```bash
-./deploy/deploy-prod.sh
+The canonical local and CI gate is:
+
+```sh
+bin/ci
 ```
 
-If `8080` is busy, publish on another port:
+It runs setup, RuboCop, bundler-audit, the importmap audit, Brakeman, the
+Tailwind build, the Rails test suite, and the seed replant. The same script
+runs in GitHub Actions, alongside a release-blocking Docker build.
 
-```bash
-DUNAMISMAX_HOST_PORT=18080 docker compose up -d --build
-python3 scripts/smoke.py --base-url http://127.0.0.1:18080
+Individual steps:
+
+```sh
+bin/rails test
+bin/rubocop
+bin/brakeman --no-pager
+bin/bundler-audit
+bin/rails tailwindcss:build
 ```
 
-## Verification
+## Production
 
-Run the full repo checks:
+The production app is configured to be secure-by-default behind an
+SSL-terminating proxy. It is HTTPS-only for browser traffic, with `/up`
+exempted so a load balancer or uptime probe can hit the health endpoint over
+plain HTTP.
 
-```bash
-bun run verify
-```
+| Variable                   | Default                                     | Notes |
+| -------------------------- | ------------------------------------------- | ----- |
+| `RAILS_ENV`                | `development`                               | Set to `production`. |
+| `SECRET_KEY_BASE`          | (none)                                      | Required when `RAILS_MASTER_KEY` is not used. |
+| `APP_HOST`                 | `dunamismax.com`                            | Canonical host for generated links. |
+| `RAILS_HOSTS`              | `APP_HOST,www.dunamismax.com`               | Comma-separated allowed hosts. |
+| `RAILS_FORCE_SSL`          | `true`                                      | Set to `false` only for non-browser smoke tests. |
+| `RAILS_ASSUME_SSL`         | follows `RAILS_FORCE_SSL`                   |  |
+| `RAILS_SERVE_STATIC_FILES` | (unset)                                     | Enable when no upstream is serving `public/`. |
+| `RAILS_LOG_LEVEL`          | `info`                                      |  |
+| `PORT`                     | `3000` (production: `8082`)                 | Port Puma binds to. |
+| `RAILS_MAX_THREADS`        | `3`                                         |  |
+| `WEB_CONCURRENCY`          | `1`                                         |  |
+| `SOLID_QUEUE_IN_PUMA`      | `false`                                     | Single-server: set to `true`. |
 
-Equivalent manual checks:
+### The deploy shape
 
-```bash
-bun --cwd frontend install --frozen-lockfile
-bun --cwd frontend run lint
-bun --cwd frontend run check
-bun --cwd frontend run test
-bun --cwd frontend run build
-python3 scripts/smoke.py
-```
+`dunamismax.com` is self-hosted on a single Ubuntu box behind Caddy. Puma
+under systemd, SQLite on disk, Caddy in front for TLS, Cloudflare at the edge.
 
-## Deployment Notes
+- App code: `/home/sawyer/github/dunamismax.com` (deployed in place via `git pull`)
+- Toolchain: Ruby 4.0.3 + Node 24.13.1 installed by mise under `/home/sawyer/.local/share/mise/installs/`
+- Gems: `vendor/bundle` (`bundle config set --local deployment true`, `--local without development:test`)
+- Databases: `storage/production.sqlite3` plus `_cache`, `_queue`, `_cable` siblings
+- Env: `/etc/dunamismax-web/env` (root:sawyer, mode 0640)
+- Service: `/etc/systemd/system/dunamismax-web.service` (User=sawyer, enabled at boot), Puma listens on `127.0.0.1:8082`
+- Caddy: vhost block from `Caddyfile` reverse-proxies the apex to `127.0.0.1:8082` and 301-redirects `www`
 
-Cloudflare Origin CA setup:
-
-```bash
-./deploy/generate-cloudflare-origin-csr.sh
-./deploy/switch-to-cloudflare-origin.sh
-```
-
-- The container is intended to publish only on `127.0.0.1:8080`, with host Caddy handling ports `80/443`.
-- `www.dunamismax.com` should redirect permanently to `https://dunamismax.com`.
-- For permanent Cloudflare proxying, prefer a Cloudflare Origin CA certificate installed at the host Caddy layer.
+For the full production runbook (system deps, mise install, gem install, env
+setup, systemd unit, Caddy vhost, redeploy script), see [BUILD.md](BUILD.md).
 
 ## License
 

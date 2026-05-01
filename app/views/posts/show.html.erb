@@ -1,0 +1,39 @@
+<% content_for :title, "#{@post.title} · dunamismax" %>
+<% content_for :description, @post.description %>
+
+<section class="page-hero">
+  <div class="section-inner">
+    <article class="post-detail">
+      <p class="eyebrow">Blog</p>
+      <h1><%= @post.title %></h1>
+      <p class="lede"><%= @post.description %></p>
+      <p class="post-detail__meta">
+        <span><%= @post.published_on.strftime("%B %-d, %Y") %></span>
+        <span><%= reading_time(@post.body_html) %></span>
+      </p>
+      <% if @post.tag_list.any? %>
+        <div class="post-tags">
+          <% @post.tag_list.each do |tag| %>
+            <span class="stack-chip">#<%= tag %></span>
+          <% end %>
+        </div>
+      <% end %>
+    </article>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-inner">
+    <article class="post-detail">
+      <div class="post-body">
+        <%= sanitize @post.body_html, tags: %w[
+              p h2 h3 h4 ul ol li strong em a code pre blockquote br hr
+            ], attributes: %w[href title rel target class] %>
+      </div>
+
+      <p class="section-foot">
+        <%= link_to "Back to all posts", posts_path, class: "section-link" %>
+      </p>
+    </article>
+  </div>
+</section>

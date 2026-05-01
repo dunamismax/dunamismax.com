@@ -1,0 +1,37 @@
+<% content_for :title, "Blog · dunamismax" %>
+<% content_for :description, "Notes on building, shipping, and self-hosting software. Mostly Ruby on Rails." %>
+
+<section class="page-hero">
+  <div class="section-inner">
+    <p class="eyebrow">Blog</p>
+    <h1>Notes from shipping software.</h1>
+    <p class="lede">
+      Build logs, deployment notes, and stack reasoning. Mostly Ruby on Rails,
+      with the occasional detour into Go or Python where the job calls for
+      it.
+    </p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-inner">
+    <% if @posts.any? %>
+      <ul class="post-list">
+        <% @posts.each do |post| %>
+          <li>
+            <%= link_to post_path(post), class: "post-card" do %>
+              <span class="post-card__meta">
+                <%= post.published_on.strftime("%b %-d, %Y") %> ·
+                <%= reading_time(post.body_html) %>
+              </span>
+              <span class="post-card__title"><%= post.title %></span>
+              <span class="post-card__description"><%= post.description %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="prose">No posts yet.</p>
+    <% end %>
+  </div>
+</section>

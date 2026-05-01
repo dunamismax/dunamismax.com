@@ -1,0 +1,72 @@
+<% content_for :title, "Contact · dunamismax" %>
+<% content_for :description, "How to reach Stephen Sawyer by email, Signal, or public profiles." %>
+
+<section class="page-hero">
+  <div class="section-inner">
+    <p class="eyebrow">Contact</p>
+    <h1>Talk to a real person.</h1>
+    <p class="lede">
+      Email is the best place to start. Signal works well for direct outreach,
+      and GitHub is the right place for public discussion around code.
+    </p>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <% [
+        {
+          title: "Email",
+          value: "dunamismax@tutamail.com",
+          href: "mailto:dunamismax@tutamail.com",
+          detail: "Best first stop. Project questions, work, or anything that does not need to be public."
+        },
+        {
+          title: "Signal",
+          value: "Signal",
+          href: "https://signal.me/#eu/ohSycFRzUEPZzCEifM1UVelp9pdBfmOPoSHItfUsK1PqosRCQSBBEIsqRq2krmph",
+          external: true,
+          detail: "For direct, end-to-end-encrypted outreach when email is not the right shape."
+        },
+        {
+          title: "GitHub",
+          value: "github.com/dunamismax",
+          href: "https://github.com/dunamismax",
+          external: true,
+          detail: "Public discussion around code, issues, and pull requests across the projects on this site."
+        },
+        {
+          title: "Twitter",
+          value: "@DunamisMax",
+          href: "https://x.com/DunamisMax",
+          external: true,
+          detail: "Occasional posts about what I am building."
+        },
+        {
+          title: "Reddit",
+          value: "u/DunamisMax",
+          href: "https://www.reddit.com/user/DunamisMax/",
+          external: true,
+          detail: "Where I talk about MTG and self-hosting more than anything else."
+        },
+        {
+          title: "Site source",
+          value: "github.com/dunamismax/dunamismax.com",
+          href: "https://github.com/dunamismax/dunamismax.com",
+          external: true,
+          detail: "The Rails 8 source for this site is open. Issues and PRs welcome."
+        }
+      ].each do |contact| %>
+        <article class="contact-card">
+          <p class="contact-card__title"><%= contact[:title] %></p>
+          <%= link_to contact[:value], contact[:href],
+                class: "contact-card__value",
+                rel: (contact[:external] ? "noopener noreferrer me" : nil),
+                target: (contact[:external] ? "_blank" : nil) %>
+          <p class="contact-card__detail"><%= contact[:detail] %></p>
+        </article>
+      <% end %>
+    </div>
+  </div>
+</section>

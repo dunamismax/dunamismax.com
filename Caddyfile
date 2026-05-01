@@ -1,7 +1,9 @@
 # Caddyfile for dunamismax.com
 #
-# Sits on the host as a reverse proxy in front of the Docker container.
-# TLS is handled by Caddy on the host. The container serves the Astro static site on port 8080.
+# This is the host-level vhost block that should live in /etc/caddy/Caddyfile on
+# the production server. Caddy terminates TLS and reverse-proxies to the Puma
+# process, which is launched by the dunamismax-web systemd unit and binds to
+# 127.0.0.1:8082. Cloudflare proxies the public domain in front of this.
 
 www.dunamismax.com {
     redir https://dunamismax.com{uri} permanent
@@ -20,5 +22,8 @@ dunamismax.com {
         -Server
     }
 
-    reverse_proxy 127.0.0.1:8080
+    reverse_proxy 127.0.0.1:8082 {
+        header_up X-Forwarded-Proto https
+        header_up X-Real-IP {remote_host}
+    }
 }

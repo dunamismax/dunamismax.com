@@ -1,0 +1,47 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand-block">
+      <%= link_to root_path, class: "footer-brand-link" do %>
+        <span class="brand-mark brand-mark--footer" aria-hidden="true">DM</span>
+        <span>dunamismax</span>
+      <% end %>
+      <p class="footer-copy">
+        Stephen Sawyer. Practical software in Ruby on Rails, with self-hosted
+        infrastructure and a bias toward systems that stay legible.
+      </p>
+    </div>
+
+    <nav class="footer-columns" aria-label="Footer">
+      <div class="footer-column">
+        <p class="footer-column__title">Site</p>
+        <%= link_to "Home",     root_path %>
+        <%= link_to "Projects", projects_path %>
+        <%= link_to "Blog",     posts_path %>
+        <%= link_to "About",    about_path %>
+        <%= link_to "Contact",  contact_path %>
+      </div>
+
+      <div class="footer-column">
+        <p class="footer-column__title">Code</p>
+        <%= link_to "GitHub",     "https://github.com/dunamismax", rel: "noopener noreferrer me", target: "_blank" %>
+        <%= link_to "Codeberg",   "https://codeberg.org/dunamismax", rel: "noopener noreferrer me", target: "_blank" %>
+        <%= link_to "Site source", "https://github.com/dunamismax/dunamismax.com", rel: "noopener noreferrer me", target: "_blank" %>
+        <%= link_to "RSS feed",   rss_feed_path %>
+      </div>
+
+      <div class="footer-column">
+        <p class="footer-column__title">Elsewhere</p>
+        <%= link_to "Email",   "mailto:dunamismax@tutamail.com", rel: "me" %>
+        <%= link_to "Twitter", "https://x.com/DunamisMax", rel: "noopener noreferrer me", target: "_blank" %>
+        <%= link_to "Reddit",  "https://www.reddit.com/user/DunamisMax/", rel: "noopener noreferrer me", target: "_blank" %>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer-meta">
+    <div class="footer-meta__inner">
+      <p>&copy; <%= Date.current.year %> Stephen Sawyer.</p>
+      <p class="footer-meta__claim">Built with Ruby on Rails <%= Rails.version %> · Served by Puma + Caddy</p>
+    </div>
+  </div>
+</footer>
