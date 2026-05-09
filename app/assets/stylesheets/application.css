@@ -1,9 +1,8 @@
 /*
  * dunamismax.com -- application stylesheet
  *
- * Hand-written design tokens layered under tailwindcss-rails. Mirrors the same
- * shape sentrypact.com uses (the variables and semantic class names line up),
- * with a different palette so the two sites still feel distinct.
+ * Hand-written design tokens layered under tailwindcss-rails, with a small
+ * set of semantic class names for the public site.
  */
 
 html {
