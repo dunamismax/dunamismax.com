@@ -5,11 +5,11 @@
 
 projects = [
   {
-    slug: "ideal-magic", name: "Ideal Magic", category: "apps", status: "active",
+    slug: "pod-tracker", name: "Pod Tracker", category: "apps", status: "active",
     position: 5, featured: true, visibility: "public",
     tagline: "A serious Commander companion for deck imports, bracket evaluation, pod comparison, game nights, and playgroup tuning.",
-    repo: "https://github.com/dunamismax/ideal-magic",
-    url:  "https://ideal-magic.com",
+    repo: "https://github.com/dunamismax/pod-tracker",
+    url:  "https://pod-tracker.app",
     stack: "Ruby, Rails 8, PostgreSQL, Hotwire, ViewComponent, Tailwind CSS, Solid Queue, Puma, Caddy"
   },
   {
