@@ -170,6 +170,17 @@ deployment and is unchanged.
 
 ## 7. Redeploy / update flow
 
+The normal production deploy command on this VM is:
+
+```sh
+bin/redeploy
+```
+
+It pulls, bundles, prepares and seeds the database, precompiles assets, restarts
+the systemd unit, and polls the live `/up` endpoint.
+
+Manual equivalent:
+
 ```sh
 cd /home/sawyer/github/dunamismax.com && git pull
 eval "$(~/.local/bin/mise activate bash)"
@@ -181,8 +192,8 @@ bundle exec bin/rails assets:precompile
 sudo systemctl restart dunamismax-web
 ```
 
-That is the whole production deploy path. No image registry, no CI deploy
-job, no Capistrano. The box pulls its own code.
+That is the whole production deploy path. No image registry, no CI deploy job,
+no Capistrano. The box pulls its own code.
 
 ## 8. Health checks
 

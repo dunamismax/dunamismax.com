@@ -179,6 +179,12 @@ under systemd, SQLite on disk, Caddy in front for TLS, Cloudflare at the edge.
 For the full production runbook (system deps, mise install, gem install, env
 setup, systemd unit, Caddy vhost, redeploy script), see [BUILD.md](BUILD.md).
 
+To redeploy the live site from this VM after changes are pulled:
+
+```sh
+bin/redeploy
+```
+
 ## License
 
 GPL-3.0. See [LICENSE](LICENSE).
