@@ -5,6 +5,14 @@
 
 projects = [
   {
+    slug: "ideal-magic", name: "Ideal Magic", category: "apps", status: "active",
+    position: 5, featured: true, visibility: "public",
+    tagline: "A serious Commander companion for deck imports, bracket evaluation, pod comparison, game nights, and playgroup tuning.",
+    repo: "https://github.com/dunamismax/ideal-magic",
+    url:  "https://ideal-magic.com",
+    stack: "Ruby, Rails 8, PostgreSQL, Hotwire, ViewComponent, Tailwind CSS, Solid Queue, Puma, Caddy"
+  },
+  {
     slug: "dunamismax-site", name: "dunamismax.com", category: "reference", status: "shipped",
     position: 10, featured: true, visibility: "public",
     tagline: "This site. A Ruby on Rails 8 app on Puma, Caddy, and SQLite, deployed on a single Ubuntu box.",
@@ -19,13 +27,6 @@ projects = [
     repo: "https://github.com/dunamismax/sentrypact",
     url:  "https://sentrypact.com",
     stack: "Ruby, Rails 8, Hotwire, Tailwind, SQLite, Swift, Kotlin"
-  },
-  {
-    slug: "scrybase", name: "Scrybase", category: "apps", status: "active",
-    position: 20, featured: true, visibility: "public",
-    tagline: "A Commander workbench for decks, collections, pod history, matchup notes, and long-term tuning around a real playgroup.",
-    repo: "https://github.com/dunamismax/scrybase",
-    stack: "Ruby, Rails, PostgreSQL, Hotwire, Tailwind"
   },
   {
     slug: "debugpath", name: "DebugPath", category: "apps", status: "active",
@@ -53,42 +54,7 @@ projects = [
     position: 60, featured: false, visibility: "public",
     tagline: "Discord bot for fast Magic: The Gathering card lookup with pricing, legality, rulings, and embed-first responses powered by Scryfall.",
     repo: "https://github.com/dunamismax/mtg-card-bot",
-    stack: "Python, uv, discord.py, httpx"
-  },
-  {
-    slug: "wirescope", name: "wirescope", category: "infrastructure", status: "shipped",
-    position: 10, featured: false, visibility: "public",
-    tagline: "Network observability for operators who need live capture, DNS context, historical search, alerts, and PCAP export on infrastructure they control.",
-    repo: "https://github.com/dunamismax/wirescope",
-    stack: "Go, SQLite, PCAP"
-  },
-  {
-    slug: "bore", name: "bore", category: "infrastructure", status: "shipped",
-    position: 20, featured: false, visibility: "public",
-    tagline: "Peer-to-peer encrypted file transfer with direct hole punching, relay fallback, and both browser and terminal interfaces.",
-    repo: "https://github.com/dunamismax/bore",
-    stack: "Go, QUIC, Noise"
-  },
-  {
-    slug: "rustdesk-selfhosted", name: "rustdesk-selfhosted", category: "infrastructure", status: "shipped",
-    position: 30, featured: false, visibility: "public",
-    tagline: "A self-hosted RustDesk relay and signaling deployment for low-friction remote desktop on infrastructure you own.",
-    repo: "https://github.com/dunamismax/rustdesk-selfhosted",
-    stack: "Docker, Caddy, systemd"
-  },
-  {
-    slug: "gitpulse", name: "GitPulse", category: "developer-tools", status: "active",
-    position: 10, featured: false, visibility: "public",
-    tagline: "Local-first git analytics that separate active work, commit history, and push activity into a clearer picture of engineering output.",
-    repo: "https://github.com/dunamismax/gitpulse",
-    stack: "Go, SQLite"
-  },
-  {
-    slug: "toolworks", name: "toolworks", category: "developer-tools", status: "active",
-    position: 20, featured: false, visibility: "public",
-    tagline: "A collection of automation scripts, CLI helpers, and small utilities that are useful enough to stand on their own.",
-    repo: "https://github.com/dunamismax/toolworks",
-    stack: "Python, uv, CLI"
+    stack: "Discord, Scryfall, card search, pricing, legality, rulings"
   },
   {
     slug: "dunamismax-profile", name: "dunamismax", category: "reference", status: "active",
@@ -96,30 +62,11 @@ projects = [
     tagline: "The public profile repo that ties together my current focus areas, active projects, and primary links.",
     repo: "https://github.com/dunamismax/dunamismax",
     stack: "Markdown, Docs"
-  },
-  {
-    slug: "go-web-server", name: "go-web-server", category: "reference", status: "shipped",
-    position: 40, featured: false, visibility: "public",
-    tagline: "A Go-first web starter kept around as a reference, alongside the Rails default for newer work.",
-    repo: "https://github.com/dunamismax/go-web-server",
-    stack: "Go, Echo, PostgreSQL, SQLC"
-  },
-  {
-    slug: "c-from-the-ground-up", name: "C From The Ground Up", category: "reference", status: "shipped",
-    position: 50, featured: false, visibility: "public",
-    tagline: "A progressive C workbook that moves from first principles to systems programming through readable lessons and capstone exercises.",
-    repo: "https://github.com/dunamismax/c-from-the-ground-up",
-    url:  "https://dunamismax.github.io/c-from-the-ground-up/",
-    stack: "C, Make, Reference"
-  },
-  {
-    slug: "hello-world-from-hell", name: "hello-world-from-hell", category: "reference", status: "shipped",
-    position: 60, featured: false, visibility: "public",
-    tagline: "A deliberately absurd C project that turns Hello World into an elaborate exercise in macros, threads, and bad judgment.",
-    repo: "https://github.com/dunamismax/hello-world-from-hell",
-    stack: "C, Make, Testing"
   }
 ]
+
+project_slugs = projects.map { |project| project[:slug] }
+Project.where.not(slug: project_slugs).delete_all
 
 projects.each do |attrs|
   Project.find_or_initialize_by(slug: attrs[:slug]).update!(attrs)
