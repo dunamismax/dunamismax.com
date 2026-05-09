@@ -1,54 +1,54 @@
 <% content_for :title, "Stephen Sawyer · dunamismax" %>
-<% content_for :description, "Stephen Sawyer builds practical software in Ruby on Rails, with self-hosted infrastructure and a bias toward systems that stay legible after launch." %>
+<% content_for :description, "Stephen Sawyer is a full-stack Ruby on Rails developer, open source advocate, and privacy/security-minded builder with 15 years in IT." %>
 
 <section class="hero-section">
   <div class="hero-background" aria-hidden="true"></div>
 
   <div class="section-inner hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow">Practical software · self-hosted · Ruby on Rails</p>
-      <h1>Stephen Sawyer.</h1>
+      <p class="eyebrow">Ruby on Rails · full-stack · self-hosted</p>
+      <h1>Rails software that stays yours.</h1>
       <p class="lede">
-        I build software for people who want control over their stack: products
-        that can run on their own infrastructure, keep their data close, and
-        stay understandable after launch.
+        Full-stack Ruby on Rails developer. Open source, privacy, and security
+        advocate. Fifteen years in IT, building systems that have to keep
+        working after the demo is over.
       </p>
       <p class="lede">
-        My default toolset is <strong>Ruby on Rails</strong> for products and
-        web surfaces, <strong>Hotwire</strong> over import maps for the
-        client side, <strong>SQLite</strong> when the workload fits, and
-        <strong>PostgreSQL</strong> when the product needs a real system of
-        record. Infrastructure is intentionally simple: one VM, Puma under
-        systemd, Caddy on the host, Cloudflare at the edge.
+        <strong>Ruby and Rails are my default because they let me ship fastest.</strong>
+        I use other tools when the problem clearly calls for them, but Rails is
+        where I reach first for durable products, dashboards, APIs, and
+        self-hosted web apps.
       </p>
 
       <div class="hero-actions">
-        <%= link_to "See projects", projects_path, class: "button button-primary" %>
-        <%= link_to "Read the blog", posts_path, class: "button button-secondary" %>
+        <%= link_to "See Rails work", projects_path, class: "button button-primary" %>
+        <%= link_to "Get in touch", contact_path, class: "button button-secondary" %>
       </div>
 
       <div class="stack-row" aria-label="Primary stack">
         <span class="stack-chip stack-chip--strong">Ruby</span>
         <span class="stack-chip stack-chip--strong">Rails 8</span>
         <span class="stack-chip">Hotwire</span>
+        <span class="stack-chip">ViewComponent</span>
         <span class="stack-chip">Tailwind CSS</span>
-        <span class="stack-chip">SQLite</span>
         <span class="stack-chip">PostgreSQL</span>
+        <span class="stack-chip">SQLite</span>
         <span class="stack-chip">Puma</span>
         <span class="stack-chip">Caddy</span>
       </div>
 
       <p class="fine-print">
-        This site is a Rails 8.1 application. Rendered on request, served by Puma
-        on a loopback port, terminated by Caddy on the host, and proxied by
-        Cloudflare. The source lives at
-        <%= link_to "github.com/dunamismax/dunamismax.com", "https://github.com/dunamismax/dunamismax.com", rel: "noopener noreferrer me", target: "_blank" %>.
+        This site is a Rails 8.1 application, rendered on request and served
+        from a single Ubuntu box. Code lives on
+        <%= link_to "GitHub", "https://github.com/dunamismax/dunamismax.com", rel: "noopener noreferrer me", target: "_blank" %>
+        and mirrors to
+        <%= link_to "Codeberg", "https://codeberg.org/dunamismax/dunamismax.com", rel: "noopener noreferrer me", target: "_blank" %>.
       </p>
     </div>
 
     <div>
       <% if @latest_post %>
-        <%= link_to posts_path(@latest_post), class: "latest-card" do %>
+        <%= link_to post_path(@latest_post), class: "latest-card" do %>
           <span class="latest-card__kicker">Latest post</span>
           <span class="latest-card__title"><%= @latest_post.title %></span>
           <span class="latest-card__meta">
@@ -62,19 +62,19 @@
       <nav class="nav-card-grid" aria-label="Quick navigation">
         <%= link_to projects_path, class: "nav-card" do %>
           <span class="nav-card__title">Projects</span>
-          <span class="nav-card__detail">Selected work across Rails apps, infrastructure, and developer tooling.</span>
+          <span class="nav-card__detail">Rails apps, self-hosted products, and the MTG tools I still maintain.</span>
         <% end %>
         <%= link_to posts_path, class: "nav-card" do %>
           <span class="nav-card__title">Blog</span>
-          <span class="nav-card__detail">Notes on building, shipping, and self-hosting software in Ruby on Rails.</span>
+          <span class="nav-card__detail">Rails build logs, deployment notes, and practical system decisions.</span>
         <% end %>
         <%= link_to about_path, class: "nav-card" do %>
           <span class="nav-card__title">About</span>
-          <span class="nav-card__detail">What I care about and how I approach the work.</span>
+          <span class="nav-card__detail">Ruby-first, privacy-minded, low-ceremony engineering.</span>
         <% end %>
         <%= link_to contact_path, class: "nav-card" do %>
           <span class="nav-card__title">Contact</span>
-          <span class="nav-card__detail">Ways to reach me and where to find me online.</span>
+          <span class="nav-card__detail">Email, Signal, GitHub, Codeberg, and site source.</span>
         <% end %>
       </nav>
     </div>
@@ -83,10 +83,10 @@
 
 <section class="signal-bar">
   <div class="section-inner signal-grid">
-    <p><span></span>Rails on Puma</p>
-    <p><span></span>SQLite by default</p>
-    <p><span></span>Self-hosted on a single box</p>
-    <p><span></span>Boring infrastructure</p>
+    <p><span></span>Ruby/Rails first</p>
+    <p><span></span>Full-stack product work</p>
+    <p><span></span>Privacy-aware systems</p>
+    <p><span></span>15 years in IT</p>
   </div>
 </section>
 
@@ -94,10 +94,10 @@
   <div class="section-inner">
     <div class="section-heading">
       <p class="eyebrow">Featured projects</p>
-      <h2>What I am building right now.</h2>
+      <h2>Rails work with real operating shape.</h2>
       <p>
-        A short list of the projects I am putting the most time into. The full
-        catalogue lives on the projects page.
+        A short list of current and representative work: Rails products first,
+        with the Magic tooling that still earns its place.
       </p>
     </div>
 

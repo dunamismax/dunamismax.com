@@ -22,7 +22,7 @@ module ApplicationHelper
 
   def project_category_label(category)
     {
-      "apps"            => "Applications",
+      "apps"            => "Rails applications",
       "infrastructure"  => "Infrastructure",
       "developer-tools" => "Developer tools",
       "reference"       => "Reference"
@@ -31,10 +31,10 @@ module ApplicationHelper
 
   def project_category_description(category)
     {
-      "apps"            => "Products and services that solve a real problem end to end.",
+      "apps"            => "Products and services built around Rails, clear data models, and owned infrastructure.",
       "infrastructure"  => "Self-hosted services, networking, and operations work.",
       "developer-tools" => "Tooling, automation, and operator-facing utilities.",
-      "reference"       => "Workbooks, profiles, and reference repos that exist to be read."
+      "reference"       => "Profile, site, and source repos that explain the operating surface."
     }[category]
   end
 end

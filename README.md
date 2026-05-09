@@ -1,16 +1,17 @@
 # dunamismax.com
 
-Personal site, portfolio, and blog for Stephen Sawyer.
+Personal site, portfolio, and blog for Stephen Sawyer: full-stack Ruby on
+Rails developer, open source advocate, and privacy/security-minded builder.
 
-`dunamismax.com` is the public home for Stephen's projects, writing, and
-contact surface. The site is a **Ruby on Rails 8.1** application: server-rendered
-HTML, Hotwire on top of import maps, Tailwind via `tailwindcss-rails`, and SQLite
-on disk for storage.
+`dunamismax.com` is the public home for Stephen's Rails work, writing, and
+contact surface. The site is a **Ruby on Rails 8.1** application:
+server-rendered HTML, Hotwire on top of import maps, Tailwind via
+`tailwindcss-rails`, and SQLite on disk for storage.
 
 The previous version of this site was an Astro static build; it was rewritten
-in Rails so that the site uses the same stack as the products linked from it.
-For the rationale, see [the rewrite blog post](app/views/posts) or read it on
-the site at `/blog/rewriting-dunamismax-in-rails`.
+in Rails so that the site uses the same stack and operating posture as the
+products it highlights. For the rationale, see [the rewrite blog post](app/views/posts)
+or read it on the site at `/blog/rewriting-dunamismax-in-rails`.
 
 ## Stack
 
@@ -89,8 +90,10 @@ starts the Rails server alongside the Tailwind watcher via `Procfile.dev`.
 
 ### Seeds
 
-The blog posts and projects shown on the site come from `db/seeds.rb`. To
-re-seed against your dev database:
+The blog posts and projects shown on the site come from `db/seeds.rb`. Project
+seeds are intentionally pruned to the current public catalog, so removed seeded
+projects disappear the next time seeds are run. To re-seed against your dev
+database:
 
 ```sh
 bin/rails db:seed
