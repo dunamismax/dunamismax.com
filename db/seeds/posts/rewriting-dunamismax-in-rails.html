@@ -8,10 +8,10 @@
 </p>
 
 <p>
-  The short version: I just shipped a Rails site for SentryPact, I liked the
-  shape of it more than the Astro shape I had here, and I wanted my personal
-  site to use the stack I am actually building products in. So this is the
-  rewrite log.
+  The short version: I wanted my personal site to use the stack I am actually
+  building products in. The old static shape worked, but it was no longer the
+  right operating surface for a site that should grow with the rest of my Rails
+  work. So this is the rewrite log.
 </p>
 
 <h2>Why move off Astro</h2>
@@ -26,11 +26,10 @@
   What changed is what the site is for. dunamismax.com is supposed to be a
   long-running personal site that explains the work I do, hosts a blog I keep
   writing in, and links to projects I keep building. Almost every project in
-  that list is now a Rails app. SentryPact is a Rails control plane. Scrybase,
-  DebugPath, MyLifeRPG, and the chess platform are all converging on Rails 8
-  on SQLite for the small versions and Rails on PostgreSQL once they need it.
-  Keeping my own site on a different stack from everything else I ship had
-  stopped making sense.
+  that list is now a Rails app, with SQLite for the small versions and
+  PostgreSQL once a product needs a larger system of record. Keeping my own
+  site on a different stack from the work I want to present had stopped making
+  sense.
 </p>
 
 <p>
@@ -55,9 +54,9 @@
 </ul>
 
 <p>
-  This is the same shape that runs sentrypact.com. One box, one Git checkout,
-  one redeploy script, one set of operational commands. If something breaks on
-  one site I already know how to debug it on the other.
+  This is the operating shape I like for small Rails apps. One box, one Git
+  checkout, one redeploy script, one set of operational commands. If something
+  breaks, the path from symptom to process to logs to data is short.
 </p>
 
 <h2>The repository, before and after</h2>
@@ -197,16 +196,16 @@ end</code></pre>
 </p>
 
 <p>
-  This is the same approach the SentryPact site uses. The two sites share a
-  family of CSS variables, a similar grid system, and the same theme
-  controller pattern. They look distinct because the colors are different,
-  not because the underlying mechanics are different.
+  The design system is intentionally small: a family of CSS variables, a simple
+  grid system, reusable card patterns, and the same theme controller throughout.
+  The site should feel designed without needing a component library just to
+  render a personal page.
 </p>
 
 <h2>Deployment</h2>
 
 <p>
-  Deployment is the same shape that runs sentrypact.com:
+  Deployment is intentionally plain:
 </p>
 
 <ul>
@@ -262,7 +261,7 @@ end</code></pre>
   <li>Move blog post bodies from raw HTML files to a Markdown renderer with proper code highlighting.</li>
   <li>Add a tags index and per-tag pages.</li>
   <li>Add a small <code>/uses</code> or <code>/now</code> page that the Rails app can update without a deploy.</li>
-  <li>Wire <code>bin/ci</code> up to GitHub Actions the same way SentryPact does, with RuboCop, Brakeman, bundler-audit, and the test suite.</li>
+  <li>Keep <code>bin/ci</code> boring: RuboCop, Brakeman, bundler-audit, Tailwind, tests, and seed replant.</li>
   <li>Promote the site to PostgreSQL only once a feature actually requires it.</li>
 </ul>
 

@@ -21,37 +21,15 @@ projects = [
     stack: "Ruby, Rails 8, Hotwire, Tailwind CSS, SQLite, Puma, Caddy, systemd"
   },
   {
-    slug: "sentrypact", name: "SentryPact", category: "apps", status: "active",
-    position: 15, featured: true, visibility: "public",
-    tagline: "Lockdown-first filtering with timer-locked Solo Pacts. Rails control plane, native enforcement clients.",
-    repo: "https://github.com/dunamismax/sentrypact",
-    url:  "https://sentrypact.com",
-    stack: "Ruby, Rails 8, Hotwire, Tailwind, SQLite, Swift, Kotlin"
-  },
-  {
-    slug: "debugpath", name: "DebugPath", category: "apps", status: "active",
-    position: 30, featured: true, visibility: "public",
-    tagline: "An investigation workspace for timelines, artifacts, notes, and debugging context collected during real production incidents.",
-    repo: "https://github.com/dunamismax/debugpath",
-    stack: "Ruby, Rails, PostgreSQL, Hotwire, MinIO"
-  },
-  {
     slug: "myliferpg", name: "MyLifeRPG", category: "apps", status: "active",
-    position: 40, featured: false, visibility: "public",
+    position: 40, featured: true, visibility: "public",
     tagline: "A planning-first personal system for habits, tasks, routines, goals, and progress tracking without turning everything into a game.",
     repo: "https://github.com/dunamismax/myliferpg",
     stack: "Ruby, Rails, PostgreSQL, Hotwire"
   },
   {
-    slug: "elchess", name: "ElChess", category: "apps", status: "phase-0",
-    position: 50, featured: false, visibility: "public",
-    tagline: "A multiplayer chess platform centered on durable game history, ratings, authentication, and post-game review.",
-    repo: "https://github.com/dunamismax/elchess",
-    stack: "Ruby, Rails, PostgreSQL, Action Cable, Hotwire"
-  },
-  {
     slug: "mtg-card-bot", name: "MTG Card Bot", category: "apps", status: "shipped",
-    position: 60, featured: false, visibility: "public",
+    position: 60, featured: true, visibility: "public",
     tagline: "Discord bot for fast Magic: The Gathering card lookup with pricing, legality, rulings, and embed-first responses powered by Scryfall.",
     repo: "https://github.com/dunamismax/mtg-card-bot",
     stack: "Discord, Scryfall, card search, pricing, legality, rulings"
@@ -74,13 +52,13 @@ end
 
 posts = [
   {
-    slug: "deploying-sentrypact-com",
-    title: "Deploying sentrypact.com on a single Ubuntu box with Rails, Caddy, and systemd",
-    description: "How sentrypact.com went from a fresh Rails 8 app to a production deployment behind Caddy and systemd, with Puma on a loopback port and SQLite on disk.",
-    published_on: Date.new(2026, 4, 30),
+    slug: "rails-default-small-systems",
+    title: "Rails is a good default because it keeps the system small",
+    description: "Why Rails remains my default for full-stack products: one language, one schema, one deploy path, and fewer places for complexity to hide.",
+    published_on: Date.new(2026, 5, 9),
     published: true,
-    tags: "rails, ruby, deployment, self-hosting, caddy, systemd, sqlite",
-    body_html: File.read(Rails.root.join("db/seeds/posts/deploying-sentrypact-com.html"))
+    tags: "rails, ruby, product, self-hosting, simplicity",
+    body_html: File.read(Rails.root.join("db/seeds/posts/rails-default-small-systems.html"))
   },
   {
     slug: "rewriting-dunamismax-in-rails",
@@ -92,6 +70,9 @@ posts = [
     body_html: File.read(Rails.root.join("db/seeds/posts/rewriting-dunamismax-in-rails.html"))
   }
 ]
+
+post_slugs = posts.map { |post| post[:slug] }
+Post.where.not(slug: post_slugs).delete_all
 
 posts.each do |attrs|
   Post.find_or_initialize_by(slug: attrs[:slug]).update!(attrs)
