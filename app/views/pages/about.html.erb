@@ -1,14 +1,15 @@
 <% content_for :title, "About · dunamismax" %>
-<% content_for :description, "Stephen Sawyer is a full-stack Ruby on Rails developer, open source advocate, and privacy/security-minded builder with 15 years in IT." %>
+<% content_for :description, "Stephen Sawyer is a systems-leaning engineer working in C, Zig, Python, and vanilla TypeScript — open source advocate and privacy/security-minded builder with 15 years in IT." %>
 
 <section class="page-hero">
   <div class="section-inner">
     <p class="eyebrow">About</p>
-    <h1>Ruby on Rails is the default.</h1>
+    <h1>Small languages. No frameworks.</h1>
     <p class="lede">
-      I'm Stephen Sawyer, a full-stack Ruby on Rails developer and open source,
+      I'm Stephen Sawyer, a systems-leaning engineer and an open source,
       privacy, and security advocate. I have spent 15 years in IT building,
-      operating, fixing, and explaining systems that need to survive real users.
+      operating, fixing, and explaining systems that need to survive real
+      users.
     </p>
   </div>
 </section>
@@ -17,17 +18,17 @@
   <div class="section-inner">
     <div class="prose">
       <p>
-        <strong>Ruby and Rails are my default because they let me ship fastest.</strong>
-        I use other tools when the problem clearly calls for them, but Rails is
-        where I reach first for products, APIs, dashboards, admin surfaces, and
-        full-stack web apps that should not need a separate SPA just to feel
-        modern.
+        <strong>I work in a deliberately narrow toolkit:</strong> C and Zig for
+        systems software, Python for scripts and backends, and vanilla HTML,
+        CSS, and TypeScript for the web. No frameworks, no SPA tax, no clever
+        meta-language sitting between me and the data. The tools are small on
+        purpose so the systems they produce stay legible.
       </p>
       <p>
         The work I like best has a clear owner, a clear data model, and an
-        operating story that can be understood without a vendor diagram. A Rails
-        app on infrastructure you control is still one of the fastest ways to
-        turn an idea into something durable.
+        operating story that can be understood without a vendor diagram. A
+        small program on infrastructure you control is still one of the
+        fastest ways to turn an idea into something durable.
       </p>
 
       <h2>What I care about</h2>
@@ -51,10 +52,10 @@
       </p>
 
       <p>
-        <strong>Explicit data models.</strong> Schemas, query paths, and
-        storage decisions should make the system easier to reason about, not
-        harder. Active Record migrations are the changelog for the application
-        as much as Git is.
+        <strong>Explicit data and explicit ownership.</strong> Schemas, file
+        formats, allocations, and lifetimes should make the system easier to
+        reason about, not harder. If you cannot trace a value through the
+        system, the system is too clever.
       </p>
 
       <p>
@@ -72,32 +73,31 @@
       <h2>The stack</h2>
 
       <p>
-        My default web stack is <strong>Ruby on Rails 8</strong> with
-        <strong>Hotwire</strong> (Turbo + Stimulus) over import maps,
-        <strong>Tailwind CSS</strong> for utility classes, and
-        <strong>Propshaft</strong> as the asset pipeline. I lean on the Solid
-        family — Solid Queue, Solid Cache, and Solid Cable — so a small Rails
-        app does not need a Redis just to do background jobs and caching.
+        <strong>C</strong> (C23 preferred, C17 for portability) is where I
+        write the systems core: parsers, file formats, on-disk data, anything
+        that has to be precise about memory and time. Allocator-clean code,
+        fixed-width binary formats, fuzzable parsers, and explicit error
+        handling are the defaults.
       </p>
 
       <p>
-        For data, I default to <strong>SQLite</strong> for products that fit
-        on one box and <strong>PostgreSQL</strong> when the product is meant
-        to grow. Either way, I want the schema to be explicit and the data
-        flow easy to trace.
+        <strong>Zig</strong> drives the build system, cross-compilation,
+        codegen, helper tools, and test harnesses. C compiles through
+        <code>zig cc</code>; CMake stays out of the project.
       </p>
 
       <p>
-        On the frontend, Rails owns rendering. Hotwire turns most of what
-        people reach for SPAs to do into server-rendered partials with small
-        Stimulus controllers around them. I add JavaScript only when the
-        product clearly benefits from it.
+        <strong>Python</strong> handles scripting, automation, APIs, and
+        backends. It's the right shape for fast tools, content pipelines,
+        deployment scripts, and small services that don't need to live in a
+        systems language.
       </p>
 
       <p>
-        This site itself runs on an Ubuntu VM as a Rails 8 app behind Caddy,
-        with Cloudflare in front. That deployment shape says a lot about how
-        I like to work: simple, inspectable, and dependable.
+        <strong>Vanilla HTML, CSS, and TypeScript</strong> is the web stack.
+        No frameworks, no client-side router, no build-time magic when a
+        server-rendered page works. JavaScript is added only when the product
+        clearly benefits from it.
       </p>
     </div>
   </div>
