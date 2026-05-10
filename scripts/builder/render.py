@@ -18,12 +18,12 @@ from .content import Post, Project, PROJECT_CATEGORIES
 
 SITE_TITLE = "Stephen Sawyer · dunamismax"
 SITE_DEFAULT_DESCRIPTION = (
-    "Stephen Sawyer is a systems-leaning engineer working in C, Zig, PostgreSQL, "
-    "Python, and vanilla TypeScript — open source advocate and privacy/security-minded "
+    "Stephen Sawyer is an engineer working in Rust, Python, PostgreSQL, "
+    "and vanilla TypeScript — open source advocate and privacy/security-minded "
     "builder with 15 years in IT."
 )
 SITE_OG_DESCRIPTION = (
-    "Systems work in C and Zig, PostgreSQL-first data platforms, Python where "
+    "Systems work in Rust, PostgreSQL-first data platforms, Python where "
     "it fits, vanilla web on top. Open source, self-hosting, privacy, and security."
 )
 SITE_HOST = "dunamismax.com"
@@ -210,9 +210,9 @@ def render_footer() -> str:
         '            <span>dunamismax</span>\n'
         '          </a>\n'
         '          <p class="footer-copy">\n'
-        '            Stephen Sawyer. Systems-leaning engineer working in C, Zig,\n'
-        '            PostgreSQL, Python, and vanilla TypeScript. Open source,\n'
-        '            privacy, and security advocate.\n'
+        '            Stephen Sawyer. Engineer working in Rust, Python, PostgreSQL,\n'
+        '            and vanilla TypeScript. Open source, privacy, and security\n'
+        '            advocate.\n'
         '          </p>\n'
         '        </div>\n'
         '        <nav class="footer-columns" aria-label="Footer">\n'
@@ -296,28 +296,28 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '  <div class="hero-background" aria-hidden="true"></div>\n'
         '  <div class="section-inner hero-grid">\n'
         '    <div class="hero-copy">\n'
-        '      <p class="eyebrow">C · Zig · PostgreSQL · Python · vanilla web</p>\n'
+        '      <p class="eyebrow">Rust · Python · PostgreSQL · vanilla web</p>\n'
         '      <h1>Software you can read at 2 AM.</h1>\n'
         '      <p class="lede">\n'
-        '        Systems-leaning engineer. Open source, privacy, and security advocate.\n'
-        '        Fifteen years in IT, building software that has to keep working after\n'
+        '        Engineer. Open source, privacy, and security advocate. Fifteen\n'
+        '        years in IT, building software that has to keep working after\n'
         '        the demo is over.\n'
         '      </p>\n'
         '      <p class="lede">\n'
         '        <strong>Small languages, no frameworks.</strong>\n'
-        '        C and Zig for systems work, PostgreSQL as the default data platform,\n'
-        '        Python for scripts and backends, vanilla HTML, CSS, and TypeScript\n'
-        '        for the web. Explicit ownership, explicit data, explicit failure modes.\n'
+        '        Rust for systems work, Python for APIs and tooling, PostgreSQL\n'
+        '        as the default data platform, and vanilla HTML, CSS, and\n'
+        '        TypeScript for the web. Explicit ownership, explicit data,\n'
+        '        explicit failure modes.\n'
         '      </p>\n'
         '      <div class="hero-actions">\n'
         '        <a href="/projects" class="button button-primary">See projects</a>\n'
         '        <a href="/contact" class="button button-secondary">Get in touch</a>\n'
         '      </div>\n'
         '      <div class="stack-row" aria-label="Primary stack">\n'
-        '        <span class="stack-chip stack-chip--strong">C</span>\n'
-        '        <span class="stack-chip stack-chip--strong">Zig</span>\n'
+        '        <span class="stack-chip stack-chip--strong">Rust</span>\n'
+        '        <span class="stack-chip stack-chip--strong">Python</span>\n'
         '        <span class="stack-chip stack-chip--strong">PostgreSQL</span>\n'
-        '        <span class="stack-chip">Python</span>\n'
         '        <span class="stack-chip">TypeScript</span>\n'
         '        <span class="stack-chip">HTML</span>\n'
         '        <span class="stack-chip">CSS</span>\n'
@@ -335,7 +335,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '      <nav class="nav-card-grid" aria-label="Quick navigation">\n'
         '        <a href="/projects" class="nav-card">\n'
         '          <span class="nav-card__title">Projects</span>\n'
-        '          <span class="nav-card__detail">Systems work in C and Zig, PostgreSQL-first data tools, and smaller projects that earn their place.</span>\n'
+        '          <span class="nav-card__detail">Systems work in Rust, PostgreSQL-first data tools, and smaller projects that earn their place.</span>\n'
         '        </a>\n'
         '        <a href="/blog" class="nav-card">\n'
         '          <span class="nav-card__title">Blog</span>\n'
@@ -355,7 +355,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '</section>\n'
         '<section class="signal-bar">\n'
         '  <div class="section-inner signal-grid">\n'
-        '    <p><span></span>C and Zig first</p>\n'
+        '    <p><span></span>Rust on the systems edge</p>\n'
         '    <p><span></span>PostgreSQL as data core</p>\n'
         '    <p><span></span>Python for backends and scripts</p>\n'
         '    <p><span></span>Vanilla web, no frameworks</p>\n'
@@ -367,7 +367,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '      <p class="eyebrow">Featured projects</p>\n'
         '      <h2>Systems work with real operating shape.</h2>\n'
         '      <p>\n'
-        '        A short list of current and representative work: C and Zig systems\n'
+        '        A short list of current and representative work: Rust systems\n'
         '        software, cryptography tools, static web work, and a PostgreSQL-first\n'
         '        data platform bias for future application work.\n'
         '      </p>\n'
@@ -505,9 +505,9 @@ def render_projects_index(projects_by_cat: dict[str, list[Project]]) -> str:
         '    <p class="eyebrow">Projects</p>\n'
         '    <h1>Selected systems work.</h1>\n'
         '    <p class="lede">\n'
-        '      A focused catalog of current and representative work: systems software\n'
-        '      in C and Zig, PostgreSQL-first data systems, small Python tools, and\n'
-        '      the vanilla web that ties them together.\n'
+        '      A focused catalog of current and representative work: systems\n'
+        '      software in Rust, PostgreSQL-first data systems, small Python\n'
+        '      tools, and the vanilla web that ties them together.\n'
         '    </p>\n'
         '  </div>\n'
         '</section>\n'
@@ -542,7 +542,7 @@ def render_blog_index(posts: list[Post]) -> str:
         '    <h1>Notes from shipping software.</h1>\n'
         '    <p class="lede">\n'
         '      Build logs, design notes, and stack reasoning from a small-language,\n'
-        '      no-framework default: systems work in C and Zig, PostgreSQL as the\n'
+        '      no-framework default: systems work in Rust, PostgreSQL as the\n'
         '      default data platform, Python where it fits, and vanilla web on top.\n'
         '    </p>\n'
         '  </div>\n'

@@ -8,18 +8,6 @@
 # `position` controls sort order within a category (lower first).
 
 [[projects]]
-slug       = "zarc"
-name       = "zarc"
-category   = "apps"
-status     = "active"
-position   = 5
-featured   = true
-visibility = "public"
-tagline    = "Local-first, content-addressed backup system. The v1.0.0 core archives, lists, shows, restores, verifies, and dumps explicit content-addressed repository data."
-repo       = "https://github.com/dunamismax/zarc"
-stack      = "C, Zig, zig cc, content addressing, fuzzable parsers"
-
-[[projects]]
 slug       = "zwire"
 name       = "zwire"
 category   = "apps"
@@ -30,7 +18,7 @@ visibility = "public"
 tagline    = "End-to-end encrypted file transfer by short human code. No accounts, no daemon, no plaintext on the wire, and an optional relay that sees only ciphertext."
 repo       = "https://github.com/dunamismax/zwire"
 url        = "https://zwire.cc"
-stack      = "C, Zig, PostgreSQL, PAKE, AEAD, BSD sockets"
+stack      = "Rust, Python, PostgreSQL, PAKE, AEAD"
 
 [[projects]]
 slug       = "ciphers"

@@ -120,7 +120,7 @@ def _write_manifest(out: Path) -> None:
         '  "start_url": "/",\n'
         '  "display": "standalone",\n'
         '  "scope": "/",\n'
-        '  "description": "Systems-leaning engineering work by Stephen Sawyer in C, Zig, PostgreSQL, Python, and vanilla TypeScript.",\n'
+        '  "description": "Engineering work by Stephen Sawyer in Rust, Python, PostgreSQL, and vanilla TypeScript.",\n'
         '  "theme_color": "#0a0a0b",\n'
         '  "background_color": "#0a0a0b"\n'
         '}\n',
@@ -213,7 +213,7 @@ def _build(*, run_tsc: bool = True) -> tuple[list, list]:
         path="/projects",
         title="Projects · dunamismax",
         description=(
-            "Selected work by Stephen Sawyer in C, Zig, PostgreSQL, Python, and vanilla TypeScript."
+            "Selected work by Stephen Sawyer in Rust, Python, PostgreSQL, and vanilla TypeScript."
         ),
         section="projects",
     )
@@ -229,8 +229,8 @@ def _build(*, run_tsc: bool = True) -> tuple[list, list]:
         path="/blog",
         title="Blog · dunamismax",
         description=(
-            "Notes on building, shipping, and self-hosting software in C, "
-            "Zig, PostgreSQL, Python, and vanilla TypeScript."
+            "Notes on building, shipping, and self-hosting software in Rust, "
+            "Python, PostgreSQL, and vanilla TypeScript."
         ),
         section="blog",
     )
