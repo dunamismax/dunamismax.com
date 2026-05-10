@@ -11,7 +11,7 @@ www.dunamismax.com {
 dunamismax.com {
     encode zstd gzip
 
-    root * /home/sawyer/github/dunamismax.com/dist
+    root * /var/www/dunamismax.com
     file_server
 
     handle_errors {
