@@ -5,34 +5,19 @@
 
 projects = [
   {
-    slug: "pod-tracker", name: "Pod Tracker", category: "apps", status: "active",
+    slug: "zarc", name: "zarc", category: "apps", status: "active",
     position: 5, featured: true, visibility: "public",
-    tagline: "A serious Commander companion for deck imports, bracket evaluation, pod comparison, game nights, and playgroup tuning.",
-    repo: "https://github.com/dunamismax/pod-tracker",
-    url:  "https://pod-tracker.app",
-    stack: "Ruby, Rails 8, PostgreSQL, Hotwire, ViewComponent, Tailwind CSS, Solid Queue, Puma, Caddy"
+    tagline: "Local-first, content-addressed backup system. A repository is a normal directory of explicit files, binary formats, and content-addressed objects — designed to remain understandable with ordinary tools.",
+    repo: "https://github.com/dunamismax/zarc",
+    stack: "C, Zig, zig cc, content addressing, fuzzable parsers"
   },
   {
-    slug: "dunamismax-site", name: "dunamismax.com", category: "reference", status: "shipped",
+    slug: "dunamismax-site", name: "dunamismax.com", category: "reference", status: "active",
     position: 10, featured: true, visibility: "public",
-    tagline: "This site. A Ruby on Rails 8 app on Puma, Caddy, and SQLite, deployed on a single Ubuntu box.",
+    tagline: "This site. Being rewritten as vanilla HTML, CSS, and TypeScript with a small Python backend, served behind Caddy on a single Ubuntu box.",
     repo: "https://github.com/dunamismax/dunamismax.com",
     url:  "https://dunamismax.com",
-    stack: "Ruby, Rails 8, Hotwire, Tailwind CSS, SQLite, Puma, Caddy, systemd"
-  },
-  {
-    slug: "myliferpg", name: "MyLifeRPG", category: "apps", status: "active",
-    position: 40, featured: true, visibility: "public",
-    tagline: "A planning-first personal system for habits, tasks, routines, goals, and progress tracking without turning everything into a game.",
-    repo: "https://github.com/dunamismax/myliferpg",
-    stack: "Ruby, Rails, PostgreSQL, Hotwire"
-  },
-  {
-    slug: "mtg-card-bot", name: "MTG Card Bot", category: "apps", status: "shipped",
-    position: 60, featured: true, visibility: "public",
-    tagline: "Discord bot for fast Magic: The Gathering card lookup with pricing, legality, rulings, and embed-first responses powered by Scryfall.",
-    repo: "https://github.com/dunamismax/mtg-card-bot",
-    stack: "Discord, Scryfall, card search, pricing, legality, rulings"
+    stack: "HTML, CSS, TypeScript, Python, Caddy"
   },
   {
     slug: "dunamismax-profile", name: "dunamismax", category: "reference", status: "active",
@@ -50,26 +35,7 @@ projects.each do |attrs|
   Project.find_or_initialize_by(slug: attrs[:slug]).update!(attrs)
 end
 
-posts = [
-  {
-    slug: "rails-default-small-systems",
-    title: "Rails is a good default because it keeps the system small",
-    description: "Why Rails remains my default for full-stack products: one language, one schema, one deploy path, and fewer places for complexity to hide.",
-    published_on: Date.new(2026, 5, 9),
-    published: true,
-    tags: "rails, ruby, product, self-hosting, simplicity",
-    body_html: File.read(Rails.root.join("db/seeds/posts/rails-default-small-systems.html"))
-  },
-  {
-    slug: "rewriting-dunamismax-in-rails",
-    title: "Rewriting dunamismax.com in Ruby on Rails",
-    description: "Why I tore down the Astro version of dunamismax.com and rebuilt the site as a Rails 8 app with Hotwire, Tailwind, SQLite, and Active Record-backed content.",
-    published_on: Date.new(2026, 4, 30),
-    published: true,
-    tags: "rails, ruby, hotwire, tailwind, rewrite, astro",
-    body_html: File.read(Rails.root.join("db/seeds/posts/rewriting-dunamismax-in-rails.html"))
-  }
-]
+posts = []
 
 post_slugs = posts.map { |post| post[:slug] }
 Post.where.not(slug: post_slugs).delete_all

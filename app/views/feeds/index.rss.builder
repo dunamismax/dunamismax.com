@@ -2,7 +2,7 @@ xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom" do
   xml.channel do
     xml.title "dunamismax · Blog"
-    xml.description "Notes on building, shipping, and self-hosting software. Mostly Ruby on Rails."
+    xml.description "Notes on building, shipping, and self-hosting software in C, Zig, Python, and vanilla TypeScript."
     xml.link request.base_url
     xml.language "en"
     xml.lastBuildDate(@posts.first&.published_on&.to_time&.rfc2822)
