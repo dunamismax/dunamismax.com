@@ -14,31 +14,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  web:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
-
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          bundler-cache: true
+          python-version: "3.13"
 
-      - name: Run web CI
-        env:
-          CI: true
-          RAILS_ENV: test
-        run: bin/ci
+      - name: Set up Node (for tsc)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
 
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install markdown
+          npm install -g typescript@6
 
-      - name: Build production image
-        run: docker build -t dunamismax-web:ci .
+      - name: Check
+        run: python3 scripts/build.py check
+
+      - name: Build
+        run: python3 scripts/build.py build

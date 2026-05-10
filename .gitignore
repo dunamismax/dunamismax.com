@@ -1,10 +1,23 @@
-# See https://help.github.com/articles/ignoring-files for more about ignoring files.
+# Build output.
+/dist
 
-# Ignore bundler config and vendored gems.
+# Python.
+__pycache__/
+*.py[cod]
+.venv/
+
+# Node.
+/node_modules
+
+# Local editor / OS clutter.
+.idea
+.vscode
+.DS_Store
+.codex
+
+# Legacy Rails artifacts (kept until Phase 6 cutover).
 /.bundle
 /vendor/bundle
-
-# Ignore Rails generated files and runtime artifacts.
 /log/*
 !/log/.keep
 /tmp/*
@@ -14,26 +27,13 @@
 !/tmp/pids/.keep
 /storage/*
 !/storage/.keep
-
-# Ignore master key for credentials.
 /config/master.key
 /.kamal/secrets
-
-# Ignore precompiled assets.
 /public/assets
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-# Ignore node_modules from any local tool installs.
-/node_modules
-
-# Ignore environment files.
+# Environment files.
 .env
 .env.*
 !.env.example
-
-# Local editor folders.
-.idea
-.vscode
-.DS_Store
-.codex

@@ -1,9 +1,8 @@
 # Caddyfile for dunamismax.com
 #
-# This is the host-level vhost block that should live in /etc/caddy/Caddyfile on
-# the production server. Caddy terminates TLS and reverse-proxies to the Puma
-# process, which is launched by the dunamismax-web systemd unit and binds to
-# 127.0.0.1:8082. Cloudflare proxies the public domain in front of this.
+# Static-file deployment. Caddy serves dist/ directly; there is no
+# application server. This block lives at /etc/caddy/Caddyfile on the
+# production VM. Cloudflare proxies the public domain in front of it.
 
 www.dunamismax.com {
     redir https://dunamismax.com{uri} permanent
@@ -11,6 +10,15 @@ www.dunamismax.com {
 
 dunamismax.com {
     encode zstd gzip
+
+    root * /home/sawyer/github/dunamismax.com/dist
+    file_server
+
+    handle_errors {
+        @404 expression {http.error.status_code} == 404
+        rewrite @404 /404.html
+        file_server
+    }
 
     header {
         X-Content-Type-Options "nosniff"
@@ -20,10 +28,5 @@ dunamismax.com {
         X-XSS-Protection "0"
         Permissions-Policy "camera=(), microphone=(), geolocation=()"
         -Server
-    }
-
-    reverse_proxy 127.0.0.1:8082 {
-        header_up X-Forwarded-Proto https
-        header_up X-Real-IP {remote_host}
     }
 }
