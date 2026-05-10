@@ -1,0 +1,45 @@
+# Project list for dunamismax.com.
+#
+# Each project is a separate [[projects]] table. Categories must be one of:
+#   apps, infrastructure, developer-tools, reference
+# Statuses must be one of:
+#   active, shipped, phase-0, legacy
+# `featured = true` projects appear in the home page strip.
+# `position` controls sort order within a category (lower first).
+
+[[projects]]
+slug       = "zarc"
+name       = "zarc"
+category   = "apps"
+status     = "active"
+position   = 5
+featured   = true
+visibility = "public"
+tagline    = "Local-first, content-addressed backup system. A repository is a normal directory of explicit files, binary formats, and content-addressed objects — designed to remain understandable with ordinary tools."
+repo       = "https://github.com/dunamismax/zarc"
+stack      = "C, Zig, zig cc, content addressing, fuzzable parsers"
+
+[[projects]]
+slug       = "dunamismax-site"
+name       = "dunamismax.com"
+category   = "reference"
+status     = "active"
+position   = 10
+featured   = true
+visibility = "public"
+tagline    = "This site. Vanilla HTML, CSS, and TypeScript with a small Python build, served behind Caddy on a single Ubuntu box."
+repo       = "https://github.com/dunamismax/dunamismax.com"
+url        = "https://dunamismax.com"
+stack      = "HTML, CSS, TypeScript, Python, Caddy"
+
+[[projects]]
+slug       = "dunamismax-profile"
+name       = "dunamismax"
+category   = "reference"
+status     = "active"
+position   = 20
+featured   = false
+visibility = "public"
+tagline    = "The public profile repo that ties together my current focus areas, active projects, and primary links."
+repo       = "https://github.com/dunamismax/dunamismax"
+stack      = "Markdown, Docs"
