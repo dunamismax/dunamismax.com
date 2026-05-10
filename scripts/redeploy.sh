@@ -16,8 +16,9 @@ export PATH="/home/sawyer/.local/share/mise/installs/node/24.13.1/bin:$PATH"
 echo "==> [1/4] git pull --ff-only"
 git pull --ff-only
 
-echo "==> [2/4] python3 scripts/build.py build"
-python3 scripts/build.py build
+echo "==> [2/4] uv sync && uv run python scripts/build.py build"
+uv sync --frozen
+uv run python scripts/build.py build
 
 echo "==> [3/4] rsync dist/ -> $WEBROOT"
 rsync -a --delete dist/ "$WEBROOT/"

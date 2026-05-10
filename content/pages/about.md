@@ -1,10 +1,9 @@
 <p>
-  <strong>I work in a deliberately narrow toolkit:</strong> C and Zig for
-  systems software, PostgreSQL for durable application state, Python for
-  scripts and backends, and vanilla HTML, CSS, and TypeScript for the web.
-  No frameworks, no SPA tax, no clever meta-language sitting between me and
-  the data. The tools are small on purpose so the systems they produce stay
-  legible.
+  <strong>I work in a deliberately narrow toolkit:</strong> Rust for systems
+  software, Python for APIs and tooling, PostgreSQL for durable application
+  state, and vanilla HTML, CSS, and TypeScript for the web. No frameworks, no
+  SPA tax, no clever meta-language sitting between me and the data. The tools
+  are small on purpose so the systems they produce stay legible.
 </p>
 
 <p>
@@ -36,9 +35,9 @@
 
 <p>
   <strong>Explicit data and explicit ownership.</strong> Schemas, file
-  formats, allocations, and lifetimes should make the system easier to
-  reason about, not harder. If you cannot trace a value through the
-  system, the system is too clever.
+  formats, types, and lifetimes should make the system easier to reason
+  about, not harder. If you cannot trace a value through the system, the
+  system is too clever.
 </p>
 
 <p>
@@ -56,24 +55,18 @@
 ## The stack
 
 <p>
-  <strong>C</strong> (C23 preferred, C17 for portability) is where I
-  write the systems core: parsers, file formats, on-disk data, anything
-  that has to be precise about memory and time. Allocator-clean code,
-  fixed-width binary formats, fuzzable parsers, and explicit error
-  handling are the defaults.
+  <strong>Rust</strong> is where I write the systems core: protocol
+  code, network services, parsers, file formats, and anything that has
+  to be precise about memory and time. Memory safety is a product
+  requirement on the network edge, not a perk.
 </p>
 
 <p>
-  <strong>Zig</strong> drives the build system, cross-compilation,
-  codegen, helper tools, and test harnesses. C compiles through
-  <code>zig cc</code>; CMake stays out of the project.
-</p>
-
-<p>
-  <strong>Python</strong> handles scripting, automation, APIs, and
-  backends. It's the right shape for fast tools, content pipelines,
-  deployment scripts, and small services that don't need to live in a
-  systems language.
+  <strong>Python</strong> (3.12+) handles APIs, control planes,
+  scripting, automation, and content pipelines. FastAPI with
+  <code>asyncpg</code> and raw SQL on the service side. Modern tooling
+  throughout: <code>uv</code> for environments and packaging,
+  <code>ruff</code> for lint and format.
 </p>
 
 <p>
@@ -89,4 +82,10 @@
   No frameworks, no client-side router, no build-time magic when a
   server-rendered page works. JavaScript is added only when the product
   clearly benefits from it.
+</p>
+
+<p>
+  <strong>Caddy on Ubuntu</strong> handles TLS, static assets, reverse
+  proxying, and deployment. One box, one document root, one redeploy
+  script.
 </p>

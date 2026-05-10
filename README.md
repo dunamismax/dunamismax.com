@@ -1,8 +1,8 @@
 # dunamismax.com
 
-Personal site, portfolio, and blog for Stephen Sawyer: systems-leaning
-engineer working in C, Zig, PostgreSQL, Python, and vanilla TypeScript;
-open source advocate; and privacy/security-minded builder.
+Personal site, portfolio, and blog for Stephen Sawyer: engineer working
+in Rust, Python, PostgreSQL, and vanilla TypeScript; open source
+advocate; and privacy/security-minded builder.
 
 ## Stack
 
@@ -10,8 +10,9 @@ A deliberately narrow toolkit:
 
 - **Vanilla HTML, CSS, and TypeScript** for the site itself. No
   frameworks, no SPA, no client-side router, no bundler beyond `tsc`.
-- **Python** as the build tool. A single CLI at `scripts/build.py`
-  produces the static `dist/` tree.
+- **Python 3.12+** as the build tool, managed with **`uv`** and linted
+  with **`ruff`**. A single CLI at `scripts/build.py` produces the
+  static `dist/` tree.
 - **Caddy** in front for TLS, serving the published webroot directly.
 - **Cloudflare** at the edge.
 
@@ -25,14 +26,29 @@ anywhere.
 
 ## Quick start
 
-```sh
-sudo apt-get install -y python3 python3-markdown
-npm install -g typescript
+Toolchain (managed by [mise](https://mise.jdx.dev/)):
 
-python3 scripts/build.py build   # produce dist/
-python3 scripts/build.py serve   # http://127.0.0.1:8000
-python3 scripts/build.py check   # tsc --noEmit + content + link walk
-python3 scripts/build.py clean   # rm -rf dist/
+```sh
+mise install                    # python, node, uv, ruff
+npm install -g typescript
+```
+
+Python deps + build:
+
+```sh
+uv sync                          # create .venv from pyproject.toml
+uv run python scripts/build.py build   # produce dist/
+uv run python scripts/build.py serve   # http://127.0.0.1:8000
+uv run python scripts/build.py check   # tsc --noEmit + content + link walk
+uv run python scripts/build.py clean   # rm -rf dist/
+```
+
+Lint and format:
+
+```sh
+uv run ruff check scripts        # lint
+uv run ruff format scripts       # format
+uv run mypy                      # type-check
 ```
 
 ## Layout
