@@ -15,9 +15,33 @@ status     = "active"
 position   = 5
 featured   = true
 visibility = "public"
-tagline    = "Local-first, content-addressed backup system. A repository is a normal directory of explicit files, binary formats, and content-addressed objects — designed to remain understandable with ordinary tools."
+tagline    = "Local-first, content-addressed backup system. The v1.0.0 core archives, lists, shows, restores, verifies, and dumps explicit content-addressed repository data."
 repo       = "https://github.com/dunamismax/zarc"
 stack      = "C, Zig, zig cc, content addressing, fuzzable parsers"
+
+[[projects]]
+slug       = "zwire"
+name       = "zwire"
+category   = "apps"
+status     = "phase-0"
+position   = 7
+featured   = true
+visibility = "public"
+tagline    = "End-to-end encrypted file transfer by short human code. No accounts, no daemon, no plaintext on the wire, and an optional relay that sees only ciphertext."
+repo       = "https://github.com/dunamismax/zwire"
+stack      = "C, Zig, PAKE, AEAD, BSD sockets"
+
+[[projects]]
+slug       = "ciphers"
+name       = "ciphers"
+category   = "apps"
+status     = "phase-0"
+position   = 9
+featured   = true
+visibility = "public"
+tagline    = "Interactive cryptography playground for the browser. Framework-free, local-only demos for classical ciphers, modern primitives, hashing, public-key crypto, and cryptanalysis."
+repo       = "https://github.com/dunamismax/ciphers"
+stack      = "HTML, CSS, TypeScript, cryptography education"
 
 [[projects]]
 slug       = "dunamismax-site"

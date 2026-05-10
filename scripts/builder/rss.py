@@ -12,7 +12,7 @@ from .render import SITE_HOST
 CHANNEL_TITLE = "dunamismax · Blog"
 CHANNEL_DESCRIPTION = (
     "Notes on building, shipping, and self-hosting software in C, Zig, "
-    "Python, and vanilla TypeScript."
+    "PostgreSQL, Python, and vanilla TypeScript."
 )
 
 

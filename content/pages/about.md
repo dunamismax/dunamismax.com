@@ -1,9 +1,10 @@
 <p>
   <strong>I work in a deliberately narrow toolkit:</strong> C and Zig for
-  systems software, Python for scripts and backends, and vanilla HTML,
-  CSS, and TypeScript for the web. No frameworks, no SPA tax, no clever
-  meta-language sitting between me and the data. The tools are small on
-  purpose so the systems they produce stay legible.
+  systems software, PostgreSQL for durable application state, Python for
+  scripts and backends, and vanilla HTML, CSS, and TypeScript for the web.
+  No frameworks, no SPA tax, no clever meta-language sitting between me and
+  the data. The tools are small on purpose so the systems they produce stay
+  legible.
 </p>
 
 <p>
@@ -73,6 +74,14 @@
   backends. It's the right shape for fast tools, content pipelines,
   deployment scripts, and small services that don't need to live in a
   systems language.
+</p>
+
+<p>
+  <strong>PostgreSQL</strong> is the default data platform. I want durable
+  application state, relational data, JSONB documents, search, queues,
+  audit logs, permissions, reporting, geospatial data, and vector search to
+  start in one inspectable operational core before the system earns Redis,
+  Kafka, Elasticsearch, ClickHouse, or a dedicated vector database.
 </p>
 
 <p>

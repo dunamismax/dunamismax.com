@@ -1,7 +1,8 @@
 # dunamismax.com
 
 Personal site, portfolio, and blog for Stephen Sawyer: systems-leaning
-engineer, open source advocate, and privacy/security-minded builder.
+engineer working in C, Zig, PostgreSQL, Python, and vanilla TypeScript;
+open source advocate; and privacy/security-minded builder.
 
 ## Stack
 
@@ -13,6 +14,10 @@ A deliberately narrow toolkit:
   produces the static `dist/` tree.
 - **Caddy** in front for TLS, serving the published webroot directly.
 - **Cloudflare** at the edge.
+
+The site is static and does not require a database at runtime. PostgreSQL
+appears here as a primary portfolio focus and default future application
+data platform, not as a dependency of the current static build.
 
 Content (posts, projects, about copy) lives as plain files in
 `content/` so the site stays inspectable, diffable, and easy to host

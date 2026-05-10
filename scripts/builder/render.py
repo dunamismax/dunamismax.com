@@ -18,13 +18,13 @@ from .content import Post, Project, PROJECT_CATEGORIES
 
 SITE_TITLE = "Stephen Sawyer · dunamismax"
 SITE_DEFAULT_DESCRIPTION = (
-    "Stephen Sawyer is a systems-leaning engineer working in C, Zig, Python, "
-    "and vanilla TypeScript — open source advocate and privacy/security-minded "
+    "Stephen Sawyer is a systems-leaning engineer working in C, Zig, PostgreSQL, "
+    "Python, and vanilla TypeScript — open source advocate and privacy/security-minded "
     "builder with 15 years in IT."
 )
 SITE_OG_DESCRIPTION = (
-    "Systems work in C and Zig, Python where it fits, vanilla web on top. "
-    "Open source, self-hosting, privacy, and security."
+    "Systems work in C and Zig, PostgreSQL-first data platforms, Python where "
+    "it fits, vanilla web on top. Open source, self-hosting, privacy, and security."
 )
 SITE_HOST = "dunamismax.com"
 
@@ -210,8 +210,9 @@ def render_footer() -> str:
         '            <span>dunamismax</span>\n'
         '          </a>\n'
         '          <p class="footer-copy">\n'
-        '            Stephen Sawyer. Systems-leaning engineer working in C, Zig, Python,\n'
-        '            and vanilla TypeScript. Open source, privacy, and security advocate.\n'
+        '            Stephen Sawyer. Systems-leaning engineer working in C, Zig,\n'
+        '            PostgreSQL, Python, and vanilla TypeScript. Open source,\n'
+        '            privacy, and security advocate.\n'
         '          </p>\n'
         '        </div>\n'
         '        <nav class="footer-columns" aria-label="Footer">\n'
@@ -240,7 +241,7 @@ def render_footer() -> str:
         '      <div class="footer-meta">\n'
         '        <div class="footer-meta__inner">\n'
         f'          <p>&copy; {year} Stephen Sawyer.</p>\n'
-        '          <p class="footer-meta__claim">Vanilla HTML, CSS, and TypeScript · Served behind Caddy</p>\n'
+        '          <p class="footer-meta__claim">Vanilla HTML, CSS, and TypeScript · PostgreSQL-first · Served behind Caddy</p>\n'
         '        </div>\n'
         '      </div>\n'
         '    </footer>\n'
@@ -295,7 +296,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '  <div class="hero-background" aria-hidden="true"></div>\n'
         '  <div class="section-inner hero-grid">\n'
         '    <div class="hero-copy">\n'
-        '      <p class="eyebrow">C · Zig · Python · vanilla web</p>\n'
+        '      <p class="eyebrow">C · Zig · PostgreSQL · Python · vanilla web</p>\n'
         '      <h1>Software you can read at 2 AM.</h1>\n'
         '      <p class="lede">\n'
         '        Systems-leaning engineer. Open source, privacy, and security advocate.\n'
@@ -304,9 +305,9 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '      </p>\n'
         '      <p class="lede">\n'
         '        <strong>Small languages, no frameworks.</strong>\n'
-        '        C and Zig for systems work, Python for scripts and backends, vanilla\n'
-        '        HTML, CSS, and TypeScript for the web. Explicit ownership, explicit\n'
-        '        data, explicit failure modes.\n'
+        '        C and Zig for systems work, PostgreSQL as the default data platform,\n'
+        '        Python for scripts and backends, vanilla HTML, CSS, and TypeScript\n'
+        '        for the web. Explicit ownership, explicit data, explicit failure modes.\n'
         '      </p>\n'
         '      <div class="hero-actions">\n'
         '        <a href="/projects" class="button button-primary">See projects</a>\n'
@@ -315,6 +316,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '      <div class="stack-row" aria-label="Primary stack">\n'
         '        <span class="stack-chip stack-chip--strong">C</span>\n'
         '        <span class="stack-chip stack-chip--strong">Zig</span>\n'
+        '        <span class="stack-chip stack-chip--strong">PostgreSQL</span>\n'
         '        <span class="stack-chip">Python</span>\n'
         '        <span class="stack-chip">TypeScript</span>\n'
         '        <span class="stack-chip">HTML</span>\n'
@@ -333,7 +335,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '      <nav class="nav-card-grid" aria-label="Quick navigation">\n'
         '        <a href="/projects" class="nav-card">\n'
         '          <span class="nav-card__title">Projects</span>\n'
-        '          <span class="nav-card__detail">Systems work in C and Zig, plus the smaller tools that earn their place.</span>\n'
+        '          <span class="nav-card__detail">Systems work in C and Zig, PostgreSQL-first data tools, and smaller projects that earn their place.</span>\n'
         '        </a>\n'
         '        <a href="/blog" class="nav-card">\n'
         '          <span class="nav-card__title">Blog</span>\n'
@@ -341,7 +343,7 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '        </a>\n'
         '        <a href="/about" class="nav-card">\n'
         '          <span class="nav-card__title">About</span>\n'
-        '          <span class="nav-card__detail">Small-language, no-framework, privacy-minded engineering.</span>\n'
+        '          <span class="nav-card__detail">Small-language, PostgreSQL-first, no-framework, privacy-minded engineering.</span>\n'
         '        </a>\n'
         '        <a href="/contact" class="nav-card">\n'
         '          <span class="nav-card__title">Contact</span>\n'
@@ -354,9 +356,9 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '<section class="signal-bar">\n'
         '  <div class="section-inner signal-grid">\n'
         '    <p><span></span>C and Zig first</p>\n'
+        '    <p><span></span>PostgreSQL as data core</p>\n'
         '    <p><span></span>Python for backends and scripts</p>\n'
         '    <p><span></span>Vanilla web, no frameworks</p>\n'
-        '    <p><span></span>15 years in IT</p>\n'
         '  </div>\n'
         '</section>\n'
         '<section class="page-section">\n'
@@ -365,8 +367,9 @@ def render_home(*, featured: list[Project], latest: Post | None) -> str:
         '      <p class="eyebrow">Featured projects</p>\n'
         '      <h2>Systems work with real operating shape.</h2>\n'
         '      <p>\n'
-        '        A short list of current and representative work, led by the C and Zig\n'
-        '        systems project that defines how everything else gets built.\n'
+        '        A short list of current and representative work: C and Zig systems\n'
+        '        software, cryptography tools, static web work, and a PostgreSQL-first\n'
+        '        data platform bias for future application work.\n'
         '      </p>\n'
         '    </div>\n'
         f'    <ul class="post-list">\n{cards}</ul>\n'
@@ -503,8 +506,8 @@ def render_projects_index(projects_by_cat: dict[str, list[Project]]) -> str:
         '    <h1>Selected systems work.</h1>\n'
         '    <p class="lede">\n'
         '      A focused catalog of current and representative work: systems software\n'
-        '      in C and Zig, small Python tools, and the vanilla web that ties them\n'
-        '      together.\n'
+        '      in C and Zig, PostgreSQL-first data systems, small Python tools, and\n'
+        '      the vanilla web that ties them together.\n'
         '    </p>\n'
         '  </div>\n'
         '</section>\n'
@@ -539,8 +542,8 @@ def render_blog_index(posts: list[Post]) -> str:
         '    <h1>Notes from shipping software.</h1>\n'
         '    <p class="lede">\n'
         '      Build logs, design notes, and stack reasoning from a small-language,\n'
-        '      no-framework default: systems work in C and Zig, Python where it fits,\n'
-        '      and vanilla web on top.\n'
+        '      no-framework default: systems work in C and Zig, PostgreSQL as the\n'
+        '      default data platform, Python where it fits, and vanilla web on top.\n'
         '    </p>\n'
         '  </div>\n'
         '</section>\n'

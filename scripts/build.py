@@ -120,7 +120,7 @@ def _write_manifest(out: Path) -> None:
         '  "start_url": "/",\n'
         '  "display": "standalone",\n'
         '  "scope": "/",\n'
-        '  "description": "Systems-leaning engineering work by Stephen Sawyer in C, Zig, Python, and vanilla TypeScript.",\n'
+        '  "description": "Systems-leaning engineering work by Stephen Sawyer in C, Zig, PostgreSQL, Python, and vanilla TypeScript.",\n'
         '  "theme_color": "#0a0a0b",\n'
         '  "background_color": "#0a0a0b"\n'
         '}\n',
@@ -213,7 +213,7 @@ def _build(*, run_tsc: bool = True) -> tuple[list, list]:
         path="/projects",
         title="Projects · dunamismax",
         description=(
-            "Selected work by Stephen Sawyer in C, Zig, Python, and vanilla TypeScript."
+            "Selected work by Stephen Sawyer in C, Zig, PostgreSQL, Python, and vanilla TypeScript."
         ),
         section="projects",
     )
@@ -230,7 +230,7 @@ def _build(*, run_tsc: bool = True) -> tuple[list, list]:
         title="Blog · dunamismax",
         description=(
             "Notes on building, shipping, and self-hosting software in C, "
-            "Zig, Python, and vanilla TypeScript."
+            "Zig, PostgreSQL, Python, and vanilla TypeScript."
         ),
         section="blog",
     )
@@ -332,7 +332,7 @@ def _watch_loop(stop: threading.Event) -> None:
     watch_roots = [
         ROOT / "content",
         ROOT / "src",
-        ROOT / "scripts" / "site",
+        ROOT / "scripts" / "builder",
     ]
 
     def snapshot() -> dict[str, float]:
