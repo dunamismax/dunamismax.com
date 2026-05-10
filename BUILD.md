@@ -72,10 +72,34 @@ runtime, no database, no background process, and no third-party JavaScript.
 - [x] CI workflow runs `python scripts/build.py check` and `build` on push and PR.
 
 ### Phase 6 — cut over
-- [ ] Update `Caddyfile` to serve `dist/` directly (no reverse proxy).
-- [ ] Update `bin/redeploy` to `git pull && build.py build && reload caddy`.
-- [ ] Remove all Rails artifacts in a single follow-up commit.
-- [ ] Tag `v2.0.0`.
+- [x] `Caddyfile` serves `dist/` directly (no reverse proxy).
+- [x] `scripts/redeploy.sh` is `git pull && build.py build && reload caddy`.
+- [x] All Rails artifacts removed in a single commit.
+- [ ] Tag `v2.0.0` once the production cutover lands and the site is verified live.
+
+#### Production cutover sequence
+
+```sh
+sudo systemctl stop dunamismax-web.service
+sudo systemctl disable dunamismax-web.service
+sudo rm -f /etc/systemd/system/dunamismax-web.service
+sudo systemctl daemon-reload
+
+cd /home/sawyer/github/dunamismax.com
+git pull --ff-only
+python3 scripts/build.py build
+
+sudo cp Caddyfile /etc/caddy/Caddyfile
+sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl reload caddy
+
+# Confirm the static surface
+curl -sI https://dunamismax.com/ | head
+curl -s https://dunamismax.com/feed.xml | head
+```
+
+After the static deploy is verified, the local `storage/*.sqlite*` files
+can be archived and removed.
 
 ## Toolchain
 
@@ -189,3 +213,8 @@ the live `Caddyfile` in this repo still reverse-proxies to Puma.
 - 2026-05-10 — Phases 0–4 land in one tranche: Python build, vanilla
   TS theme toggle, ported CSS, content surfaces, RSS, manifest, and
   validation pass. Homepage ~8 KB gzipped.
+- 2026-05-10 — Phase 5 CI workflow added (build.py check + build on push
+  and PR). Payload, no-JS, and link-walk verification documented.
+- 2026-05-10 — Phase 6 cut over in-tree: Caddyfile rewritten for
+  static, `scripts/redeploy.sh` replaces `bin/redeploy`, all Rails
+  artifacts deleted in a single commit. Production rollout pending.

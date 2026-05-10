@@ -15,25 +15,11 @@ __pycache__/
 .DS_Store
 .codex
 
-# Legacy Rails artifacts (kept until Phase 6 cutover).
-/.bundle
-/vendor/bundle
-/log/*
-!/log/.keep
-/tmp/*
-!/tmp/.keep
-!/tmp/pids
-/tmp/pids/*
-!/tmp/pids/.keep
-/storage/*
-!/storage/.keep
-/config/master.key
-/.kamal/secrets
-/public/assets
-/app/assets/builds/*
-!/app/assets/builds/.keep
-
 # Environment files.
 .env
 .env.*
 !.env.example
+
+# Legacy state (Rails-era sqlite DBs, kept on disk until the prod
+# service stops; never tracked).
+/storage
