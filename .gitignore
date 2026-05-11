@@ -1,25 +1,32 @@
-# Build output.
-/dist
+# Gradle / build
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
 
-# Python.
-__pycache__/
-*.py[cod]
-.venv/
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.kotlin/
 
-# Node.
-/node_modules
+# Node / Tailwind
+node_modules/
+package-lock.json
 
-# Local editor / OS clutter.
-.idea
-.vscode
+# Generated Tailwind output — produced by `npm run build:css`
+src/main/resources/static/css/site.css
+
+# OS
 .DS_Store
-.codex
+Thumbs.db
 
-# Environment files.
+# Logs
+*.log
+
+# Local env
 .env
 .env.*
-!.env.example
-
-# Legacy state (Rails-era sqlite DBs, kept on disk until the prod
-# service stops; never tracked).
-/storage
+!deploy/site.env.example

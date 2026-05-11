@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content)">
+<head>
+  <meta charset="utf-8">
+  <title th:text="${page.title}">dunamismax</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" th:attr="content=${page.description}">
+  <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="dunamismax">
+  <link rel="canonical" th:href="${canonical}">
+  <meta property="og:site_name" content="dunamismax">
+  <meta property="og:type" th:attr="content=${page.ogType}">
+  <meta property="og:title" th:attr="content=${page.title}">
+  <meta property="og:description" th:attr="content=${ogDescription}">
+  <meta property="og:url" th:href="${canonical}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" th:attr="content=${page.title}">
+  <meta name="twitter:description" th:attr="content=${ogDescription}">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="alternate" type="application/rss+xml" title="dunamismax · Blog" href="/feed.xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script>
+    (() => {
+      try {
+        var stored = localStorage.getItem("dunamismax-theme");
+        var theme = stored === "light" || stored === "dark" ? stored : "dark";
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      } catch (_) {
+        document.documentElement.dataset.theme = "dark";
+        document.documentElement.style.colorScheme = "dark";
+      }
+    })();
+  </script>
+  <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+  <script src="/js/theme.js" defer></script>
+</head>
+<body class="antialiased bg-bg text-text">
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <div th:replace="~{fragments/header :: header(${page.section})}"></div>
+  <main id="main-content">
+    <div th:replace="${content}"></div>
+  </main>
+  <div th:replace="~{fragments/footer :: footer(${currentYear})}"></div>
+</body>
+</html>

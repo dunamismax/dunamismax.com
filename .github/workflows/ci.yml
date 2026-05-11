@@ -17,27 +17,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-java@v4
         with:
-          python-version: "3.13"
+          distribution: temurin
+          java-version: "21"
 
-      - name: Set up Node (for tsc)
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "22"
+          cache: npm
 
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install markdown
-          npm install -g typescript@6
+      - uses: gradle/actions/setup-gradle@v4
 
-      - name: Check
-        run: python3 scripts/build.py check
+      - name: Install Node deps (Tailwind)
+        run: npm ci
 
-      - name: Build
-        run: python3 scripts/build.py build
+      - name: Build Tailwind stylesheet
+        run: npm run build:css
+
+      - name: Gradle build + test
+        run: ./gradlew --no-daemon clean build

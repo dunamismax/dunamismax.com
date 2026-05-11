@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="page-hero">
+    <div class="section-inner">
+      <p class="eyebrow">Projects</p>
+      <h1>Live projects.</h1>
+      <p class="lede">
+        The handful of projects that are live right now. New projects
+        on the Kotlin and PostgreSQL stack are in flight and will land
+        here as they ship.
+      </p>
+    </div>
+  </section>
+  <section class="page-section">
+    <div class="section-inner">
+      <section class="project-group" th:each="entry : ${groups}">
+        <header class="project-group__heading">
+          <h2 th:text="${entry.key.label}">category</h2>
+          <p th:text="${entry.key.description}">description</p>
+        </header>
+        <ul class="post-list">
+          <li th:each="project : ${entry.value}">
+            <div th:replace="~{fragments/project-card :: card(${project})}"></div>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </section>
+</main>
+</body>
+</html>

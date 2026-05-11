@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="page-hero">
+    <div class="section-inner">
+      <p class="eyebrow">Contact</p>
+      <h1>Get in touch.</h1>
+      <p class="lede">
+        Email is the best place to start. Signal works well for direct outreach,
+        and GitHub or Codeberg are the right places for public discussion around
+        code.
+      </p>
+    </div>
+  </section>
+  <section class="page-section">
+    <div class="section-inner">
+      <div class="contact-grid">
+        <article class="contact-card" th:each="c : ${contacts}">
+          <p class="contact-card__title" th:text="${c.title}">title</p>
+          <a class="contact-card__value"
+             th:href="${c.href}"
+             th:attr="rel=${c.external ? 'noopener noreferrer me' : 'me'},
+                       target=${c.external ? '_blank' : null}"
+             th:text="${c.value}">value</a>
+          <p class="contact-card__detail" th:text="${c.detail}">detail</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer(year)" class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand-block">
+      <a href="/" class="footer-brand-link">
+        <span class="brand-mark brand-mark--footer" aria-hidden="true">DM</span>
+        <span>dunamismax</span>
+      </a>
+      <p class="footer-copy">
+        Stephen Sawyer. Engineer working in Kotlin on the JVM
+        and PostgreSQL. Open source, privacy, and security
+        advocate.
+      </p>
+    </div>
+    <nav class="footer-columns" aria-label="Footer">
+      <div class="footer-column">
+        <p class="footer-column__title">Site</p>
+        <a href="/">Home</a>
+        <a href="/projects">Projects</a>
+        <a href="/blog">Blog</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-column">
+        <p class="footer-column__title">Code</p>
+        <a href="https://github.com/dunamismax" rel="noopener noreferrer me" target="_blank">GitHub</a>
+        <a href="https://codeberg.org/dunamismax" rel="noopener noreferrer me" target="_blank">Codeberg</a>
+        <a href="https://github.com/dunamismax/dunamismax.com" rel="noopener noreferrer me" target="_blank">Site source</a>
+        <a href="/feed.xml">RSS feed</a>
+      </div>
+      <div class="footer-column">
+        <p class="footer-column__title">Elsewhere</p>
+        <a href="mailto:dunamismax@tutamail.com" rel="me">Email</a>
+        <a href="https://www.reddit.com/user/DunamisMax/" rel="noopener noreferrer me" target="_blank">Reddit</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-meta">
+    <div class="footer-meta__inner">
+      <p>&copy; <span th:text="${year}">2026</span> Stephen Sawyer.</p>
+      <p class="footer-meta__claim">Kotlin on the JVM · PostgreSQL-first · Served behind Caddy</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
