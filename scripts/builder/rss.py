@@ -11,8 +11,8 @@ from .render import SITE_HOST
 
 CHANNEL_TITLE = "dunamismax · Blog"
 CHANNEL_DESCRIPTION = (
-    "Notes on building, shipping, and self-hosting software in Rust, Python, "
-    "PostgreSQL, and vanilla TypeScript."
+    "Notes on building, shipping, and self-hosting software in Kotlin on "
+    "the JVM and PostgreSQL."
 )
 
 

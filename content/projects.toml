@@ -8,30 +8,28 @@
 # `position` controls sort order within a category (lower first).
 
 [[projects]]
-slug       = "zwire"
-name       = "zwire"
+slug       = "pod-tracker"
+name       = "pod-tracker"
 category   = "apps"
-status     = "phase-0"
-position   = 7
+status     = "active"
+position   = 10
 featured   = true
 visibility = "public"
-tagline    = "End-to-end encrypted file transfer by short human code. No accounts, no daemon, no plaintext on the wire, and an optional relay that sees only ciphertext."
-repo       = "https://github.com/dunamismax/zwire"
-url        = "https://zwire.cc"
-stack      = "Rust, Python, PostgreSQL, PAKE, AEAD"
+tagline    = "Podcast tracking app. Live today on Ruby on Rails, pending rewrite onto the Kotlin and PostgreSQL stack."
+repo       = "https://github.com/dunamismax/pod-tracker"
+stack      = "Ruby on Rails, PostgreSQL, pending rewrite to Kotlin"
 
 [[projects]]
-slug       = "ciphers"
-name       = "ciphers"
+slug       = "mtg-card-bot"
+name       = "mtg-card-bot"
 category   = "apps"
-status     = "phase-0"
-position   = 9
+status     = "active"
+position   = 20
 featured   = true
 visibility = "public"
-tagline    = "Interactive cryptography playground for the browser. Framework-free, local-only demos for classical ciphers, modern primitives, hashing, public-key crypto, and cryptanalysis."
-repo       = "https://github.com/dunamismax/ciphers"
-url        = "https://ciphers.cc"
-stack      = "HTML, CSS, TypeScript, cryptography education"
+tagline    = "Magic: The Gathering card lookup Discord bot. Staying on Python."
+repo       = "https://github.com/dunamismax/mtg-card-bot"
+stack      = "Python, discord.py, Scryfall API"
 
 [[projects]]
 slug       = "dunamismax-site"
@@ -41,19 +39,7 @@ status     = "active"
 position   = 10
 featured   = true
 visibility = "public"
-tagline    = "This site. Vanilla HTML, CSS, and TypeScript with a small Python build, served behind Caddy on a single Ubuntu box."
+tagline    = "This site. Static build today, pending rewrite onto the Kotlin and PostgreSQL stack with Spring Boot, Thymeleaf, HTMX, and Tailwind."
 repo       = "https://github.com/dunamismax/dunamismax.com"
 url        = "https://dunamismax.com"
-stack      = "HTML, CSS, TypeScript, Python, Caddy"
-
-[[projects]]
-slug       = "dunamismax-profile"
-name       = "dunamismax"
-category   = "reference"
-status     = "active"
-position   = 20
-featured   = false
-visibility = "public"
-tagline    = "The public profile repo that ties together my current focus areas, active projects, and primary links."
-repo       = "https://github.com/dunamismax/dunamismax"
-stack      = "Markdown, Docs"
+stack      = "Static HTML, CSS, TypeScript, pending rewrite to Kotlin"
