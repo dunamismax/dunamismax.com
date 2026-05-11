@@ -92,6 +92,22 @@ class SiteApplicationTests {
     }
 
     @Test
+    fun `trailing slash redirects to canonical path`() {
+        mockMvc.get("/projects/").andExpect {
+            status { isEqualTo(301) }
+            header { string("Location", "/projects") }
+        }
+    }
+
+    @Test
+    fun `trailing slash preserves query string`() {
+        mockMvc.get("/blog/?tag=kotlin").andExpect {
+            status { isEqualTo(301) }
+            header { string("Location", "/blog?tag=kotlin") }
+        }
+    }
+
+    @Test
     fun `health endpoint reports UP`() {
         val result = mockMvc.get("/actuator/health").andReturn()
         assertThat(result.response.status).isEqualTo(200)
