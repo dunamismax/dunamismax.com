@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="page-hero">
+    <div class="section-inner">
+      <p class="eyebrow">Blog</p>
+      <h1>Notes from shipping software.</h1>
+      <p class="lede">
+        Build logs, design notes, and stack reasoning from a one-language,
+        one-database default: Kotlin on the JVM, PostgreSQL, and
+        server-rendered HTML with Thymeleaf, HTMX, and Tailwind on top.
+      </p>
+    </div>
+  </section>
+  <section class="page-section">
+    <div class="section-inner">
+      <p class="prose" th:if="${#lists.isEmpty(posts)}">No posts yet.</p>
+      <ul class="post-list" th:unless="${#lists.isEmpty(posts)}">
+        <li th:each="post : ${posts}">
+          <a th:href="@{'/blog/' + ${post.slug}}" class="post-card">
+            <span class="post-card__meta">
+              <span th:text="${#temporals.format(post.publishedOn, 'MMM d, yyyy')}">date</span>
+              ·
+              <span th:text="${post.readingTimeMinutes} + ' min read'">5 min read</span>
+            </span>
+            <span class="post-card__title" th:text="${post.title}">title</span>
+            <span class="post-card__description" th:text="${post.description}">description</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</main>
+</body>
+</html>

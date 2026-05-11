@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="page-hero">
+    <div class="section-inner">
+      <article class="post-detail">
+        <p class="eyebrow">Blog</p>
+        <h1 th:text="${post.title}">title</h1>
+        <p class="lede" th:text="${post.description}">description</p>
+        <p class="post-detail__meta">
+          <span th:text="${#temporals.format(post.publishedOn, 'MMMM d, yyyy')}">date</span>
+          <span th:text="${post.readingTimeMinutes} + ' min read'">5 min read</span>
+        </p>
+        <div class="post-tags" th:unless="${#lists.isEmpty(post.tags)}">
+          <span th:each="tag : ${post.tags}" class="stack-chip" th:text="'#' + ${tag}">tag</span>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="page-section">
+    <div class="section-inner">
+      <article class="post-detail">
+        <div class="post-body" th:utext="${post.bodyHtml}"></div>
+        <p class="section-foot">
+          <a href="/blog" class="section-link">Back to all posts</a>
+        </p>
+      </article>
+    </div>
+  </section>
+</main>
+</body>
+</html>

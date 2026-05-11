@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header(section)" class="site-header">
+  <nav class="primary-nav" aria-label="Primary navigation">
+    <a href="/" class="brand-link" aria-label="dunamismax home">
+      <span class="brand-mark" aria-hidden="true">DM</span>
+      <span class="brand-word">dunamismax</span>
+    </a>
+    <div class="desktop-nav">
+      <a href="/projects" th:classappend="${section} == 'projects' ? 'is-current'">Projects</a>
+      <a href="/blog"     th:classappend="${section} == 'blog'     ? 'is-current'">Blog</a>
+      <a href="/about"    th:classappend="${section} == 'about'    ? 'is-current'">About</a>
+      <a href="/contact"  th:classappend="${section} == 'contact'  ? 'is-current'">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-pressed="true" aria-label="Switch to light mode">
+        <span class="theme-toggle__track" aria-hidden="true">
+          <span class="theme-toggle__thumb"></span>
+        </span>
+        <span data-theme-target="label">Dark</span>
+      </button>
+    </div>
+  </nav>
+  <nav class="mobile-nav" aria-label="Section navigation">
+    <a href="/projects" th:classappend="${section} == 'projects' ? 'is-current'">Projects</a>
+    <a href="/blog"     th:classappend="${section} == 'blog'     ? 'is-current'">Blog</a>
+    <a href="/about"    th:classappend="${section} == 'about'    ? 'is-current'">About</a>
+    <a href="/contact"  th:classappend="${section} == 'contact'  ? 'is-current'">Contact</a>
+  </nav>
+</header>
+</body>
+</html>

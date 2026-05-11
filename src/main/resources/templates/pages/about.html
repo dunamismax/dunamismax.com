@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="page-hero">
+    <div class="section-inner">
+      <p class="eyebrow">About</p>
+      <h1>One language. One database. One VM.</h1>
+      <p class="lede">
+        I'm Stephen Sawyer, an engineer and an open source, privacy,
+        and security advocate. I have spent 15 years in IT building,
+        operating, fixing, and explaining systems that need to survive real
+        users.
+      </p>
+    </div>
+  </section>
+  <section class="page-section">
+    <div class="section-inner">
+      <div class="prose" th:utext="${aboutHtml}"></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

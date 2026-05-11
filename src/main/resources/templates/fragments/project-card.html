@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<article th:fragment="card(project)" class="project-card">
+  <div class="project-card__head">
+    <h3 class="project-card__name" th:text="${project.name}">name</h3>
+    <span class="project-status"
+          th:classappend="'project-status--' + ${project.status.slug}"
+          th:text="${project.status.label}">Active</span>
+  </div>
+  <p class="project-card__tagline" th:text="${project.tagline}">tagline</p>
+  <div class="project-card__foot">
+    <div class="project-card__stack">
+      <span th:each="tech : ${project.stack}" class="stack-chip" th:text="${tech}">tech</span>
+    </div>
+    <div class="project-card__links">
+      <a th:if="${project.url != null and !#strings.isEmpty(project.url)}"
+         th:href="${project.url}" rel="noopener noreferrer" target="_blank">live ↗</a>
+      <a th:if="${project.publicRepo}"
+         th:href="${project.repo}" rel="noopener noreferrer" target="_blank">repo ↗</a>
+    </div>
+  </div>
+</article>
+</body>
+</html>

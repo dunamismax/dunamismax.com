@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="hero-section">
+    <div class="hero-background" aria-hidden="true"></div>
+    <div class="section-inner hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Kotlin · JVM · PostgreSQL · server-rendered HTML</p>
+        <h1>Software you can read at 2 AM.</h1>
+        <p class="lede">
+          Engineer. Open source, privacy, and security advocate. Fifteen
+          years in IT, building software that has to keep working after
+          the demo is over.
+        </p>
+        <p class="lede">
+          <strong>One language, one database, one VM.</strong>
+          Kotlin on the JVM for the entire application layer, PostgreSQL
+          as the single data platform, and server-rendered HTML with
+          Thymeleaf, HTMX, and Tailwind on top. Explicit ownership,
+          explicit data, explicit failure modes.
+        </p>
+        <div class="hero-actions">
+          <a href="/projects" class="button button-primary">See projects</a>
+          <a href="/contact" class="button button-secondary">Get in touch</a>
+        </div>
+        <div class="stack-row" aria-label="Primary stack">
+          <span class="stack-chip stack-chip--strong">Kotlin</span>
+          <span class="stack-chip stack-chip--strong">JVM</span>
+          <span class="stack-chip stack-chip--strong">PostgreSQL</span>
+          <span class="stack-chip">Spring Boot</span>
+          <span class="stack-chip">Thymeleaf</span>
+          <span class="stack-chip">HTMX</span>
+          <span class="stack-chip">Tailwind</span>
+          <span class="stack-chip">Caddy</span>
+        </div>
+        <p class="fine-print">
+          Code lives on
+          <a href="https://github.com/dunamismax" rel="noopener noreferrer me" target="_blank">GitHub</a>
+          and mirrors to
+          <a href="https://codeberg.org/dunamismax" rel="noopener noreferrer me" target="_blank">Codeberg</a>.
+        </p>
+      </div>
+      <div>
+        <a th:if="${latest != null}" th:href="@{'/blog/' + ${latest.slug}}" class="latest-card">
+          <span class="latest-card__kicker">Latest post</span>
+          <span class="latest-card__title" th:text="${latest.title}">title</span>
+          <span class="latest-card__meta">
+            <span th:text="${#temporals.format(latest.publishedOn, 'MMM d, yyyy')}">date</span>
+            ·
+            <span th:text="${latest.readingTimeMinutes} + ' min read'">5 min read</span>
+          </span>
+          <span class="latest-card__description" th:text="${latest.description}">desc</span>
+        </a>
+        <nav class="nav-card-grid" aria-label="Quick navigation">
+          <a href="/projects" class="nav-card">
+            <span class="nav-card__title">Projects</span>
+            <span class="nav-card__detail">Live projects today and the new Kotlin and PostgreSQL projects coming next.</span>
+          </a>
+          <a href="/blog" class="nav-card">
+            <span class="nav-card__title">Blog</span>
+            <span class="nav-card__detail">Build logs, design notes, and practical decisions from real systems.</span>
+          </a>
+          <a href="/about" class="nav-card">
+            <span class="nav-card__title">About</span>
+            <span class="nav-card__detail">Kotlin on the JVM, PostgreSQL-first, server-rendered, privacy-minded engineering.</span>
+          </a>
+          <a href="/contact" class="nav-card">
+            <span class="nav-card__title">Contact</span>
+            <span class="nav-card__detail">Email, Signal, GitHub, Codeberg, and site source.</span>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="signal-bar">
+    <div class="section-inner signal-grid">
+      <p><span></span>Kotlin on the JVM</p>
+      <p><span></span>PostgreSQL as data core</p>
+      <p><span></span>Server-rendered with Thymeleaf and HTMX</p>
+      <p><span></span>One Ubuntu VM behind Caddy</p>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="section-inner">
+      <div class="section-heading">
+        <p class="eyebrow">Featured projects</p>
+        <h2>Live projects today.</h2>
+        <p>
+          The handful of projects that are live right now. New Kotlin
+          and PostgreSQL projects are in flight and will be highlighted
+          here as they ship.
+        </p>
+      </div>
+      <ul class="post-list">
+        <li th:each="project : ${featured}">
+          <div th:replace="~{fragments/project-card :: card(${project})}"></div>
+        </li>
+      </ul>
+      <p class="section-foot">
+        <a href="/projects" class="section-link">See every project</a>
+      </p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

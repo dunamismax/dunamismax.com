@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::main})}">
+<body>
+<main>
+  <section class="page-hero">
+    <div class="section-inner">
+      <p class="eyebrow" th:text="${status}">404</p>
+      <h1 th:text="${status} == 404 ? 'That page is not here.' : 'Something went wrong.'">That page is not here.</h1>
+      <p class="lede" th:if="${status} == 404">
+        The address may have moved, or never existed. Try the home page,
+        the project list, or the blog.
+      </p>
+      <p class="lede" th:unless="${status} == 404">
+        An unexpected error occurred. Try again, or head back to the home page.
+      </p>
+      <div class="hero-actions hero-actions--inline">
+        <a href="/" class="button button-primary">Home</a>
+        <a href="/projects" class="button button-secondary">Projects</a>
+        <a href="/blog" class="button button-secondary">Blog</a>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
