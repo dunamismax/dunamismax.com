@@ -1,24 +1,28 @@
 # dunamismax.com
 
 Personal site, portfolio, and blog for Stephen Sawyer: engineer working
-in Rust, Python, PostgreSQL, and vanilla TypeScript; open source
-advocate; and privacy/security-minded builder.
+in Kotlin on the JVM and PostgreSQL; open source advocate; and
+privacy/security-minded builder.
 
-## Stack
+This site is pending a rewrite onto the Kotlin and PostgreSQL stack
+([TECH_STACK.md](https://github.com/dunamismax/dunamismax/blob/main/TECH_STACK.md))
+that every project I own is consolidating onto. Until then, the current
+build is a small static site that ships the same content.
 
-A deliberately narrow toolkit:
+## Stack (current build, pending rewrite)
 
-- **Vanilla HTML, CSS, and TypeScript** for the site itself. No
+The site itself is static and intentionally narrow:
+
+- **Vanilla HTML, CSS, and TypeScript** for the rendered pages. No
   frameworks, no SPA, no client-side router, no bundler beyond `tsc`.
-- **Python 3.12+** as the build tool, managed with **`uv`** and linted
-  with **`ruff`**. A single CLI at `scripts/build.py` produces the
+- **A small Python build script** at `scripts/build.py` produces the
   static `dist/` tree.
 - **Caddy** in front for TLS, serving the published webroot directly.
 - **Cloudflare** at the edge.
 
-The site is static and does not require a database at runtime. PostgreSQL
-appears here as a primary portfolio focus and default future application
-data platform, not as a dependency of the current static build.
+The site is static and does not require a database at runtime. The
+target rewrite is a Spring Boot app rendering Thymeleaf with HTMX and
+Tailwind, backed by PostgreSQL.
 
 Content (posts, projects, about copy) lives as plain files in
 `content/` so the site stays inspectable, diffable, and easy to host
@@ -33,7 +37,7 @@ mise install                    # python, node, uv, ruff
 npm install -g typescript
 ```
 
-Python deps + build:
+Build the static site:
 
 ```sh
 uv sync                          # create .venv from pyproject.toml

@@ -1,9 +1,9 @@
 <p>
-  <strong>I work in a deliberately narrow toolkit:</strong> Rust for systems
-  software, Python for APIs and tooling, PostgreSQL for durable application
-  state, and vanilla HTML, CSS, and TypeScript for the web. No frameworks, no
-  SPA tax, no clever meta-language sitting between me and the data. The tools
-  are small on purpose so the systems they produce stay legible.
+  <strong>I work in a deliberately narrow toolkit:</strong> Kotlin on
+  the JVM for everything I write, and PostgreSQL for everything I
+  store. Server-rendered HTML with Thymeleaf, HTMX, and Tailwind on
+  top. One language, one database, one VM. The tools are small on
+  purpose so the systems they produce stay legible.
 </p>
 
 <p>
@@ -29,15 +29,16 @@
 <p>
   <strong>Boring infrastructure.</strong> I prefer the deployment that
   is easy to explain and easy to recover, not the one that looks
-  impressive in a diagram. One box, one service, one redeploy script is
-  often the correct answer.
+  impressive in a diagram. One Ubuntu VM, one fat jar under systemd,
+  one PostgreSQL on the same box, one Caddy in front, one redeploy
+  script.
 </p>
 
 <p>
-  <strong>Explicit data and explicit ownership.</strong> Schemas, file
-  formats, types, and lifetimes should make the system easier to reason
-  about, not harder. If you cannot trace a value through the system, the
-  system is too clever.
+  <strong>Explicit data and explicit ownership.</strong> Schemas,
+  migrations, types, and SQL should make the system easier to reason
+  about, not harder. If you cannot trace a value through the system,
+  the system is too clever.
 </p>
 
 <p>
@@ -55,37 +56,35 @@
 ## The stack
 
 <p>
-  <strong>Rust</strong> is where I write the systems core: protocol
-  code, network services, parsers, file formats, and anything that has
-  to be precise about memory and time. Memory safety is a product
-  requirement on the network edge, not a perk.
+  <strong>Kotlin on the JVM</strong> is the entire application layer:
+  web apps, APIs, services, scheduled jobs, CLIs. JDK 21 with virtual
+  threads, Spring Boot with Spring MVC, Gradle Kotlin DSL,
+  <code>kotlinx.serialization</code>, Spring Data JDBC, jOOQ for typed
+  SQL, and Flyway for migrations.
 </p>
 
 <p>
-  <strong>Python</strong> (3.12+) handles APIs, control planes,
-  scripting, automation, and content pipelines. FastAPI with
-  <code>asyncpg</code> and raw SQL on the service side. Modern tooling
-  throughout: <code>uv</code> for environments and packaging,
-  <code>ruff</code> for lint and format.
+  <strong>PostgreSQL</strong> is the single data platform. Relational
+  data, JSONB documents, full-text search, queues, audit logs,
+  permissions, reporting, geospatial, and vector search live in one
+  inspectable operational core before the system earns Redis, Kafka,
+  Elasticsearch, ClickHouse, or a dedicated vector database. The
+  defaults: <code>pgcrypto</code>, <code>pg_trgm</code>, and
+  <code>pg_stat_statements</code>; <code>pgvector</code> only when
+  there is real AI/RAG work, and PostGIS only when there are real
+  maps.
 </p>
 
 <p>
-  <strong>PostgreSQL</strong> is the default data platform. I want durable
-  application state, relational data, JSONB documents, search, queues,
-  audit logs, permissions, reporting, geospatial data, and vector search to
-  start in one inspectable operational core before the system earns Redis,
-  Kafka, Elasticsearch, ClickHouse, or a dedicated vector database.
+  <strong>Server-rendered HTML</strong> with Thymeleaf, HTMX, and
+  Tailwind covers most product surfaces without an SPA, a bundler, or
+  a JavaScript framework.
 </p>
 
 <p>
-  <strong>Vanilla HTML, CSS, and TypeScript</strong> is the web stack.
-  No frameworks, no client-side router, no build-time magic when a
-  server-rendered page works. JavaScript is added only when the product
-  clearly benefits from it.
-</p>
-
-<p>
-  <strong>Caddy on Ubuntu</strong> handles TLS, static assets, reverse
-  proxying, and deployment. One box, one document root, one redeploy
-  script.
+  <strong>One Ubuntu VM</strong> runs everything: Caddy in front for
+  TLS and reverse proxy, the Spring Boot fat jar under systemd, and
+  PostgreSQL on the same box. Local dev runs in Docker Compose with a
+  <code>justfile</code>, and deploys go out over SSH from GitHub
+  Actions with Flyway handling migrations.
 </p>
