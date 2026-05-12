@@ -22,8 +22,8 @@ class BlogController(
                 path = "/blog",
                 title = "Blog · dunamismax",
                 description =
-                    "Notes on building, shipping, and self-hosting software in Kotlin " +
-                        "on the JVM and PostgreSQL.",
+                    "Notes on building, shipping, and self-hosting software in Java " +
+                        "and PostgreSQL.",
                 section = "blog",
             ),
         )

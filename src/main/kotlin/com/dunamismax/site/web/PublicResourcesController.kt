@@ -25,7 +25,7 @@ class PublicResourcesController {
           "start_url": "/",
           "display": "standalone",
           "scope": "/",
-          "description": "Engineering work by Stephen Sawyer in Kotlin on the JVM and PostgreSQL.",
+          "description": "Engineering work by Stephen Sawyer in Java, PostgreSQL, and self-hosted software.",
           "theme_color": "#0a0a0b",
           "background_color": "#0a0a0b"
         }

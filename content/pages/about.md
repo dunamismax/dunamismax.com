@@ -1,9 +1,16 @@
 <p>
-  <strong>I work in a deliberately narrow toolkit:</strong> Kotlin on
-  the JVM for everything I write, and PostgreSQL for everything I
-  store. Server-rendered HTML with Thymeleaf, HTMX, and Tailwind on
-  top. One language, one database, one VM. The tools are small on
-  purpose so the systems they produce stay legible.
+  <strong>I work in a deliberately narrow toolkit:</strong> Java for
+  the application layer and PostgreSQL for the data layer.
+  Server-rendered HTML with Thymeleaf, HTMX, and Tailwind on top. One
+  language, one database, one VM. The tools are small on purpose so the
+  systems they produce stay legible.
+</p>
+
+<p>
+  My primary build focus is <strong>Callrift</strong>, an open-source,
+  username-first communications platform for encrypted messages, WebRTC
+  voice, group spaces, and technical communities without phone numbers
+  as identity.
 </p>
 
 <p>
@@ -29,16 +36,16 @@
 <p>
   <strong>Boring infrastructure.</strong> I prefer the deployment that
   is easy to explain and easy to recover, not the one that looks
-  impressive in a diagram. One Ubuntu VM, one fat jar under systemd,
-  one PostgreSQL on the same box, one Caddy in front, one redeploy
-  script.
+  impressive in a diagram. One Ubuntu LTS VM, one fat jar under
+  systemd, one PostgreSQL on the same box, one Caddy in front, one
+  redeploy path.
 </p>
 
 <p>
   <strong>Explicit data and explicit ownership.</strong> Schemas,
-  migrations, types, and SQL should make the system easier to reason
-  about, not harder. If you cannot trace a value through the system,
-  the system is too clever.
+  migrations, records, validation, and SQL should make the system
+  easier to reason about, not harder. If you cannot trace a value
+  through the system, the system is too clever.
 </p>
 
 <p>
@@ -56,35 +63,43 @@
 ## The stack
 
 <p>
-  <strong>Kotlin on the JVM</strong> is the entire application layer:
-  web apps, APIs, services, scheduled jobs, CLIs. JDK 21 with virtual
-  threads, Spring Boot with Spring MVC, Gradle Kotlin DSL,
-  <code>kotlinx.serialization</code>, Spring Data JDBC, jOOQ for typed
-  SQL, and Flyway for migrations.
+  <strong>Java 25 LTS</strong> is the default application layer: Spring
+  Boot 4, Maven, JDK toolchains, Java records, and virtual threads for
+  web apps, APIs, services, scheduled jobs, and CLIs. Spring MVC runs on
+  embedded Tomcat with Jackson 3, Jakarta Validation, Spring Boot
+  Actuator, Spring Security when the product needs it, jOOQ, Flyway,
+  and HikariCP.
 </p>
 
 <p>
-  <strong>PostgreSQL</strong> is the single data platform. Relational
-  data, JSONB documents, full-text search, queues, audit logs,
-  permissions, reporting, geospatial, and vector search live in one
-  inspectable operational core before the system earns Redis, Kafka,
-  Elasticsearch, ClickHouse, or a dedicated vector database. The
-  defaults: <code>pgcrypto</code>, <code>pg_trgm</code>, and
-  <code>pg_stat_statements</code>; <code>pgvector</code> only when
-  there is real AI/RAG work, and PostGIS only when there are real
-  maps.
+  <strong>PostgreSQL 18</strong> is the single data platform. Relational
+  state, JSONB documents, full-text search, queues, audit logs,
+  permissions, and reporting live in one inspectable operational core
+  before the system earns Redis, Kafka, Elasticsearch, ClickHouse, or a
+  dedicated vector database. The defaults: uuidv7 primary keys,
+  <code>pgcrypto</code>, <code>pg_trgm</code>, and
+  <code>pg_stat_statements</code>; <code>pgvector</code> only for real
+  AI/RAG work, and PostGIS only for maps or GIS.
 </p>
 
 <p>
-  <strong>Server-rendered HTML</strong> with Thymeleaf, HTMX, and
-  Tailwind covers most product surfaces without an SPA, a bundler, or
-  a JavaScript framework.
+  <strong>Server-rendered HTML</strong> with Thymeleaf, HTMX, Tailwind
+  CSS, and vanilla JavaScript covers most product surfaces. Alpine.js
+  comes in only when a page has enough local state to justify it.
 </p>
 
 <p>
-  <strong>One Ubuntu VM</strong> runs everything: Caddy in front for
+  <strong>Verification</strong> runs through JUnit 5, AssertJ, Spring
+  Boot Test, Testcontainers PostgreSQL, Flyway migration tests, and
+  Playwright only for critical browser flows.
+</p>
+
+<p>
+  <strong>One Ubuntu LTS VM</strong> runs everything: Caddy in front for
   TLS and reverse proxy, the Spring Boot fat jar under systemd, and
   PostgreSQL on the same box. Local dev runs in Docker Compose with a
-  <code>justfile</code>, and deploys go out over SSH from GitHub
-  Actions with Flyway handling migrations.
+  <code>justfile</code>, Maven wrapper, <code>.env</code> config, and
+  Mailpit when email needs testing. Deploys go out over SSH from GitHub
+  Actions with Flyway handling migrations, <code>pg_dump</code> backups,
+  and an offsite backup copy.
 </p>
