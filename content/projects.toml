@@ -8,38 +8,76 @@
 # `position` controls sort order within a category (lower first).
 
 [[projects]]
-slug       = "pod-tracker"
-name       = "pod-tracker"
+slug       = "callrift"
+name       = "callrift"
 category   = "apps"
 status     = "active"
 position   = 10
 featured   = true
 visibility = "public"
-tagline    = "Podcast tracking app. Live today on Ruby on Rails, pending rewrite onto the Kotlin and PostgreSQL stack."
+tagline    = "Primary focus. Encrypted voice, messages, groups, and technical communities without phone numbers."
+repo       = "https://github.com/dunamismax/callrift"
+url        = "https://callrift.dev"
+stack      = "Java 25, Spring Boot 4, PostgreSQL 18, jOOQ, Flyway, Thymeleaf, HTMX, Tailwind, WebRTC"
+
+[[projects]]
+slug       = "pod-tracker"
+name       = "pod-tracker"
+category   = "apps"
+status     = "active"
+position   = 20
+featured   = true
+visibility = "public"
+tagline    = "Magic: The Gathering Commander pod, deck, collection, and game-night tracker."
 repo       = "https://github.com/dunamismax/pod-tracker"
-stack      = "Ruby on Rails, PostgreSQL, pending rewrite to Kotlin"
+url        = "https://pod-tracker.app"
+stack      = "Ruby on Rails, PostgreSQL, Hotwire, Tailwind, PWA"
 
 [[projects]]
 slug       = "mtg-card-bot"
 name       = "mtg-card-bot"
 category   = "apps"
 status     = "active"
-position   = 20
+position   = 30
 featured   = true
 visibility = "public"
-tagline    = "Magic: The Gathering card lookup Discord bot. Staying on Python."
+tagline    = "Magic: The Gathering card lookup Discord bot with live Scryfall data."
 repo       = "https://github.com/dunamismax/mtg-card-bot"
-stack      = "Python, discord.py, Scryfall API"
+stack      = "Python, discord.py, Scryfall API, httpx, pytest"
 
 [[projects]]
-slug       = "dunamismax-site"
-name       = "dunamismax.com"
+slug       = "go-web-server"
+name       = "go-web-server"
+category   = "developer-tools"
+status     = "shipped"
+position   = 10
+featured   = true
+visibility = "public"
+tagline    = "Go, PostgreSQL, SQLC, Echo, and embedded Astro/Vue starter with real auth and browser smoke tests."
+repo       = "https://github.com/dunamismax/go-web-server"
+stack      = "Go, Echo, PostgreSQL, SQLC, Mage, Astro, Vue"
+
+[[projects]]
+slug       = "c-from-the-ground-up"
+name       = "c-from-the-ground-up"
 category   = "reference"
 status     = "active"
 position   = 10
 featured   = true
 visibility = "public"
-tagline    = "This site. Static build today, pending rewrite onto the Kotlin and PostgreSQL stack with Spring Boot, Thymeleaf, HTMX, and Tailwind."
-repo       = "https://github.com/dunamismax/dunamismax.com"
-url        = "https://dunamismax.com"
-stack      = "Static HTML, CSS, TypeScript, pending rewrite to Kotlin"
+tagline    = "Progressive C learning workbook from basics to systems programming."
+repo       = "https://github.com/dunamismax/c-from-the-ground-up"
+url        = "https://dunamismax.github.io/c-from-the-ground-up/"
+stack      = "C, mdBook, POSIX, sockets, pthreads, ncurses"
+
+[[projects]]
+slug       = "hello-world-from-hell"
+name       = "hello-world-from-hell"
+category   = "reference"
+status     = "shipped"
+position   = 20
+featured   = true
+visibility = "public"
+tagline    = "A deliberately overbuilt C Hello World joke repo with real build, test, and sanitizer discipline."
+repo       = "https://github.com/dunamismax/hello-world-from-hell"
+stack      = "C, Make, Clang, GCC, sanitizers, GitHub Actions"

@@ -31,7 +31,7 @@ class ContentServiceTest {
     @Test
     fun `about html is rendered from markdown`() {
         val html = service.aboutHtml()
-        assertThat(html).contains("Kotlin")
+        assertThat(html).contains("Java 25 LTS")
         assertThat(html).contains("PostgreSQL")
     }
 }

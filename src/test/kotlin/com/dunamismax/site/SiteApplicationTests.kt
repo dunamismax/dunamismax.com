@@ -36,7 +36,7 @@ class SiteApplicationTests {
     fun `projects page lists known project`() {
         mockMvc.get("/projects").andExpect {
             status { isOk() }
-            content { string(org.hamcrest.Matchers.containsString("dunamismax.com")) }
+            content { string(org.hamcrest.Matchers.containsString("callrift")) }
         }
     }
 
@@ -101,9 +101,9 @@ class SiteApplicationTests {
 
     @Test
     fun `trailing slash preserves query string`() {
-        mockMvc.get("/blog/?tag=kotlin").andExpect {
+        mockMvc.get("/blog/?tag=java").andExpect {
             status { isEqualTo(301) }
-            header { string("Location", "/blog?tag=kotlin") }
+            header { string("Location", "/blog?tag=java") }
         }
     }
 

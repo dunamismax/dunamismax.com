@@ -20,7 +20,7 @@ class ProjectsController(
                 path = "/projects",
                 title = "Projects · dunamismax",
                 description =
-                    "Selected work by Stephen Sawyer in Kotlin on the JVM and PostgreSQL.",
+                    "Selected work by Stephen Sawyer in Java, PostgreSQL, and self-hosted software.",
                 section = "projects",
             ),
         )
