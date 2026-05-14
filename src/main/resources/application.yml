@@ -24,8 +24,6 @@ spring:
       pool-name: dunamismax-pool
       maximum-pool-size: 10
       minimum-idle: 2
-  jooq:
-    sql-dialect: POSTGRES
   flyway:
     enabled: true
     locations: classpath:db/migration

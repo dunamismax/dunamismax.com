@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @source "../resources/templates/**/*.html";
-@source "../kotlin/**/*.kt";
+@source "../java/**/*.java";
 
 @theme {
   --color-bg: #f5f1e8;

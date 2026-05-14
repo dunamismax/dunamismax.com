@@ -2,25 +2,40 @@
 
 Personal site, portfolio, and blog for Stephen Sawyer.
 
-The public site presents a Java and PostgreSQL first engineering profile,
+The public site presents a Go, C, and PostgreSQL first engineering profile,
 highlights Callrift as the primary project focus, and links the strongest
 public projects worth showing: `callrift`, `pod-tracker`,
 `c-from-the-ground-up`, `mtg-card-bot`, `go-web-server`, and
 `hello-world-from-hell`.
 
-## Stack
+## Public Stack Direction
 
-- **Java 25 LTS** as the preferred application runtime for current product work
+This site's copy now reflects the target stack used for new work:
+
+- **Go** for web apps, APIs, workers, scheduled jobs, and CLIs
+- **C** for systems programming and performance-critical components
+- **PostgreSQL** as the single data platform
+- **Server-rendered HTML** with HTMX and restrained CSS
+- **sqlc** or an equivalent typed SQL workflow for explicit database access
+- **pgx**, forward-only SQL migrations, and PostgreSQL-backed jobs
+- **Ubuntu LTS VM**, **Caddy**, **systemd**, GitHub Actions deploys over SSH, SQL migrations, `pg_dump` backups, and restore drills
+
+## Current Implementation
+
+The current site backend is transitional and will be rewritten to Go later.
+Until that rewrite lands, this repo still builds and deploys the existing Java
+site:
+
+- **Java 25 LTS** for the current transitional site build
 - **Spring Boot 4.0.6+** + Spring MVC + embedded Tomcat
-- **Maven**, JDK toolchains, Java records, and virtual threads for new Java apps
-- **Jackson 3**, **Jakarta Validation**, **Spring Boot Actuator**
-- **Spring Security** only when the product needs it
-- **jOOQ**, **Flyway**, and **HikariCP**
+- **Maven**, JDK toolchains, Java records, and virtual threads
+- **Jackson 3** through Spring MVC and **Spring Boot Actuator** for health checks
+- **Flyway** and **HikariCP** against PostgreSQL
 - **PostgreSQL 18** with uuidv7 primary keys, `pgcrypto`, `pg_trgm`, and `pg_stat_statements`
-- **Thymeleaf** templates with **HTMX** for progressive enhancement
+- **Thymeleaf** templates
 - **Tailwind v4** for styling, built ahead of the fat jar
-- **Vanilla JavaScript**, with Alpine.js only when page-local state earns it
-- **JUnit 5**, **AssertJ**, **Spring Boot Test**, **Testcontainers PostgreSQL**, and Flyway migration tests
+- **Vanilla JavaScript** for the theme toggle
+- **JUnit 5**, **AssertJ**, **Spring Boot Test**, and **Testcontainers PostgreSQL**
 - **Ubuntu LTS VM**, **Caddy**, **systemd**, GitHub Actions deploys over SSH, Flyway migrations, `pg_dump` backups, and offsite backup copy
 
 ## Layout
@@ -30,7 +45,8 @@ content/                editable site content (TOML + Markdown)
   projects.toml         project list
   pages/about.md        about page body
   posts/                blog posts (TOML frontmatter + Markdown)
-src/main/               application sources and resources
+src/main/java/          Java application sources
+src/main/               application resources
 src/main/resources/
   application*.yml      Spring config
   templates/            Thymeleaf templates
@@ -41,7 +57,8 @@ src/test/               integration and content tests
 deploy/                 systemd unit, Caddyfile fragment, env template
 compose.yaml            local PostgreSQL 18
 justfile                developer entrypoints
-build.gradle.kts        Gradle build
+pom.xml                 Maven build
+.mvn/                   Maven wrapper
 ```
 
 Content stays as plain files under `content/`. The build packages that tree
@@ -70,7 +87,7 @@ GET  /actuator/health        health probe (used by deploy)
 
 Toolchain:
 
-- JDK 21 for the current site build
+- JDK 25 for the current site build
 - Node 22+ for Tailwind
 - Docker for the local PostgreSQL 18 container
 - [`just`](https://github.com/casey/just)
@@ -80,8 +97,7 @@ First run:
 ```sh
 just install         # npm ci
 just db-up           # docker compose up -d postgres
-just css             # build the Tailwind stylesheet once
-just dev             # bootRun with the dev profile
+just dev             # spring-boot:run with the dev profile
 ```
 
 Then open <http://localhost:8080>.
@@ -90,9 +106,9 @@ Useful targets:
 
 ```sh
 just css-watch       # rebuild Tailwind on change
-just test            # ./gradlew test (uses Testcontainers PG 18)
-just build           # ./gradlew clean build
-just jar             # ./gradlew bootJar
+just test            # ./mvnw test (uses Testcontainers PG 18)
+just build           # ./mvnw clean verify
+just jar             # ./mvnw package
 just psql            # psql into the local database
 ```
 
@@ -107,7 +123,7 @@ just psql            # psql into the local database
   title = "Post title"
   description = "Short summary used on the index and in RSS."
   published_on = 2026-05-11
-  tags = ["java", "postgres"]
+  tags = ["go", "postgres"]
   +++
 
   Body content in Markdown.

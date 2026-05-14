@@ -1,7 +1,7 @@
 <p>
-  <strong>I work in a deliberately narrow toolkit:</strong> Java for
-  the application layer and PostgreSQL for the data layer.
-  Server-rendered HTML with Thymeleaf, HTMX, and Tailwind on top. One
+  <strong>I work in a deliberately narrow toolkit:</strong> Go for the
+  application layer, C for systems, and PostgreSQL for the data layer.
+  Server-rendered HTML with HTMX and restrained CSS on top. One
   language, one database, one VM. The tools are small on purpose so the
   systems they produce stay legible.
 </p>
@@ -36,9 +36,8 @@
 <p>
   <strong>Boring infrastructure.</strong> I prefer the deployment that
   is easy to explain and easy to recover, not the one that looks
-  impressive in a diagram. One Ubuntu LTS VM, one fat jar under
-  systemd, one PostgreSQL on the same box, one Caddy in front, one
-  redeploy path.
+  impressive in a diagram. One Ubuntu LTS VM, Go services under systemd,
+  one PostgreSQL on the same box, one Caddy in front, one redeploy path.
 </p>
 
 <p>
@@ -63,12 +62,16 @@
 ## The stack
 
 <p>
-  <strong>Java 25 LTS</strong> is the default application layer: Spring
-  Boot 4, Maven, JDK toolchains, Java records, and virtual threads for
-  web apps, APIs, services, scheduled jobs, and CLIs. Spring MVC runs on
-  embedded Tomcat with Jackson 3, Jakarta Validation, Spring Boot
-  Actuator, Spring Security when the product needs it, jOOQ, Flyway,
-  and HikariCP.
+  <strong>Go</strong> is the default application layer: web apps, APIs,
+  workers, scheduled jobs, and CLIs. I prefer small monoliths with clear
+  package boundaries, standard-library defaults, explicit error paths,
+  and separate web and worker binaries when the product needs them.
+</p>
+
+<p>
+  <strong>C</strong> is for systems programming, performance-critical
+  components, and building from first principles. I value the control
+  and understanding that comes from working closer to the hardware.
 </p>
 
 <p>
@@ -83,23 +86,25 @@
 </p>
 
 <p>
-  <strong>Server-rendered HTML</strong> with Thymeleaf, HTMX, Tailwind
-  CSS, and vanilla JavaScript covers most product surfaces. Alpine.js
-  comes in only when a page has enough local state to justify it.
+  <strong>Server-rendered HTML</strong> with Go templates, HTMX,
+  restrained CSS, and small feature-scoped JavaScript covers most
+  product surfaces. A client-side framework comes in only when a page
+  has enough local state to justify it.
 </p>
 
 <p>
-  <strong>Verification</strong> runs through JUnit 5, AssertJ, Spring
-  Boot Test, Testcontainers PostgreSQL, Flyway migration tests, and
-  Playwright only for critical browser flows.
+  <strong>Verification</strong> runs through Go tests, SQL generation
+  checks, migration tests against real PostgreSQL, template rendering
+  tests, server startup smoke, and Playwright only for critical browser
+  flows.
 </p>
 
 <p>
   <strong>One Ubuntu LTS VM</strong> runs everything: Caddy in front for
-  TLS and reverse proxy, the Spring Boot fat jar under systemd, and
-  PostgreSQL on the same box. Local dev runs in Docker Compose with a
-  <code>justfile</code>, Maven wrapper, <code>.env</code> config, and
-  Mailpit when email needs testing. Deploys go out over SSH from GitHub
-  Actions with Flyway handling migrations, <code>pg_dump</code> backups,
-  and an offsite backup copy.
+  TLS and reverse proxy, Go services under systemd, and PostgreSQL on
+  the same box. Local dev uses an installed PostgreSQL service, a
+  <code>justfile</code>, <code>.env</code> config, and Mailpit when
+  email needs testing. Deploys go out over SSH from GitHub Actions with
+  SQL migrations, <code>pg_dump</code> backups, restore drills, and an
+  offsite backup copy.
 </p>

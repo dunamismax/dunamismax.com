@@ -1,8 +1,16 @@
-# Gradle / build
-.gradle/
+# Maven / build
+target/
 build/
 out/
-!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+.kotlin/
+
+# Static output
+dist/
+
+# Python
+__pycache__/
+*.pyc
 
 # IDEs
 .idea/
@@ -10,7 +18,6 @@ out/
 *.iml
 *.ipr
 *.iws
-.kotlin/
 
 # Node / Tailwind
 node_modules/
