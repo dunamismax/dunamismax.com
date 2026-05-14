@@ -22,29 +22,22 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "25"
 
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
 
-      - uses: gradle/actions/setup-gradle@v4
-
       - name: Install Node deps (Tailwind)
         run: npm ci
 
-      - name: Build Tailwind stylesheet
-        run: npm run build:css
-
-      - name: Gradle bootJar
-        run: ./gradlew --no-daemon clean bootJar
+      - name: Maven package
+        run: ./mvnw --batch-mode clean package
 
       - name: Locate fat jar
         id: jar
-        run: |
-          path=$(ls build/libs/*.jar | grep -v 'plain' | head -1)
-          echo "path=$path" >> "$GITHUB_OUTPUT"
+        run: echo "path=target/dunamismax-site-0.1.0.jar" >> "$GITHUB_OUTPUT"
 
       - name: Copy jar to VM
         uses: appleboy/scp-action@v0.1.7
@@ -55,7 +48,7 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           source: ${{ steps.jar.outputs.path }}
           target: /opt/dunamismax-site/
-          strip_components: 2
+          strip_components: 1
           overwrite: true
 
       - name: Restart service

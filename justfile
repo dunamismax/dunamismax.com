@@ -38,28 +38,28 @@ css:
 css-watch:
     npm run watch:css
 
-# Run the app with the dev profile and hot reload (Spring devtools-less).
-dev: db-up css
-    SPRING_PROFILES_ACTIVE=dev ./gradlew bootRun
+# Run the app with the dev profile.
+dev: db-up
+    SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
 
 # ---- build, test, ship ----
 
-build: css
-    ./gradlew clean build
+build:
+    ./mvnw clean verify
 
 test:
-    ./gradlew test
+    ./mvnw test
 
 fmt:
-    ./gradlew compileKotlin compileTestKotlin
+    ./mvnw compile test-compile
 
-jar: css
-    ./gradlew bootJar
+jar:
+    ./mvnw package
 
 # Run the built fat jar against a local Postgres on 5432.
 run-jar:
-    java -jar build/libs/dunamismax-site-0.1.0.jar
+    java -jar target/dunamismax-site-0.1.0.jar
 
 clean:
-    ./gradlew clean
+    ./mvnw clean
     rm -rf src/main/resources/static/css/site.css node_modules

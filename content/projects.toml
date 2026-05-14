@@ -18,7 +18,7 @@ visibility = "public"
 tagline    = "Primary focus. Encrypted voice, messages, groups, and technical communities without phone numbers."
 repo       = "https://github.com/dunamismax/callrift"
 url        = "https://callrift.dev"
-stack      = "Java 25, Spring Boot 4, PostgreSQL 18, jOOQ, Flyway, Thymeleaf, HTMX, Tailwind, WebRTC"
+stack      = "Go, PostgreSQL, sqlc, HTMX, server-rendered HTML, WebRTC"
 
 [[projects]]
 slug       = "pod-tracker"
@@ -28,10 +28,10 @@ status     = "active"
 position   = 20
 featured   = true
 visibility = "public"
-tagline    = "Magic: The Gathering Commander pod, deck, collection, and game-night tracker."
+tagline    = "Self-hosted Commander playgroup operating system for events, RSVPs, pods, decks, games, and meta insight."
 repo       = "https://github.com/dunamismax/pod-tracker"
 url        = "https://pod-tracker.app"
-stack      = "Ruby on Rails, PostgreSQL, Hotwire, Tailwind, PWA"
+stack      = "Go, PostgreSQL, sqlc, HTMX, server-rendered HTML, Caddy, systemd"
 
 [[projects]]
 slug       = "mtg-card-bot"

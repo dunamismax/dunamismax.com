@@ -8,10 +8,10 @@ Type=simple
 User=sawyer
 Group=sawyer
 WorkingDirectory=/opt/dunamismax-site
-Environment="JAVA_HOME=/usr/lib/jvm/temurin-21-jdk-amd64"
+Environment="JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64"
 Environment="JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=70 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
 EnvironmentFile=-/opt/dunamismax-site/site.env
-ExecStart=/usr/lib/jvm/temurin-21-jdk-amd64/bin/java -jar /opt/dunamismax-site/dunamismax-site.jar
+ExecStart=/usr/lib/jvm/java-25-openjdk-amd64/bin/java -jar /opt/dunamismax-site/dunamismax-site.jar
 SuccessExitStatus=143
 Restart=on-failure
 RestartSec=5s
