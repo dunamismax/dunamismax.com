@@ -179,4 +179,4 @@ curl -sS https://dunamismax.com/feed.xml | head
 
 ## License
 
-GPL-3.0. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
