@@ -8,76 +8,64 @@
 # `position` controls sort order within a category (lower first).
 
 [[projects]]
-slug       = "callrift"
-name       = "callrift"
-category   = "apps"
+slug       = "fileferry"
+name       = "FileFerry"
+category   = "developer-tools"
 status     = "active"
 position   = 10
 featured   = true
 visibility = "public"
-tagline    = "Primary focus. Encrypted voice, messages, groups, and technical communities without phone numbers."
-repo       = "https://github.com/dunamismax/callrift"
-url        = "https://callrift.dev"
-stack      = "Go, PostgreSQL, sqlc, HTMX, server-rendered HTML, WebRTC"
-
-[[projects]]
-slug       = "pod-tracker"
-name       = "pod-tracker"
-category   = "apps"
-status     = "active"
-position   = 20
-featured   = true
-visibility = "public"
-tagline    = "Self-hosted Commander playgroup operating system for events, RSVPs, pods, decks, games, and meta insight."
-repo       = "https://github.com/dunamismax/pod-tracker"
-url        = "https://pod-tracker.app"
-stack      = "Go, PostgreSQL, sqlc, HTMX, server-rendered HTML, Caddy, systemd"
+tagline    = "Rust local-network file transfer over QUIC with mDNS discovery, resumable manifests, TUI, daemon mode, and signed releases."
+repo       = "https://github.com/dunamismax/fileferry"
+url        = "https://fileferry.app"
+stack      = "Rust, Tokio, Quinn, rustls, Bash, PowerShell"
 
 [[projects]]
 slug       = "mtg-card-bot"
 name       = "mtg-card-bot"
 category   = "apps"
 status     = "active"
-position   = 30
+position   = 20
 featured   = true
 visibility = "public"
 tagline    = "Magic: The Gathering card lookup Discord bot with live Scryfall data."
 repo       = "https://github.com/dunamismax/mtg-card-bot"
-stack      = "Python, discord.py, Scryfall API, httpx, pytest"
+stack      = "Python, uv, Ruff, pytest, discord.py, httpx, Scryfall API"
 
 [[projects]]
-slug       = "go-web-server"
-name       = "go-web-server"
+slug       = "toolworks"
+name       = "Toolworks"
 category   = "developer-tools"
-status     = "shipped"
-position   = 10
+status     = "active"
+position   = 30
 featured   = true
 visibility = "public"
-tagline    = "Go, PostgreSQL, SQLC, Echo, and embedded Astro/Vue starter with real auth and browser smoke tests."
-repo       = "https://github.com/dunamismax/go-web-server"
-stack      = "Go, Echo, PostgreSQL, SQLC, Mage, Astro, Vue"
+tagline    = "Python automation, CLI helpers, and operational scripts for repeatable IT workflows."
+repo       = "https://github.com/dunamismax/toolworks"
+stack      = "Python, uv, Ruff, pytest, Bash, macOS automation"
 
 [[projects]]
-slug       = "c-from-the-ground-up"
-name       = "c-from-the-ground-up"
+slug       = "langindex"
+name       = "LangIndex"
 category   = "reference"
 status     = "active"
-position   = 10
+position   = 40
 featured   = true
 visibility = "public"
-tagline    = "Progressive C learning workbook from basics to systems programming."
-repo       = "https://github.com/dunamismax/c-from-the-ground-up"
-url        = "https://dunamismax.github.io/c-from-the-ground-up/"
-stack      = "C, mdBook, POSIX, sockets, pthreads, ncurses"
+tagline    = "Open-source reference for programming languages, ecosystem tradeoffs, and practical language selection."
+repo       = "https://github.com/dunamismax/langindex"
+url        = "https://langindex.dev"
+stack      = "Language research, typed content, static search, open documentation"
 
 [[projects]]
-slug       = "hello-world-from-hell"
-name       = "hello-world-from-hell"
-category   = "reference"
-status     = "shipped"
-position   = 20
+slug       = "dunamismax-com"
+name       = "dunamismax.com"
+category   = "infrastructure"
+status     = "active"
+position   = 50
 featured   = true
 visibility = "public"
-tagline    = "A deliberately overbuilt C Hello World joke repo with real build, test, and sanitizer discipline."
-repo       = "https://github.com/dunamismax/hello-world-from-hell"
-stack      = "C, Make, Clang, GCC, sanitizers, GitHub Actions"
+tagline    = "Personal site and portfolio deployed on Ubuntu behind Caddy with PostgreSQL-backed runtime state."
+repo       = "https://github.com/dunamismax/dunamismax.com"
+url        = "https://dunamismax.com"
+stack      = "PostgreSQL, Ubuntu, Caddy, systemd, Bash"

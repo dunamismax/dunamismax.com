@@ -24,7 +24,7 @@ public class ProjectsController {
     pageModel.apply(model, new PageMeta(
         "/projects",
         "Projects · dunamismax",
-        "Selected work by Stephen Sawyer in Go, PostgreSQL, and self-hosted software.",
+        "Selected work by Stephen Sawyer in Rust, PostgreSQL, Python automation, and self-hosted software.",
         "projects"));
     var grouped = content.projectsByCategory().entrySet().stream()
         .filter(entry -> !entry.getValue().isEmpty())
