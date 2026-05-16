@@ -21,7 +21,6 @@ __pycache__/
 
 # Node / Tailwind
 node_modules/
-package-lock.json
 
 # Generated Tailwind output — produced by `npm run build:css`
 src/main/resources/static/css/site.css
