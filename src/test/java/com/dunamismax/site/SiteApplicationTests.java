@@ -33,21 +33,21 @@ class SiteApplicationTests {
     mockMvc.perform(get("/"))
         .andExpect(status().isOk())
         .andExpect(content().contentTypeCompatibleWith("text/html"))
-        .andExpect(content().string(containsString("Software you can read at 2 AM")));
+        .andExpect(content().string(containsString("Fast systems you can inspect and own")));
   }
 
   @Test
   void projectsPageListsKnownProject() throws Exception {
     mockMvc.perform(get("/projects"))
         .andExpect(status().isOk())
-        .andExpect(content().string(containsString("callrift")));
+        .andExpect(content().string(containsString("FileFerry")));
   }
 
   @Test
   void aboutPageRendersProseBody() throws Exception {
     mockMvc.perform(get("/about"))
         .andExpect(status().isOk())
-        .andExpect(content().string(containsString("One language. One database. One VM.")));
+        .andExpect(content().string(containsString("Rust first. PostgreSQL underneath. Python everywhere useful.")));
   }
 
   @Test

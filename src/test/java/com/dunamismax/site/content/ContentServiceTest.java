@@ -34,8 +34,8 @@ class ContentServiceTest {
   @Test
   void aboutHtmlIsRenderedFromMarkdown() {
     String html = service.aboutHtml();
-    assertThat(html).contains("<strong>Go</strong>");
-    assertThat(html).contains("<strong>C</strong>");
+    assertThat(html).contains("<strong>Rust</strong>");
+    assertThat(html).contains("<strong>Python</strong>");
     assertThat(html).contains("PostgreSQL");
   }
 

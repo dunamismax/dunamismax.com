@@ -25,7 +25,7 @@ public class BlogController {
     pageModel.apply(model, new PageMeta(
         "/blog",
         "Blog · dunamismax",
-        "Notes on building, shipping, and self-hosting software in Go and PostgreSQL.",
+        "Notes on Rust systems, PostgreSQL, Python automation, cryptography, and self-hosted operations.",
         "blog"));
     model.addAttribute("posts", content.publishedPosts());
     return "pages/blog/index";

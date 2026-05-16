@@ -28,7 +28,7 @@ public class PublicResourcesController {
           "start_url": "/",
           "display": "standalone",
           "scope": "/",
-          "description": "Engineering work by Stephen Sawyer in Go, PostgreSQL, and self-hosted software.",
+          "description": "Engineering work by Stephen Sawyer in Rust, PostgreSQL, Python automation, and self-hosted software.",
           "theme_color": "#0a0a0b",
           "background_color": "#0a0a0b"
         }
