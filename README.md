@@ -94,6 +94,11 @@ The Rust app should either embed the content at build time for production or
 load it from a configured path in development, but content validation must be
 part of the normal test/build gate.
 
+The Rust content loader uses `pulldown-cmark` with CommonMark plus GFM/table
+support, then sanitizes rendered HTML through a narrow allowlist that preserves
+the current `about.md` paragraph, emphasis, code, heading, link, list, quote,
+and table tags while stripping arbitrary script/style behavior.
+
 ## Routes To Preserve
 
 ```text
@@ -141,6 +146,14 @@ just psql
 
 The Rust rewrite should replace these with Cargo-centered targets as phases in
 [`BUILD.md`](BUILD.md) are completed.
+
+Early Rust scaffold targets:
+
+```sh
+just site-dev
+just rust-check
+just content-validate
+```
 
 ## Production Deploy
 

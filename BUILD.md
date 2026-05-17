@@ -106,15 +106,15 @@ configured push remotes receive the branch.
 
 Goal: add a Rust workspace without disturbing the Java production path.
 
-- [ ] Add root `Cargo.toml` with workspace package metadata, Rust edition, and
+- [x] Add root `Cargo.toml` with workspace package metadata, Rust edition, and
       shared dependency versions.
-- [ ] Add `crates/dunamismax-site` with a minimal Axum server.
-- [ ] Add `/healthz` and `/actuator/health` responses.
-- [ ] Add `DUNAMISMAX_SITE_ADDR` and `DUNAMISMAX_SITE_LOG` configuration.
-- [ ] Add tracing initialization.
-- [ ] Add route tests for health and unknown-route behavior.
-- [ ] Add Rust-oriented `just` targets while preserving current Java targets.
-- [ ] Add CI steps for Rust format, clippy, test, and build without removing
+- [x] Add `crates/dunamismax-site` with a minimal Axum server.
+- [x] Add `/healthz` and `/actuator/health` responses.
+- [x] Add `DUNAMISMAX_SITE_ADDR` and `DUNAMISMAX_SITE_LOG` configuration.
+- [x] Add tracing initialization.
+- [x] Add route tests for health and unknown-route behavior.
+- [x] Add Rust-oriented `just` targets while preserving current Java targets.
+- [x] Add CI steps for Rust format, clippy, test, and build without removing
       Java CI yet.
 
 Exit criteria: `cargo fmt --all --check`, `cargo clippy`, `cargo test`, and
@@ -124,19 +124,19 @@ Exit criteria: `cargo fmt --all --check`, `cargo clippy`, `cargo test`, and
 
 Goal: port the file-backed content model before touching page design.
 
-- [ ] Model projects, categories, statuses, pages, posts, frontmatter, and
+- [x] Model projects, categories, statuses, pages, posts, frontmatter, and
       page metadata in Rust.
-- [ ] Parse `content/projects.toml` with duplicate-slug and required-field
+- [x] Parse `content/projects.toml` with duplicate-slug and required-field
       validation.
-- [ ] Parse `content/pages/about.md`.
-- [ ] Parse `content/posts/*.md` with `+++` TOML frontmatter.
-- [ ] Render Markdown with documented extensions and safe HTML behavior,
+- [x] Parse `content/pages/about.md`.
+- [x] Parse `content/posts/*.md` with `+++` TOML frontmatter.
+- [x] Render Markdown with documented extensions and safe HTML behavior,
       accounting for the limited raw HTML currently present in
       `content/pages/about.md`.
-- [ ] Preserve published/draft filtering and newest-post sorting.
-- [ ] Add unit tests for valid content, missing keys, duplicate slugs, draft
+- [x] Preserve published/draft filtering and newest-post sorting.
+- [x] Add unit tests for valid content, missing keys, duplicate slugs, draft
       filtering, slug fallback, date parsing, and reading-time calculation.
-- [ ] Add a content validation command or test that fails the normal build
+- [x] Add a content validation command or test that fails the normal build
       gate on bad content.
 
 Exit criteria: the Rust content layer can load the existing `content/` tree and

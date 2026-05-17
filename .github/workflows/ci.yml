@@ -29,8 +29,25 @@ jobs:
           node-version: "22"
           cache: npm
 
+      - name: Install Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+          rustup default stable
+
       - name: Install Node deps (Tailwind)
         run: npm ci
+
+      - name: Rust format
+        run: cargo fmt --all --check
+
+      - name: Rust clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Rust tests
+        run: cargo test --workspace --all-features
+
+      - name: Rust build
+        run: cargo build --workspace
 
       - name: Maven build + test
         run: ./mvnw --batch-mode clean verify
