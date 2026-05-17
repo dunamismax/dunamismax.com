@@ -2,9 +2,27 @@
 
 Personal site, portfolio, and blog for Stephen Sawyer.
 
-The public copy now reflects the current direction: Rust-first systems,
-PostgreSQL-backed data, Python automation, cryptography, encryption,
-high-performance infrastructure, and practical IT operations.
+The public direction is Rust-first systems, PostgreSQL-backed data, Python
+automation, cryptography, encryption, high-performance infrastructure, and
+practical IT operations.
+
+## Rewrite Status
+
+This repository is entering a full rewrite from the current Java/Spring stack
+to Stephen's Rust web stack:
+
+- Rust 2024 workspace
+- Axum HTTP server
+- Leptos server-side rendered UI
+- Tokio runtime
+- PostgreSQL for durable runtime state
+- Caddy and systemd on Ubuntu
+
+The existing Java application remains the production baseline until the Rust
+rewrite passes the route, content, database, deployment, and live-site gates in
+[`BUILD.md`](BUILD.md). Future agents should treat [`BUILD.md`](BUILD.md) as
+the active implementation plan and [`AGENTS.md`](AGENTS.md) as the durable repo
+operating manual.
 
 ## Public Stack Direction
 
@@ -19,11 +37,10 @@ high-performance infrastructure, and practical IT operations.
 - **Ubuntu LTS**, **Caddy**, **systemd**, SSH deploys, `pg_dump` backups,
   restore drills, and clear runbooks.
 
-## Current Implementation
+## Current Production Implementation
 
-The public content is the product surface. The current site backend is an
-existing deployable web app and remains in place until a future rewrite earns
-the time.
+The current deployable app is still Java and stays in place until the Rust
+rewrite is complete.
 
 - Java 25 LTS, Spring Boot, embedded Tomcat
 - Maven and JDK toolchains
@@ -35,33 +52,49 @@ the time.
 - JUnit, AssertJ, Spring Boot Test, and Testcontainers PostgreSQL
 - Ubuntu LTS VM, Caddy, systemd, GitHub Actions over SSH
 
-## Layout
+## Target Rust Implementation
+
+The Rust rewrite should preserve the public site behavior while replacing the
+runtime stack.
+
+Expected target layout:
 
 ```text
-content/                editable site content (TOML + Markdown)
-  projects.toml         project list
-  pages/about.md        about page body
-  posts/                blog posts (TOML frontmatter + Markdown)
-src/main/java/          current application sources
-src/main/resources/
-  application*.yml      app config
-  templates/            Thymeleaf templates
-  static/               icon, generated CSS, theme.js
-  db/migration/         Flyway migrations
-src/main/tailwind/      Tailwind input.css
-src/test/               integration and content tests
-deploy/                 systemd unit, Caddyfile fragment, env template
-compose.yaml            local PostgreSQL
-justfile                developer entrypoints
-pom.xml                 Maven build
+content/                    editable site content (TOML + Markdown)
+crates/dunamismax-site/     Axum + Leptos server-rendered website
+  src/
+    main.rs                 listener, tracing, shutdown, router wiring
+    router.rs               route table and shared state
+    content/                TOML/Markdown loading, validation, rendering
+    db/                     PostgreSQL pool, migrations, repositories
+    pages/                  Leptos page components
+    assets.rs               embedded CSS, JS, icons, robots, manifest
+xtask/                      build, deploy, content, and smoke helpers
+deploy/                     systemd unit, Caddyfile, env template
+docs/                       durable runbooks after implementation settles
 ```
 
-Content stays as plain files under `content/`. The build packages that tree
-into the fat jar as classpath resources, and the app loads it into memory at
-boot. The database exists for runtime-only state such as visits, future
-contact-form submissions, and future link-check results.
+The exact layout may evolve, but the result should be a Rust-first web app
+with thin route handlers, typed content models, explicit database access, and
+tests around route output and content validation.
 
-## Routes
+## Content
+
+Content stays as plain files under `content/`.
+
+```text
+content/
+  projects.toml             project list
+  pages/about.md            about page body
+  posts/                    blog posts (TOML frontmatter + Markdown)
+```
+
+The current app packages this tree into the Java jar as classpath resources.
+The Rust app should either embed the content at build time for production or
+load it from a configured path in development, but content validation must be
+part of the normal test/build gate.
+
+## Routes To Preserve
 
 ```text
 GET  /                       home
@@ -74,16 +107,20 @@ GET  /feed.xml               RSS 2.0 feed
 GET  /robots.txt             robots
 GET  /manifest.webmanifest   PWA manifest
 GET  /icon.svg               favicon / app icon
-GET  /actuator/health        health probe
+GET  /healthz                Rust health probe
+GET  /actuator/health        temporary compatibility health probe
 ```
 
-## Quick Start
+Keep `/actuator/health` during the cutover so old deployment checks can be
+updated safely. The final Rust-native probe should be `/healthz`.
 
-Toolchain:
+## Current Local Development
 
-- JDK 25 for the current site build
+Toolchain for the current Java site:
+
+- JDK 25
 - Node 22+ for Tailwind
-- Docker for the local PostgreSQL container
+- Docker for local PostgreSQL
 - `just`
 
 ```sh
@@ -92,7 +129,7 @@ just db-up
 just dev
 ```
 
-Useful targets:
+Useful current targets:
 
 ```sh
 just css-watch
@@ -102,32 +139,22 @@ just jar
 just psql
 ```
 
-## Editing Content
-
-- Projects: edit `content/projects.toml`.
-- About: edit `content/pages/about.md`.
-- Posts: add `content/posts/<slug>.md` with TOML frontmatter.
-
-Content is reloaded on application start, so a content edit still needs a
-redeploy.
+The Rust rewrite should replace these with Cargo-centered targets as phases in
+[`BUILD.md`](BUILD.md) are completed.
 
 ## Production Deploy
 
-`dunamismax.com` runs on a single Ubuntu VM with PostgreSQL on the same box,
-the fat jar under systemd, and Caddy in front for TLS. Cloudflare proxies the
-public domain.
+`dunamismax.com` runs on a single Ubuntu VM with PostgreSQL on the same box and
+Caddy in front for TLS. The current deployment builds a Java fat jar and
+restarts `dunamismax-site.service`.
 
-Deploys are GitHub Actions over SSH. The workflow builds Tailwind and the fat
-jar, copies the jar to `/opt/dunamismax-site/`, updates the
-`dunamismax-site.jar` symlink, restarts `dunamismax-site.service`, and checks
-`/actuator/health`.
+The Rust rewrite should keep the same operational model:
 
-Manual health checks:
-
-```sh
-curl -sS https://dunamismax.com/actuator/health
-curl -sS https://dunamismax.com/feed.xml | head
-```
+- one release binary installed under `/usr/local/bin` or `/opt/dunamismax-site`
+- localhost-only HTTP listener behind Caddy
+- systemd unit with modest sandboxing
+- GitHub Actions build and SSH deploy
+- local and public smoke checks after restart
 
 ## License
 
