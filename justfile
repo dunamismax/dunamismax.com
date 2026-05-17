@@ -38,28 +38,68 @@ css:
 css-watch:
     npm run watch:css
 
+# Run the Rust site scaffold.
+site-dev:
+    cargo run -p dunamismax-site
+
 # Run the app with the dev profile.
-dev: db-up
+java-dev: db-up
     SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+
+# Run the app with the dev profile.
+dev: java-dev
 
 # ---- build, test, ship ----
 
-build:
+# Check Rust formatting.
+rust-fmt:
+    cargo fmt --all --check
+
+# Run Rust clippy with warnings denied.
+rust-clippy:
+    cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+# Run Rust tests.
+rust-test:
+    cargo test --workspace --all-features
+
+# Build Rust crates.
+rust-build:
+    cargo build --workspace
+
+# Validate the Rust content loader against the repository content tree.
+content-validate:
+    cargo test -p dunamismax-site content::tests::loads_repository_content_tree --all-features
+
+# Run the normal Rust scaffold verification gate.
+rust-check: rust-fmt rust-clippy rust-test rust-build
+
+java-build:
     ./mvnw clean verify
 
-test:
+build: java-build
+
+java-test:
     ./mvnw test
 
-fmt:
+test: java-test
+
+java-fmt:
     ./mvnw compile test-compile
 
-jar:
+fmt: java-fmt
+
+java-jar:
     ./mvnw package
+
+jar: java-jar
 
 # Run the built fat jar against a local Postgres on 5432.
 run-jar:
     java -jar target/dunamismax-site-0.1.0.jar
 
-clean:
+java-clean:
     ./mvnw clean
     rm -rf src/main/resources/static/css/site.css node_modules
+
+clean: java-clean
