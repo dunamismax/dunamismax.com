@@ -1,20 +1,19 @@
 [Unit]
-Description=dunamismax.com Spring Boot site
-After=network.target postgresql.service
-Wants=postgresql.service
+Description=dunamismax.com Rust site
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
 
 [Service]
 Type=simple
-User=sawyer
-Group=sawyer
+User=dunamismax
+Group=dunamismax
 WorkingDirectory=/opt/dunamismax-site
-Environment="JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64"
-Environment="JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=70 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
 EnvironmentFile=-/opt/dunamismax-site/site.env
-ExecStart=/usr/lib/jvm/java-25-openjdk-amd64/bin/java -jar /opt/dunamismax-site/dunamismax-site.jar
-SuccessExitStatus=143
+ExecStart=/opt/dunamismax-site/dunamismax-site
 Restart=on-failure
 RestartSec=5s
+KillSignal=SIGTERM
+TimeoutStopSec=30s
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=dunamismax-site
@@ -22,7 +21,7 @@ SyslogIdentifier=dunamismax-site
 # Hardening
 NoNewPrivileges=true
 PrivateTmp=true
-ProtectSystem=full
+ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/opt/dunamismax-site
 ProtectKernelTunables=true
@@ -31,6 +30,10 @@ ProtectControlGroups=true
 RestrictNamespaces=true
 RestrictRealtime=true
 LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 
 [Install]
 WantedBy=multi-user.target

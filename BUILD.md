@@ -221,19 +221,19 @@ Rust site locally and in CI.
 
 Goal: deploy the Rust binary behind Caddy without losing the current site.
 
-- [ ] Add or update `deploy/dunamismax-site.service` for the Rust binary.
-- [ ] Add or update `deploy/site.env.example` for Rust environment variables.
-- [ ] Update `deploy/Caddyfile` if routes, health checks, headers, or upstream
+- [x] Add or update `deploy/dunamismax-site.service` for the Rust binary.
+- [x] Add or update `deploy/site.env.example` for Rust environment variables.
+- [x] Update `deploy/Caddyfile` if routes, health checks, headers, or upstream
       ports changed.
-- [ ] Update GitHub Actions deploy to build the Rust release binary, copy it to
+- [x] Update GitHub Actions deploy to build the Rust release binary, copy it to
       the VM, install or symlink it atomically, restart systemd, and smoke
       `/healthz`.
-- [ ] Keep a rollback note for the last Java jar deployment until Rust has run
+- [x] Keep a rollback note for the last Java jar deployment until Rust has run
       in production.
 - [ ] Smoke locally on the VM with `curl`.
 - [ ] Smoke publicly over HTTPS for `/`, `/projects`, `/blog`, `/feed.xml`,
       `/manifest.webmanifest`, `/healthz`, and a missing page.
-- [ ] Update README production deploy notes.
+- [x] Update README production deploy notes.
 
 Exit criteria: production `https://dunamismax.com` is served by the Rust app
 and deploy automation proves it.
@@ -304,10 +304,10 @@ git diff --check
 Current Java baseline:
 
 ```sh
-just install
+just java-install
 just db-up
-just test
-just build
+just java-test
+just java-build
 ```
 
 Target Rust gate once the workspace exists:

@@ -208,16 +208,39 @@ just java-clean
 ## Production Deploy
 
 `dunamismax.com` runs on a single Ubuntu VM with PostgreSQL on the same box and
-Caddy in front for TLS. The current deployment builds a Java fat jar and
-restarts `dunamismax-site.service`.
+Caddy in front for TLS. The Rust deployment is prepared as a manual GitHub
+Actions cutover workflow so pushing this repository does not automatically
+replace the still-live Java service.
 
-The Rust rewrite should keep the same operational model:
+The prepared Rust deployment keeps the same operational model:
 
-- one release binary installed under `/usr/local/bin` or `/opt/dunamismax-site`
-- localhost-only HTTP listener behind Caddy
-- systemd unit with modest sandboxing
-- GitHub Actions build and SSH deploy
-- local and public smoke checks after restart
+- one release binary installed under `/opt/dunamismax-site/releases/`
+- `/opt/dunamismax-site/dunamismax-site` symlinked to the active release
+- localhost-only HTTP listener on `127.0.0.1:3000` behind Caddy
+- `dunamismax-site.service` running as the unprivileged `dunamismax` user
+- Rust-owned `sqlx` migrations run at startup by default
+- local `/healthz` and `/actuator/health` smoke checks after restart
+
+Before the first Rust cutover on the VM:
+
+```sh
+id -u dunamismax >/dev/null 2>&1 || \
+  sudo useradd --system --home-dir /opt/dunamismax-site --shell /usr/sbin/nologin dunamismax
+sudo install -d -o dunamismax -g dunamismax -m 0750 /opt/dunamismax-site
+sudo install -o dunamismax -g dunamismax -m 0640 deploy/site.env.example /opt/dunamismax-site/site.env
+sudoedit /opt/dunamismax-site/site.env
+sudoedit /etc/caddy/Caddyfile
+sudo caddy validate --config /etc/caddy/Caddyfile
+```
+
+The GitHub Actions deploy workflow is `workflow_dispatch` only during cutover
+preparation. Run it manually after the VM has the Rust `site.env`, the updated
+Caddy upstream, and PostgreSQL credentials in place.
+
+Rollback remains the last known-good Java deployment until Rust has served
+production traffic successfully. Keep the previous Java jar and Java-era
+service unit available on the VM so the service can be pointed back to the jar
+and restarted if the first Rust cutover needs to be backed out.
 
 ## License
 
