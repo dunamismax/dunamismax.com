@@ -2,18 +2,22 @@ use std::{path::PathBuf, sync::Arc};
 
 use axum::{
     Json, Router,
+    body::Body,
     extract::{Path, State},
-    http::{StatusCode, header},
+    http::{HeaderValue, Method, Request, StatusCode, header},
+    middleware::{self, Next},
     response::{Html, IntoResponse},
     routing::get,
 };
 use chrono::{Datelike, NaiveDate, Utc};
 use serde::Serialize;
 use tower_http::trace::TraceLayer;
+use tracing::warn;
 
 use crate::{
     assets,
     content::{Post, SiteContent},
+    db::{NewPageView, PageViewRepository},
     pages,
 };
 
@@ -23,17 +27,34 @@ const ICON_CACHE: &str = "public, max-age=86400";
 #[derive(Debug, Clone)]
 pub struct AppState {
     content: Arc<SiteContent>,
+    page_views: Option<PageViewRepository>,
 }
 
 pub fn router() -> Router {
-    router_with_content(
+    router_with_content_and_page_views(
         SiteContent::load(default_content_root()).expect("repository content should load"),
+        None,
+    )
+}
+
+pub fn router_with_page_views(page_views: PageViewRepository) -> Router {
+    router_with_content_and_page_views(
+        SiteContent::load(default_content_root()).expect("repository content should load"),
+        Some(page_views),
     )
 }
 
 pub fn router_with_content(content: SiteContent) -> Router {
+    router_with_content_and_page_views(content, None)
+}
+
+pub fn router_with_content_and_page_views(
+    content: SiteContent,
+    page_views: Option<PageViewRepository>,
+) -> Router {
     let state = AppState {
         content: Arc::new(content),
+        page_views,
     };
 
     Router::new()
@@ -52,7 +73,8 @@ pub fn router_with_content(content: SiteContent) -> Router {
         .route("/healthz", get(health))
         .route("/actuator/health", get(actuator_health))
         .fallback(not_found)
-        .with_state(state)
+        .with_state(state.clone())
+        .layer(middleware::from_fn_with_state(state, record_page_view))
         .layer(TraceLayer::new_for_http())
 }
 
@@ -151,6 +173,53 @@ async fn health() -> Json<HealthResponse> {
 
 async fn actuator_health() -> Json<ActuatorHealthResponse> {
     Json(ActuatorHealthResponse { status: "UP" })
+}
+
+async fn record_page_view(
+    State(state): State<AppState>,
+    request: Request<Body>,
+    next: Next,
+) -> axum::response::Response {
+    let method = request.method().clone();
+    let path = request.uri().path().to_owned();
+    let referrer = header_to_string(request.headers().get(header::REFERER));
+    let user_agent = header_to_string(request.headers().get(header::USER_AGENT));
+    let response = next.run(request).await;
+
+    if method == Method::GET
+        && response.status().is_success()
+        && is_trackable_path(&path)
+        && let Some(repo) = state.page_views
+    {
+        tokio::spawn(async move {
+            let result = repo
+                .record_page_view(NewPageView {
+                    path: &path,
+                    referrer: referrer.as_deref(),
+                    user_agent: user_agent.as_deref(),
+                })
+                .await;
+
+            if let Err(error) = result {
+                warn!(%error, path = %path, "failed to record page view");
+            }
+        });
+    }
+
+    response
+}
+
+fn header_to_string(value: Option<&HeaderValue>) -> Option<String> {
+    value
+        .and_then(|value| value.to_str().ok())
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_owned)
+}
+
+fn is_trackable_path(path: &str) -> bool {
+    matches!(path, "/" | "/about" | "/contact" | "/projects" | "/blog")
+        || path.starts_with("/blog/")
 }
 
 async fn not_found() -> impl IntoResponse {
@@ -477,6 +546,24 @@ mod tests {
         assert!(xml.contains("<title>Published Post</title>"));
         assert!(xml.contains("https://dunamismax.com/blog/published"));
         assert!(!xml.contains("Draft Post"));
+    }
+
+    #[test]
+    fn page_view_tracking_only_covers_public_html_routes() {
+        for path in [
+            "/",
+            "/about",
+            "/contact",
+            "/projects",
+            "/blog",
+            "/blog/post",
+        ] {
+            assert!(super::is_trackable_path(path), "{path}");
+        }
+
+        for path in ["/healthz", "/actuator/health", "/feed.xml", "/css/site.css"] {
+            assert!(!super::is_trackable_path(path), "{path}");
+        }
     }
 
     async fn body(response: axum::response::Response) -> String {

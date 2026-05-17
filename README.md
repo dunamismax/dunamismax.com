@@ -146,9 +146,37 @@ just test
 just build
 just site-release
 just db-up
+just db-test
 just db-down
 just psql
 ```
+
+The Rust runtime owns PostgreSQL schema changes with embedded `sqlx`
+migrations under `crates/dunamismax-site/migrations/`. Startup runs migrations
+by default before the HTTP listener binds. The current runtime state table is
+`page_view`, which stores public route path, optional referrer, optional user
+agent, and timestamp; it does not store IP addresses. Contact-form persistence
+is intentionally not implemented until spam controls, retention, email
+delivery, and operational visibility are designed.
+
+Rust database configuration:
+
+```sh
+DUNAMISMAX_DATABASE_URL=postgres://dunamismax:dunamismax@localhost:5432/dunamismax
+DUNAMISMAX_DATABASE_MAX_CONNECTIONS=10
+DUNAMISMAX_DATABASE_ACQUIRE_TIMEOUT_SECS=5
+DUNAMISMAX_DATABASE_MIGRATE=true
+```
+
+`DATABASE_URL` is accepted only when it is already a `postgres://` or
+`postgresql://` URL. Java-era `jdbc:postgresql://...` values are ignored by the
+Rust config so the two runtimes can coexist during migration. Use `just
+db-test` to start the local PostgreSQL container and prove migrations from an
+empty database plus the page-view repository path. `just db-test` uses an
+isolated temporary container on `127.0.0.1:55432` so it does not depend on any
+existing local Postgres bound to `5432`. The general `db-*` recipes default to
+`docker-compose`; set `DOCKER_COMPOSE='docker compose'` on systems that only
+ship the Compose v2 plugin.
 
 Toolchain for the current Java production baseline:
 

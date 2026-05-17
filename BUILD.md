@@ -184,17 +184,17 @@ on Java resources or Spring static serving.
 
 Goal: replace Java-era database wiring with explicit Rust database ownership.
 
-- [ ] Choose and document the Rust migration/access stack. Prefer `sqlx` unless
+- [x] Choose and document the Rust migration/access stack. Prefer `sqlx` unless
       this phase records a better reason.
-- [ ] Port the existing page-view schema or replace it with a cleaner
+- [x] Port the existing page-view schema or replace it with a cleaner
       Rust-owned migration.
-- [ ] Add database URL, pool size, timeout, and migration configuration.
-- [ ] Implement startup migration behavior or a clear `xtask`/deploy migration
+- [x] Add database URL, pool size, timeout, and migration configuration.
+- [x] Implement startup migration behavior or a clear `xtask`/deploy migration
       step.
-- [ ] Add repository functions for current runtime state.
-- [ ] Add tests using a real PostgreSQL container or an explicitly documented
+- [x] Add repository functions for current runtime state.
+- [x] Add tests using a real PostgreSQL container or an explicitly documented
       integration-test path.
-- [ ] Keep contact-form persistence disabled until spam, retention, email, and
+- [x] Keep contact-form persistence disabled until spam, retention, email, and
       operations rules are designed.
 
 Exit criteria: Rust owns the database schema needed for production parity and
@@ -317,6 +317,12 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets --all-features -- -D warnings
 cargo test --workspace --all-features
 cargo build --workspace
+```
+
+PostgreSQL-backed Rust runtime state gate:
+
+```sh
+just db-test
 ```
 
 Target local site smoke once the Rust site crate exists:
