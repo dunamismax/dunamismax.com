@@ -1,5 +1,5 @@
-pub const ICON_SVG: &str = include_str!("../../../src/main/resources/static/icon.svg");
-pub const THEME_JS: &str = include_str!("../../../src/main/resources/static/js/theme.js");
+pub const ICON_SVG: &str = include_str!("../assets/icon.svg");
+pub const THEME_JS: &str = include_str!("../assets/theme.js");
 
 pub const ROBOTS_TXT: &str = "User-agent: *\nAllow: /\n";
 
