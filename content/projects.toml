@@ -25,7 +25,7 @@ slug       = "mtg-card-bot"
 name       = "mtg-card-bot"
 category   = "apps"
 status     = "active"
-position   = 20
+position   = 30
 featured   = true
 visibility = "public"
 tagline    = "Magic: The Gathering card lookup Discord bot with live Scryfall data."
@@ -33,11 +33,37 @@ repo       = "https://github.com/dunamismax/mtg-card-bot"
 stack      = "Python, uv, Ruff, pytest, discord.py, httpx, Scryfall API"
 
 [[projects]]
+slug       = "callrift"
+name       = "Callrift"
+category   = "apps"
+status     = "active"
+position   = 40
+featured   = true
+visibility = "public"
+tagline    = "Username-first communications platform for encrypted messages, WebRTC voice, groups, developer servers, and technical communities."
+repo       = "https://github.com/dunamismax/callrift"
+url        = "https://callrift.dev"
+stack      = "Rust, Axum, Leptos, Tokio, PostgreSQL, sqlx, WebRTC, coturn"
+
+[[projects]]
+slug       = "pod-tracker"
+name       = "Pod Tracker"
+category   = "apps"
+status     = "active"
+position   = 50
+featured   = true
+visibility = "public"
+tagline    = "PostgreSQL-first Commander playgroup OS for events, RSVPs, pod generation, deck tracking, game logging, and meta dashboards."
+repo       = "https://github.com/dunamismax/pod-tracker"
+url        = "https://pod-tracker.app"
+stack      = "Rust, Axum, Leptos, Tokio, PostgreSQL, sqlx, SSE, Scryfall"
+
+[[projects]]
 slug       = "toolworks"
 name       = "Toolworks"
 category   = "developer-tools"
 status     = "active"
-position   = 30
+position   = 60
 featured   = true
 visibility = "public"
 tagline    = "Python automation, CLI helpers, and operational scripts for repeatable IT workflows."
@@ -49,7 +75,7 @@ slug       = "langindex"
 name       = "LangIndex"
 category   = "reference"
 status     = "active"
-position   = 40
+position   = 70
 featured   = true
 visibility = "public"
 tagline    = "Open-source reference for programming languages, ecosystem tradeoffs, and practical language selection."
@@ -62,7 +88,7 @@ slug       = "dunamismax-com"
 name       = "dunamismax.com"
 category   = "infrastructure"
 status     = "active"
-position   = 50
+position   = 80
 featured   = true
 visibility = "public"
 tagline    = "Personal site and portfolio deployed on Ubuntu behind Caddy with PostgreSQL-backed runtime state."
