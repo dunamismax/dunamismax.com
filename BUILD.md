@@ -146,17 +146,17 @@ produce the same logical projects, pages, and published posts as Java.
 
 Goal: reproduce the public route surface in Rust with SSR HTML.
 
-- [ ] Build the shared Leptos layout with head metadata, canonical URL, header,
+- [x] Build the shared Leptos layout with head metadata, canonical URL, header,
       footer, skip link, and active navigation state.
-- [ ] Implement home with featured projects and latest post.
-- [ ] Implement about using rendered Markdown body.
-- [ ] Implement projects grouped by category and sorted by position/name.
-- [ ] Implement blog index and post detail.
-- [ ] Implement contact page with the existing public contact methods.
-- [ ] Implement error/not-found page.
-- [ ] Implement RSS feed at `/feed.xml`.
-- [ ] Implement robots, manifest, and icon routes.
-- [ ] Add route tests for all public paths, selected metadata, meaningful body
+- [x] Implement home with featured projects and latest post.
+- [x] Implement about using rendered Markdown body.
+- [x] Implement projects grouped by category and sorted by position/name.
+- [x] Implement blog index and post detail.
+- [x] Implement contact page with the existing public contact methods.
+- [x] Implement error/not-found page.
+- [x] Implement RSS feed at `/feed.xml`.
+- [x] Implement robots, manifest, and icon routes.
+- [x] Add route tests for all public paths, selected metadata, meaningful body
       content, 404 behavior, and draft exclusion.
 
 Exit criteria: the Rust app serves every current public URL with equivalent
