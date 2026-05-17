@@ -1,8 +1,8 @@
 # Caddyfile fragment for dunamismax.com.
 #
 # Lives inside the multi-tenant /etc/caddy/Caddyfile on the production VM.
-# Caddy terminates TLS and reverse-proxies to the Spring Boot fat jar on
-# 127.0.0.1:8080. Cloudflare proxies the public domain in front of it.
+# Caddy terminates TLS and reverse-proxies to the Rust site on
+# 127.0.0.1:3000. Cloudflare proxies the public domain in front of it.
 
 www.dunamismax.com {
     redir https://dunamismax.com{uri} permanent
@@ -16,7 +16,7 @@ dunamismax.com {
     }
     header @static Cache-Control "public, max-age=3600"
 
-    reverse_proxy 127.0.0.1:8080 {
+    reverse_proxy 127.0.0.1:3000 {
         header_up X-Real-IP {remote_host}
         header_up X-Forwarded-For {remote_host}
         header_up X-Forwarded-Proto {scheme}

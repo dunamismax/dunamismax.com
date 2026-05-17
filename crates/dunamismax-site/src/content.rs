@@ -6,11 +6,13 @@ use std::{
 };
 
 use chrono::NaiveDate;
+use include_dir::{Dir, include_dir};
 use pulldown_cmark::{Options, Parser, html};
 use serde::Deserialize;
 use toml::Value;
 
 const FRONTMATTER_DELIM: &str = "+++";
+static EMBEDDED_CONTENT: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../content");
 
 #[derive(Debug, Clone)]
 pub struct SiteContent {
@@ -37,6 +39,29 @@ impl SiteContent {
                 &markdown,
             )?,
             posts: load_posts(content_root.join("posts"), &markdown)?,
+        })
+    }
+
+    pub fn load_embedded() -> Result<Self, ContentError> {
+        let markdown = MarkdownRenderer::default();
+
+        Ok(Self {
+            projects: load_projects_from_str(
+                Path::new("content/projects.toml"),
+                embedded_file_str("projects.toml")?,
+            )?,
+            about: load_page_from_str(
+                Path::new("content/pages/about.md"),
+                embedded_file_str("pages/about.md")?,
+                PageMeta::new(
+                    "/about",
+                    "About | dunamismax",
+                    "About Stephen Sawyer and the dunamismax engineering stack.",
+                    "about",
+                ),
+                &markdown,
+            ),
+            posts: load_embedded_posts("posts", &markdown)?,
         })
     }
 
@@ -359,19 +384,29 @@ pub fn load_page(
 ) -> Result<Page, ContentError> {
     let path = path.as_ref();
     let markdown_body = read_to_string(path)?;
+
+    Ok(load_page_from_str(path, &markdown_body, meta, markdown))
+}
+
+fn load_page_from_str(
+    path: &Path,
+    markdown_body: &str,
+    meta: PageMeta,
+    markdown: &MarkdownRenderer,
+) -> Page {
     let slug = path
         .file_stem()
         .and_then(|name| name.to_str())
         .unwrap_or("page")
         .to_owned();
 
-    Ok(Page {
+    Page {
         slug,
         source_path: path.to_path_buf(),
-        html: markdown.render(&markdown_body),
-        markdown: markdown_body,
+        html: markdown.render(markdown_body),
+        markdown: markdown_body.to_owned(),
         meta,
-    })
+    }
 }
 
 pub fn load_posts(
@@ -415,7 +450,15 @@ pub fn load_posts(
 
 fn parse_post(path: &Path, markdown: &MarkdownRenderer) -> Result<Post, ContentError> {
     let text = read_to_string(path)?;
-    let (meta, body_markdown) = split_frontmatter(path, &text)?;
+    parse_post_from_str(path, &text, markdown)
+}
+
+fn parse_post_from_str(
+    path: &Path,
+    text: &str,
+    markdown: &MarkdownRenderer,
+) -> Result<Post, ContentError> {
+    let (meta, body_markdown) = split_frontmatter(path, text)?;
     let frontmatter = parse_frontmatter(path, meta)?;
     let slug = frontmatter
         .slug
@@ -432,6 +475,51 @@ fn parse_post(path: &Path, markdown: &MarkdownRenderer) -> Result<Post, ContentE
         body_html,
         draft: frontmatter.draft,
     })
+}
+
+fn load_embedded_posts(
+    posts_dir: &str,
+    markdown: &MarkdownRenderer,
+) -> Result<Vec<Post>, ContentError> {
+    let Some(dir) = EMBEDDED_CONTENT.get_dir(posts_dir) else {
+        return Ok(Vec::new());
+    };
+    let mut posts = Vec::new();
+
+    for file in dir.files() {
+        let path = PathBuf::from("content").join(file.path());
+        if path.extension().and_then(|extension| extension.to_str()) == Some("md") {
+            let text = file.contents_utf8().ok_or_else(|| ContentError::Invalid {
+                path: path.clone(),
+                message: "embedded content file is not valid UTF-8".to_owned(),
+            })?;
+            posts.push(parse_post_from_str(&path, text, markdown)?);
+        }
+    }
+
+    let mut seen = HashSet::new();
+    for post in &posts {
+        if !seen.insert(post.slug.clone()) {
+            return Err(ContentError::Invalid {
+                path: PathBuf::from("content").join(posts_dir),
+                message: format!("duplicate post slug: {}", post.slug),
+            });
+        }
+    }
+
+    posts.sort_by_key(|post| Reverse(post.published_on));
+    Ok(posts)
+}
+
+fn embedded_file_str(path: &str) -> Result<&'static str, ContentError> {
+    let display_path = PathBuf::from("content").join(path);
+    EMBEDDED_CONTENT
+        .get_file(path)
+        .and_then(|file| file.contents_utf8())
+        .ok_or_else(|| ContentError::Invalid {
+            path: display_path,
+            message: "embedded content file is missing or not valid UTF-8".to_owned(),
+        })
 }
 
 fn split_frontmatter<'a>(path: &Path, text: &'a str) -> Result<(&'a str, &'a str), ContentError> {
@@ -653,6 +741,16 @@ mod tests {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../content");
 
         let content = SiteContent::load(root).expect("repository content should load");
+
+        assert_eq!(content.projects.len(), 7);
+        assert_eq!(content.featured_projects().len(), 7);
+        assert!(content.about.html.contains("<strong>Rust</strong>"));
+        assert!(content.about.html.contains("<strong>Python</strong>"));
+    }
+
+    #[test]
+    fn loads_embedded_content_tree() {
+        let content = SiteContent::load_embedded().expect("embedded content should load");
 
         assert_eq!(content.projects.len(), 7);
         assert_eq!(content.featured_projects().len(), 7);

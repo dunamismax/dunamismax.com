@@ -1,8 +1,6 @@
 name: Deploy
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -19,39 +17,42 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "25"
+      - name: Install Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+          rustup default stable
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
+      - name: Rust format
+        run: cargo fmt --all --check
 
-      - name: Install Node deps (Tailwind)
-        run: npm ci
+      - name: Rust clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
 
-      - name: Maven package
-        run: ./mvnw --batch-mode clean package
+      - name: Rust tests
+        run: cargo test --workspace --all-features
 
-      - name: Locate fat jar
-        id: jar
-        run: echo "path=target/dunamismax-site-0.1.0.jar" >> "$GITHUB_OUTPUT"
+      - name: Rust release build
+        run: cargo build -p dunamismax-site --release
 
-      - name: Copy jar to VM
+      - name: Stage deploy files
+        run: |
+          mkdir -p dist
+          cp target/release/dunamismax-site dist/dunamismax-site
+          cp deploy/dunamismax-site.service dist/dunamismax-site.service
+
+      - name: Copy binary and service unit to VM
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || 22 }}
-          source: ${{ steps.jar.outputs.path }}
-          target: /opt/dunamismax-site/
+          source: dist/*
+          target: /tmp/dunamismax-site-deploy-${{ github.sha }}/
           strip_components: 1
           overwrite: true
 
-      - name: Restart service
+      - name: Install release and smoke
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -60,8 +61,31 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT || 22 }}
           script: |
             set -euo pipefail
-            cd /opt/dunamismax-site
-            ln -sf "$(ls -t dunamismax-site-*.jar | head -1)" dunamismax-site.jar
+
+            release_id="${{ github.sha }}"
+            deploy_tmp="/tmp/dunamismax-site-deploy-${release_id}"
+            release_path="/opt/dunamismax-site/releases/dunamismax-site-${release_id}"
+
+            if ! id -u dunamismax >/dev/null 2>&1; then
+              sudo useradd --system --home-dir /opt/dunamismax-site --shell /usr/sbin/nologin dunamismax
+            fi
+
+            sudo install -d -o dunamismax -g dunamismax -m 0750 /opt/dunamismax-site
+            sudo install -d -o dunamismax -g dunamismax -m 0750 /opt/dunamismax-site/releases
+            sudo install -o dunamismax -g dunamismax -m 0755 "${deploy_tmp}/dunamismax-site" "${release_path}"
+            sudo ln -sfn "${release_path}" /opt/dunamismax-site/dunamismax-site
+
+            if [ ! -f /opt/dunamismax-site/site.env ]; then
+              echo "Missing /opt/dunamismax-site/site.env; create it from deploy/site.env.example before cutover." >&2
+              exit 1
+            fi
+
+            sudo install -o root -g root -m 0644 "${deploy_tmp}/dunamismax-site.service" /etc/systemd/system/dunamismax-site.service
+            sudo systemctl daemon-reload
+            sudo systemctl enable dunamismax-site.service
             sudo systemctl restart dunamismax-site.service
+
             sleep 3
-            curl -fsS http://127.0.0.1:8080/actuator/health | grep -q '"status":"UP"'
+            curl -fsS http://127.0.0.1:3000/healthz | grep -q '"status":"ok"'
+            curl -fsS http://127.0.0.1:3000/actuator/health | grep -q '"status":"UP"'
+            rm -rf "${deploy_tmp}"

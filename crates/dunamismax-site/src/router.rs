@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::Arc};
+use std::sync::Arc;
 
 use axum::{
     Json, Router,
@@ -32,14 +32,14 @@ pub struct AppState {
 
 pub fn router() -> Router {
     router_with_content_and_page_views(
-        SiteContent::load(default_content_root()).expect("repository content should load"),
+        SiteContent::load_embedded().expect("embedded content should load"),
         None,
     )
 }
 
 pub fn router_with_page_views(page_views: PageViewRepository) -> Router {
     router_with_content_and_page_views(
-        SiteContent::load(default_content_root()).expect("repository content should load"),
+        SiteContent::load_embedded().expect("embedded content should load"),
         Some(page_views),
     )
 }
@@ -76,10 +76,6 @@ pub fn router_with_content_and_page_views(
         .with_state(state.clone())
         .layer(middleware::from_fn_with_state(state, record_page_view))
         .layer(TraceLayer::new_for_http())
-}
-
-fn default_content_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content")
 }
 
 async fn home(State(state): State<AppState>) -> Html<String> {
