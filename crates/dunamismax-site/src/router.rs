@@ -17,6 +17,9 @@ use crate::{
     pages,
 };
 
+const SHORT_CACHE: &str = "public, max-age=300, must-revalidate";
+const ICON_CACHE: &str = "public, max-age=86400";
+
 #[derive(Debug, Clone)]
 pub struct AppState {
     content: Arc<SiteContent>,
@@ -94,35 +97,50 @@ async fn feed(State(state): State<AppState>) -> impl IntoResponse {
 
 async fn robots() -> impl IntoResponse {
     (
-        [(header::CONTENT_TYPE, "text/plain; charset=utf-8")],
+        [
+            (header::CONTENT_TYPE, "text/plain; charset=utf-8"),
+            (header::CACHE_CONTROL, SHORT_CACHE),
+        ],
         assets::ROBOTS_TXT,
     )
 }
 
 async fn manifest() -> impl IntoResponse {
     (
-        [(header::CONTENT_TYPE, "application/manifest+json")],
+        [
+            (header::CONTENT_TYPE, "application/manifest+json"),
+            (header::CACHE_CONTROL, SHORT_CACHE),
+        ],
         assets::MANIFEST_JSON,
     )
 }
 
 async fn icon() -> impl IntoResponse {
     (
-        [(header::CONTENT_TYPE, "image/svg+xml; charset=utf-8")],
+        [
+            (header::CONTENT_TYPE, "image/svg+xml; charset=utf-8"),
+            (header::CACHE_CONTROL, ICON_CACHE),
+        ],
         assets::ICON_SVG,
     )
 }
 
 async fn css() -> impl IntoResponse {
     (
-        [(header::CONTENT_TYPE, "text/css; charset=utf-8")],
+        [
+            (header::CONTENT_TYPE, "text/css; charset=utf-8"),
+            (header::CACHE_CONTROL, SHORT_CACHE),
+        ],
         assets::SITE_CSS,
     )
 }
 
 async fn theme_js() -> impl IntoResponse {
     (
-        [(header::CONTENT_TYPE, "text/javascript; charset=utf-8")],
+        [
+            (header::CONTENT_TYPE, "text/javascript; charset=utf-8"),
+            (header::CACHE_CONTROL, SHORT_CACHE),
+        ],
         assets::THEME_JS,
     )
 }
@@ -392,6 +410,32 @@ mod tests {
                 "{path}"
             );
             assert!(body(response).await.contains(expected), "{path}");
+        }
+    }
+
+    #[tokio::test]
+    async fn static_assets_include_cache_headers() {
+        for (path, expected_cache) in [
+            ("/robots.txt", "public, max-age=300, must-revalidate"),
+            (
+                "/manifest.webmanifest",
+                "public, max-age=300, must-revalidate",
+            ),
+            ("/css/site.css", "public, max-age=300, must-revalidate"),
+            ("/js/theme.js", "public, max-age=300, must-revalidate"),
+            ("/icon.svg", "public, max-age=86400"),
+        ] {
+            let response = router()
+                .oneshot(Request::builder().uri(path).body(Body::empty()).unwrap())
+                .await
+                .unwrap();
+
+            assert_eq!(response.status(), StatusCode::OK, "{path}");
+            assert_eq!(
+                response.headers().get(header::CACHE_CONTROL).unwrap(),
+                expected_cache,
+                "{path}"
+            );
         }
     }
 

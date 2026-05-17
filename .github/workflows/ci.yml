@@ -46,8 +46,14 @@ jobs:
       - name: Rust tests
         run: cargo test --workspace --all-features
 
+      - name: Rust content validation
+        run: cargo test -p dunamismax-site content::tests::loads_repository_content_tree --all-features
+
       - name: Rust build
         run: cargo build --workspace
+
+      - name: Rust release build
+        run: cargo build -p dunamismax-site --release
 
       - name: Maven build + test
         run: ./mvnw --batch-mode clean verify

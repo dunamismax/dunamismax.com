@@ -10,10 +10,6 @@ default:
 
 # ---- local dev ----
 
-# Install Node deps for Tailwind.
-install:
-    npm ci
-
 # Start PostgreSQL 18 in the background.
 db-up:
     docker compose up -d postgres
@@ -30,76 +26,85 @@ db-logs:
 psql:
     docker compose exec postgres psql -U dunamismax -d dunamismax
 
-# Build the Tailwind stylesheet once.
-css:
-    npm run build:css
-
-# Watch and rebuild the Tailwind stylesheet.
-css-watch:
-    npm run watch:css
-
-# Run the Rust site scaffold.
+# Run the Rust site.
 site-dev:
     cargo run -p dunamismax-site
 
-# Run the app with the dev profile.
-java-dev: db-up
-    SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+# Run the Rust site.
+dev: site-dev
 
-# Run the app with the dev profile.
-dev: java-dev
-
-# ---- build, test, ship ----
+# ---- Rust build, test, ship ----
 
 # Check Rust formatting.
-rust-fmt:
+fmt:
     cargo fmt --all --check
 
 # Run Rust clippy with warnings denied.
-rust-clippy:
+check:
     cargo clippy --workspace --all-targets --all-features -- -D warnings
 
 # Run Rust tests.
-rust-test:
+test:
     cargo test --workspace --all-features
 
-# Build Rust crates.
-rust-build:
+# Build Rust crates in debug mode.
+build:
     cargo build --workspace
+
+# Build the Rust site release binary.
+site-release:
+    cargo build -p dunamismax-site --release
 
 # Validate the Rust content loader against the repository content tree.
 content-validate:
     cargo test -p dunamismax-site content::tests::loads_repository_content_tree --all-features
 
-# Run the normal Rust scaffold verification gate.
-rust-check: rust-fmt rust-clippy rust-test rust-build
+# Run the normal Rust verification gate.
+rust-check: fmt check test content-validate build site-release
 
+# Remove Rust build outputs.
+clean:
+    cargo clean
+
+# ---- Java production baseline fallback ----
+
+# Install Node deps for the Java/Tailwind baseline.
+java-install:
+    npm ci
+
+# Build the Java-era Tailwind stylesheet once.
+java-css:
+    npm run build:css
+
+# Watch and rebuild the Java-era Tailwind stylesheet.
+java-css-watch:
+    npm run watch:css
+
+# Run the Java app with the dev profile.
+java-dev: db-up
+    SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+
+# Run the Java Maven build and tests.
 java-build:
     ./mvnw clean verify
 
-build: java-build
-
+# Run Java tests.
 java-test:
     ./mvnw test
 
-test: java-test
-
+# Compile Java sources and tests.
 java-fmt:
     ./mvnw compile test-compile
 
-fmt: java-fmt
-
+# Package the Java fat jar.
 java-jar:
     ./mvnw package
 
-jar: java-jar
-
-# Run the built fat jar against a local Postgres on 5432.
-run-jar:
+# Run the built Java fat jar against a local Postgres on 5432.
+java-run-jar:
     java -jar target/dunamismax-site-0.1.0.jar
 
+# Remove Java and Tailwind build outputs.
 java-clean:
     ./mvnw clean
     rm -rf src/main/resources/static/css/site.css node_modules
-
-clean: java-clean

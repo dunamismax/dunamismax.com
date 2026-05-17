@@ -167,15 +167,15 @@ content and correct status codes.
 Goal: make the Rust-rendered site look and behave like the intended production
 site without carrying unnecessary Java/Node assumptions.
 
-- [ ] Decide whether to keep Tailwind as a build-time tool or replace it with
+- [x] Decide whether to keep Tailwind as a build-time tool or replace it with
       hand-authored CSS embedded in the Rust binary.
-- [ ] Port the current visual system into Rust-served assets.
-- [ ] Preserve dark/light theme behavior and local storage key compatibility.
-- [ ] Serve CSS, theme JS if still needed, favicon, manifest, and robots with
+- [x] Port the current visual system into Rust-served assets.
+- [x] Preserve dark/light theme behavior and local storage key compatibility.
+- [x] Serve CSS, theme JS if still needed, favicon, manifest, and robots with
       correct content types.
-- [ ] Add cache headers where appropriate.
-- [ ] Run browser checks at desktop and mobile widths.
-- [ ] Fix visible overflow, overlap, contrast, and navigation issues.
+- [x] Add cache headers where appropriate.
+- [x] Run browser checks at desktop and mobile widths.
+- [x] Fix visible overflow, overlap, contrast, and navigation issues.
 
 Exit criteria: the Rust site is visually production-ready and does not depend
 on Java resources or Spring static serving.
@@ -205,14 +205,14 @@ the normal test/deploy path proves migrations from an empty database.
 Goal: make Rust the normal local and CI workflow while Java still exists as a
 fallback.
 
-- [ ] Update `justfile` with Rust-first commands: `fmt`, `check`, `test`,
+- [x] Update `justfile` with Rust-first commands: `fmt`, `check`, `test`,
       `site-dev`, `site-release`, `db-up`, `db-down`, `psql`, and `clean`.
-- [ ] Keep any Java fallback targets clearly labeled until removal.
-- [ ] Update GitHub Actions to run Rust gates and only keep Java gates while
+- [x] Keep any Java fallback targets clearly labeled until removal.
+- [x] Update GitHub Actions to run Rust gates and only keep Java gates while
       the Java app remains deployable.
-- [ ] Add content validation to CI.
-- [ ] Add a release build check for `crates/dunamismax-site`.
-- [ ] Document local development in `README.md`.
+- [x] Add content validation to CI.
+- [x] Add a release build check for `crates/dunamismax-site`.
+- [x] Document local development in `README.md`.
 
 Exit criteria: a future agent can run one documented command to verify the
 Rust site locally and in CI.

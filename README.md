@@ -99,6 +99,10 @@ support, then sanitizes rendered HTML through a narrow allowlist that preserves
 the current `about.md` paragraph, emphasis, code, heading, link, list, quote,
 and table tags while stripping arbitrary script/style behavior.
 
+The Rust site uses hand-authored CSS embedded in the Rust binary instead of
+Tailwind. The Java production baseline still keeps its Tailwind files until
+the Rust cutover retires that path.
+
 ## Routes To Preserve
 
 ```text
@@ -119,9 +123,34 @@ GET  /actuator/health        temporary compatibility health probe
 Keep `/actuator/health` during the cutover so old deployment checks can be
 updated safely. The final Rust-native probe should be `/healthz`.
 
-## Current Local Development
+## Local Development
 
-Toolchain for the current Java site:
+Toolchain for the Rust rewrite:
+
+- Rust stable with `rustfmt` and Clippy
+- Docker for local PostgreSQL when database-backed phases need it
+- `just`
+
+```sh
+just site-dev
+just rust-check
+just content-validate
+```
+
+Useful Rust targets:
+
+```sh
+just fmt
+just check
+just test
+just build
+just site-release
+just db-up
+just db-down
+just psql
+```
+
+Toolchain for the current Java production baseline:
 
 - JDK 25
 - Node 22+ for Tailwind
@@ -129,31 +158,24 @@ Toolchain for the current Java site:
 - `just`
 
 ```sh
-just install
+just java-install
 just db-up
-just dev
+just java-dev
 ```
 
-Useful current targets:
+Useful Java fallback targets:
 
 ```sh
-just css-watch
-just test
-just build
-just jar
-just psql
+just java-css-watch
+just java-test
+just java-build
+just java-jar
+just java-clean
 ```
 
-The Rust rewrite should replace these with Cargo-centered targets as phases in
-[`BUILD.md`](BUILD.md) are completed.
-
-Early Rust scaffold targets:
-
-```sh
-just site-dev
-just rust-check
-just content-validate
-```
+`just dev`, `just fmt`, `just check`, `just test`, `just build`, and
+`just clean` now point at the Rust workflow. Java commands stay under
+`java-*` while the Java app remains the production fallback.
 
 ## Production Deploy
 
