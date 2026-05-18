@@ -16,7 +16,7 @@ position   = 10
 featured   = true
 visibility = "public"
 tagline    = "Rust encrypted backup CLI with client-side encryption, local and S3-compatible repositories, policy-driven retention, and scriptable restores."
-repo       = "https://github.com/dunamismax/sealport"
+repo       = "https://github.com/dunamismax/fileferry"
 url        = "https://fileferry.app"
 stack      = "Rust, Axum, Leptos, Tokio, object storage, XChaCha20-Poly1305"
 
