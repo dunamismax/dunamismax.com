@@ -15,10 +15,10 @@ status     = "active"
 position   = 10
 featured   = true
 visibility = "public"
-tagline    = "Rust local-network file transfer over QUIC with mDNS discovery, resumable manifests, TUI, daemon mode, and signed releases."
-repo       = "https://github.com/dunamismax/fileferry"
+tagline    = "Rust encrypted backup CLI with client-side encryption, local and S3-compatible repositories, policy-driven retention, and scriptable restores."
+repo       = "https://github.com/dunamismax/sealport"
 url        = "https://fileferry.app"
-stack      = "Rust, Tokio, Quinn, rustls, Bash, PowerShell"
+stack      = "Rust, Axum, Leptos, Tokio, object storage, XChaCha20-Poly1305"
 
 [[projects]]
 slug       = "mtg-card-bot"
