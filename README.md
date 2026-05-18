@@ -15,6 +15,8 @@ to Stephen's Rust web stack:
 - Axum HTTP server
 - Leptos server-side rendered UI
 - Tokio runtime
+- SQLx migrations and explicit PostgreSQL access
+- `tracing` and `tower-http` for production observability and middleware
 - PostgreSQL for durable runtime state
 - Caddy and systemd on Ubuntu
 
@@ -28,10 +30,16 @@ operating manual.
 
 - **Rust** for CLIs, network services, protocol work, secure transport,
   trading/market-data experiments, and performance-sensitive systems.
+- **Leptos + Axum + Tokio** as the default web app stack for self-hosted
+  sites, dashboards, admin panels, and SaaS-style products.
+- **SQLx** for explicit database access, migrations, and PostgreSQL-backed
+  application state.
 - **PostgreSQL** for durable application state, audit trails, search,
   reporting, and job queues before adding more infrastructure.
 - **Python** for automation, bots, prototypes, data scripts, and glue, using
   `uv`, Ruff, pytest, and project-local virtual environments.
+- **clap + tracing** for serious Rust CLIs, with `ratatui` when a terminal UI
+  is the right product surface.
 - **Bash/zsh and PowerShell** for repeatable IT operations across macOS,
   Ubuntu, and Windows.
 - **Ubuntu LTS**, **Caddy**, **systemd**, SSH deploys, `pg_dump` backups,

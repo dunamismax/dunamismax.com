@@ -61,7 +61,8 @@
   work, secure transport, local tools, trading experiments, and
   performance-sensitive paths. The defaults are small crates, explicit
   APIs, real error types, structured logs, benchmarks before claims, and
-  the normal Cargo quality gate.
+  the normal Cargo quality gate. For web apps and self-hosted dashboards,
+  the default lane is Leptos, Axum, Tokio, SQLx, and PostgreSQL.
 </p>
 
 <p>
@@ -69,6 +70,13 @@
   state, JSONB documents when they fit, search, audit trails, job
   tables, reporting, and operational history live in one inspectable
   system before another moving part earns its place.
+</p>
+
+<p>
+  <strong>Interfaces</strong> should match the job. Leptos is the default
+  for Rust web surfaces, Ratatui for terminal applications, clap for serious
+  CLIs, and Tauri, egui, iced, or Dioxus only when the product genuinely
+  needs desktop-native or cross-platform app UI.
 </p>
 
 <p>
