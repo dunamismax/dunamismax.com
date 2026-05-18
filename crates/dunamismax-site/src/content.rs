@@ -742,8 +742,8 @@ mod tests {
 
         let content = SiteContent::load(root).expect("repository content should load");
 
-        assert_eq!(content.projects.len(), 7);
-        assert_eq!(content.featured_projects().len(), 7);
+        assert_eq!(content.projects.len(), 8);
+        assert_eq!(content.featured_projects().len(), 8);
         assert!(content.about.html.contains("<strong>Rust</strong>"));
         assert!(content.about.html.contains("<strong>Python</strong>"));
     }
@@ -752,8 +752,8 @@ mod tests {
     fn loads_embedded_content_tree() {
         let content = SiteContent::load_embedded().expect("embedded content should load");
 
-        assert_eq!(content.projects.len(), 7);
-        assert_eq!(content.featured_projects().len(), 7);
+        assert_eq!(content.projects.len(), 8);
+        assert_eq!(content.featured_projects().len(), 8);
         assert!(content.about.html.contains("<strong>Rust</strong>"));
         assert!(content.about.html.contains("<strong>Python</strong>"));
     }

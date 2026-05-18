@@ -59,6 +59,19 @@ url        = "https://pod-tracker.app"
 stack      = "Rust, Axum, Leptos, Tokio, PostgreSQL, sqlx, SSE, Scryfall"
 
 [[projects]]
+slug       = "status-dunamismax"
+name       = "status.dunamismax"
+category   = "infrastructure"
+status     = "active"
+position   = 55
+featured   = true
+visibility = "public"
+tagline    = "Rust status and operations dashboard for public site health, host services, deploy history, and project progress across self-hosted systems."
+repo       = "https://github.com/dunamismax/status.dunamismax"
+url        = "https://status.dunamismax.com"
+stack      = "Rust, Axum, Leptos, Tokio, PostgreSQL, systemd, Caddy"
+
+[[projects]]
 slug       = "toolworks"
 name       = "Toolworks"
 category   = "developer-tools"
