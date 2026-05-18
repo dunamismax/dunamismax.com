@@ -395,7 +395,10 @@ mod tests {
     #[tokio::test]
     async fn public_html_routes_render_meaningful_content() {
         for (path, expected) in [
-            ("/", "Fast systems you can inspect and own."),
+            (
+                "/",
+                "Rust-first systems with durable state and practical operations.",
+            ),
             ("/about", "Rust-first systems"),
             ("/projects", "Live projects."),
             ("/blog", "No posts yet."),

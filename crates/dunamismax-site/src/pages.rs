@@ -4,6 +4,7 @@ use leptos::prelude::*;
 use crate::content::{PageMeta, Post, Project, ProjectCategory, SiteContent};
 
 const SITE_BASE_URL: &str = "https://dunamismax.com";
+const ASSET_VERSION: &str = "20260518-ui3";
 const DEFAULT_DESCRIPTION: &str = "Engineering work by Stephen Sawyer in Rust, PostgreSQL, Python automation, and self-hosted software.";
 
 #[derive(Debug, Clone)]
@@ -22,38 +23,49 @@ pub fn home_page(content: &SiteContent) -> String {
         .map(project_card)
         .collect::<Vec<_>>()
         .join("");
-    let latest = content
+    let latest_panel = content
         .latest_post()
         .map(latest_post_card)
-        .unwrap_or_default();
+        .unwrap_or_else(latest_post_empty_card);
+    let project_count = content.projects.len();
+    let post_count = content.published_posts().len();
+    let project_summary = format!("{project_count} public projects");
+    let writing_summary = if post_count == 1 {
+        "1 published note".to_owned()
+    } else {
+        format!("{post_count} published notes")
+    };
+    let current_focus = focus_panel();
+    let quick_nav = quick_nav_grid();
+    let stats = home_stats(&project_summary, &writing_summary);
+    let workflows = workflow_grid();
     let meta = PageMeta::new("/", "dunamismax", DEFAULT_DESCRIPTION, "home");
     let body = view! {
         <section class="hero-section">
           <div class="hero-background" aria-hidden="true"></div>
           <div class="section-inner hero-grid">
             <div class="hero-copy">
-              <p class="eyebrow">"Rust · PostgreSQL · Python · secure systems"</p>
-              <h1>"Fast systems you can inspect and own."</h1>
-              <p class="lede">
-                "Engineer and IT operator going deep on Rust, high-performance infrastructure, crypto markets, cryptography, encryption, and practical automation."
+              <p class="eyebrow">"Stephen Sawyer · dunamismax"</p>
+              <h1>"Rust-first systems with durable state and practical operations."</h1>
+              <p class="lede lede--strong">
+                "Engineering work across Rust services, PostgreSQL-backed products, Python automation, cryptography, encryption, and self-hosted infrastructure."
               </p>
               <p class="lede">
-                <strong>"Rust at the center. PostgreSQL for durable state. Python for leverage."</strong>
-                " Bash, zsh, and PowerShell for the operational work that keeps real machines useful."
+                "The public work is kept inspectable: plain-file content, minimal JavaScript, deployable on one Ubuntu VM behind Caddy."
               </p>
               <div class="hero-actions">
-                <a href="/projects" class="button button-primary">"See projects"</a>
-                <a href="/contact" class="button button-secondary">"Get in touch"</a>
+                <a href="/projects" class="button button-primary">"View projects"</a>
+                <a href="/about" class="button button-secondary">"Read about Stephen"</a>
               </div>
               <div class="stack-row" aria-label="Primary stack">
                 <span class="stack-chip stack-chip--strong">"Rust"</span>
                 <span class="stack-chip stack-chip--strong">"PostgreSQL"</span>
                 <span class="stack-chip stack-chip--strong">"Python"</span>
+                <span class="stack-chip">"Axum"</span>
+                <span class="stack-chip">"Leptos"</span>
+                <span class="stack-chip">"Tokio"</span>
                 <span class="stack-chip">"uv"</span>
                 <span class="stack-chip">"Ruff"</span>
-                <span class="stack-chip">"Tokio"</span>
-                <span class="stack-chip">"Bash"</span>
-                <span class="stack-chip">"PowerShell"</span>
                 <span class="stack-chip">"systemd"</span>
                 <span class="stack-chip">"Caddy"</span>
               </div>
@@ -65,51 +77,175 @@ pub fn home_page(content: &SiteContent) -> String {
                 "."
               </p>
             </div>
-            <div>
-              <div inner_html=latest></div>
-              <nav class="nav-card-grid" aria-label="Quick navigation">
-                <a href="/projects" class="nav-card">
-                  <span class="nav-card__title">"Projects"</span>
-                  <span class="nav-card__detail">"Rust, Python, PostgreSQL, automation, and self-hosted systems grouped here."</span>
-                </a>
-                <a href="/blog" class="nav-card">
-                  <span class="nav-card__title">"Blog"</span>
-                  <span class="nav-card__detail">"Build logs, design notes, and practical decisions from real systems."</span>
-                </a>
-                <a href="/about" class="nav-card">
-                  <span class="nav-card__title">"About"</span>
-                  <span class="nav-card__detail">"Rust-first, PostgreSQL-backed, security-minded engineering."</span>
-                </a>
-                <a href="/contact" class="nav-card">
-                  <span class="nav-card__title">"Contact"</span>
-                  <span class="nav-card__detail">"Email, Signal, GitHub, Codeberg, and site source."</span>
-                </a>
-              </nav>
-            </div>
+            <aside class="hero-aside" aria-label="Site snapshot">
+              <div inner_html=current_focus></div>
+              <div inner_html=latest_panel></div>
+            </aside>
           </div>
         </section>
         <section class="signal-bar">
-          <div class="section-inner signal-grid">
-            <p>"Rust systems and networking"</p>
-            <p>"PostgreSQL as data core"</p>
-            <p>"Python automation with uv and Ruff"</p>
-            <p>"macOS and Ubuntu operations"</p>
-          </div>
+          <div class="section-inner" inner_html=stats></div>
+        </section>
+        <section class="page-section page-section--tight">
+          <div class="section-inner" inner_html=workflows></div>
         </section>
         <section class="page-section">
           <div class="section-inner">
-            <div class="section-heading">
-              <p class="eyebrow">"Featured projects"</p>
-              <h2>"Live projects today."</h2>
-              <p>"Public work worth showing: Rust-first tools, Python automation, PostgreSQL-backed operations, and technical references that sharpen the stack."</p>
+            <div class="section-heading section-heading--split">
+              <div>
+                <p class="eyebrow">"Featured projects"</p>
+                <h2>"Current public work."</h2>
+              </div>
+              <p>"Rust-first tools, Python automation, PostgreSQL-backed operations, and technical references that support the next phase of work."</p>
             </div>
-            <ul class="post-list" inner_html=featured></ul>
+            <ul class="card-list card-list--projects" inner_html=featured></ul>
             <p class="section-foot"><a href="/projects" class="section-link">"See every project"</a></p>
+          </div>
+        </section>
+        <section class="page-section page-section--quiet">
+          <div class="section-inner">
+            <div class="section-heading section-heading--split">
+              <div>
+                <p class="eyebrow">"Navigate"</p>
+                <h2>"Find the useful surface."</h2>
+              </div>
+              <p>"A compact route map for projects, writing, background, and contact paths."</p>
+            </div>
+            <nav class="nav-card-grid" aria-label="Quick navigation" inner_html=quick_nav></nav>
           </div>
         </section>
     }.to_html();
 
     render_layout(&meta, body)
+}
+
+fn focus_panel() -> String {
+    view! {
+      <section class="system-panel" aria-label="Current focus">
+        <div class="system-panel__header">
+          <span class="system-panel__label">"Current direction"</span>
+          <span class="status-dot">"Live"</span>
+        </div>
+        <dl class="system-panel__rows">
+          <div>
+            <dt>"Runtime"</dt>
+            <dd>"Rust 2024 · Axum · Leptos SSR"</dd>
+          </div>
+          <div>
+            <dt>"State"</dt>
+            <dd>"PostgreSQL · typed migrations · privacy-aware events"</dd>
+          </div>
+          <div>
+            <dt>"Ops"</dt>
+            <dd>"Ubuntu LTS · Caddy · systemd · SSH deploys"</dd>
+          </div>
+        </dl>
+      </section>
+    }
+    .to_html()
+}
+
+fn home_stats(project_summary: &str, writing_summary: &str) -> String {
+    let stats = [
+        ("Stack", "Rust, PostgreSQL, Python"),
+        ("Work", project_summary),
+        ("Writing", writing_summary),
+        ("Deploy", "Self-hostable behind Caddy"),
+    ]
+    .into_iter()
+    .map(|(label, value)| {
+        view! {
+          <article class="signal-card">
+            <p>{label}</p>
+            <strong>{value}</strong>
+          </article>
+        }
+        .to_html()
+    })
+    .collect::<Vec<_>>()
+    .join("");
+
+    view! { <div class="signal-grid" inner_html=stats></div> }.to_html()
+}
+
+fn workflow_grid() -> String {
+    let cards = [
+        (
+            "Systems",
+            "Rust services, protocol work, network tooling, and performance-sensitive code.",
+        ),
+        (
+            "Data",
+            "PostgreSQL as the durable core for application state, audit trails, and reporting.",
+        ),
+        (
+            "Automation",
+            "Python, uv, Ruff, Bash, zsh, and PowerShell for repeatable operator workflows.",
+        ),
+    ]
+    .into_iter()
+    .map(|(title, body)| {
+        view! {
+          <article class="workflow-card">
+            <p class="workflow-card__title">{title}</p>
+            <p>{body}</p>
+          </article>
+        }
+        .to_html()
+    })
+    .collect::<Vec<_>>()
+    .join("");
+
+    view! { <div class="workflow-grid" inner_html=cards></div> }.to_html()
+}
+
+fn quick_nav_grid() -> String {
+    [
+        (
+            "/projects",
+            "Projects",
+            "Rust, Python, PostgreSQL, automation, and self-hosted systems grouped by category.",
+        ),
+        (
+            "/blog",
+            "Blog",
+            "Build logs, design notes, and practical decisions from real systems.",
+        ),
+        (
+            "/about",
+            "About",
+            "Stephen's engineering direction, operating habits, and stack priorities.",
+        ),
+        (
+            "/contact",
+            "Contact",
+            "Email, Signal, GitHub, Codeberg, Reddit, and the source for this site.",
+        ),
+    ]
+    .into_iter()
+    .map(|(href, title, detail)| {
+        view! {
+          <a href=href class="nav-card">
+            <span class="nav-card__title">{title}</span>
+            <span class="nav-card__detail">{detail}</span>
+          </a>
+        }
+        .to_html()
+    })
+    .collect::<Vec<_>>()
+    .join("")
+}
+
+fn latest_post_empty_card() -> String {
+    view! {
+      <a href="/blog" class="latest-card latest-card--empty">
+        <span class="latest-card__kicker">"Blog"</span>
+        <span class="latest-card__title">"Writing is ready for build notes."</span>
+        <span class="latest-card__meta">"RSS and draft filtering are in place"</span>
+        <span class="latest-card__description">"Published posts will appear here automatically, while drafts stay out of public routes and feeds."</span>
+      </a>
+    }
+    .to_html()
 }
 
 pub fn about_page(content: &SiteContent) -> String {
@@ -132,6 +268,21 @@ pub fn about_page(content: &SiteContent) -> String {
 }
 
 pub fn projects_page(content: &SiteContent) -> String {
+    let project_count = content.projects.len();
+    let group_count = [
+        ProjectCategory::Apps,
+        ProjectCategory::Infrastructure,
+        ProjectCategory::DeveloperTools,
+        ProjectCategory::Reference,
+    ]
+    .into_iter()
+    .filter(|category| {
+        content
+            .projects
+            .iter()
+            .any(|project| project.category == *category)
+    })
+    .count();
     let groups = [
         ProjectCategory::Apps,
         ProjectCategory::Infrastructure,
@@ -165,6 +316,11 @@ pub fn projects_page(content: &SiteContent) -> String {
             <p class="eyebrow">"Projects"</p>
             <h1>"Live projects."</h1>
             <p class="lede">"Rust-first tools, Python automation, PostgreSQL-backed operations, and references that support the next phase of work."</p>
+            <div class="hero-summary" aria-label="Project summary">
+              <span>{format!("{project_count} public projects")}</span>
+              <span>{format!("{group_count} active categories")}</span>
+              <span>"Plain TOML source of truth"</span>
+            </div>
           </div>
         </section>
         <section class="page-section">
@@ -178,14 +334,22 @@ pub fn projects_page(content: &SiteContent) -> String {
 pub fn blog_index_page(content: &SiteContent) -> String {
     let posts = content.published_posts();
     let post_list = if posts.is_empty() {
-        view! { <p class="prose">"No posts yet."</p> }.to_html()
+        view! {
+          <section class="empty-state">
+            <p class="eyebrow">"No posts yet."</p>
+            <h2>"The blog route is ready."</h2>
+            <p>"Published posts will render here and in the RSS feed. Drafts stay private until the content flag changes."</p>
+            <a href="/projects" class="section-link">"Browse current projects"</a>
+          </section>
+        }
+        .to_html()
     } else {
         let cards = posts
             .into_iter()
             .map(post_card)
             .collect::<Vec<_>>()
             .join("");
-        view! { <ul class="post-list" inner_html=cards></ul> }.to_html()
+        view! { <ul class="card-list" inner_html=cards></ul> }.to_html()
     };
     let meta = PageMeta::new(
         "/blog",
@@ -269,6 +433,11 @@ pub fn contact_page() -> String {
             <p class="eyebrow">"Contact"</p>
             <h1>"Get in touch."</h1>
             <p class="lede">"Email is the best place to start. Signal works well for direct outreach, and GitHub or Codeberg are the right places for public discussion around code."</p>
+            <div class="hero-summary" aria-label="Contact preferences">
+              <span>"Email first"</span>
+              <span>"Signal for private outreach"</span>
+              <span>"GitHub or Codeberg for public code"</span>
+            </div>
           </div>
         </section>
         <section class="page-section">
@@ -312,6 +481,7 @@ pub fn render_layout(meta: &PageMeta, body: String) -> String {
     let description = meta.description.clone();
     let section = meta.section.clone();
     let og_type = meta.og_type.clone();
+    let stylesheet_href = format!("/css/site.css?v={ASSET_VERSION}");
     let rendered = view! {
         <html lang="en">
           <head>
@@ -320,7 +490,7 @@ pub fn render_layout(meta: &PageMeta, body: String) -> String {
             <meta name="viewport" content="width=device-width,initial-scale=1"/>
             <meta name="description" content=description.clone()/>
             <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)"/>
-            <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)"/>
+            <meta name="theme-color" content="#f6f7f1" media="(prefers-color-scheme: light)"/>
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta name="application-name" content="dunamismax"/>
             <link rel="canonical" href=canonical.clone()/>
@@ -335,7 +505,7 @@ pub fn render_layout(meta: &PageMeta, body: String) -> String {
             <link rel="icon" href="/icon.svg" type="image/svg+xml"/>
             <link rel="manifest" href="/manifest.webmanifest"/>
             <link rel="alternate" type="application/rss+xml" title="dunamismax · Blog" href="/feed.xml"/>
-            <link rel="stylesheet" href="/css/site.css"/>
+            <link rel="stylesheet" href=stylesheet_href/>
             <script>
               {r#"(() => {
                 try {
@@ -462,7 +632,7 @@ fn project_group(category: ProjectCategory, cards: String) -> String {
           <h2>{category.label()}</h2>
           <p>{category.description()}</p>
         </header>
-        <ul class="post-list" inner_html=cards></ul>
+        <ul class="card-list card-list--projects" inner_html=cards></ul>
       </section>
     }
     .to_html()
