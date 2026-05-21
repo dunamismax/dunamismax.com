@@ -6,25 +6,22 @@
   const currentTheme = () =>
     document.documentElement.dataset.theme === LIGHT ? LIGHT : DARK;
 
-  const applyTheme = (button, label, theme) => {
+  const applyTheme = (button, theme) => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
+    if (!button) return;
     button.setAttribute("aria-pressed", String(theme === DARK));
     button.setAttribute(
       "aria-label",
       `Switch to ${theme === DARK ? "light" : "dark"} mode`,
     );
-    if (label) {
-      label.textContent = theme === DARK ? "Dark" : "Light";
-    }
+    button.title = theme === DARK ? "Switch to light mode" : "Switch to dark mode";
   };
 
   const init = () => {
     const button = document.querySelector("button.theme-toggle");
+    applyTheme(button, currentTheme());
     if (!button) return;
-    const label = button.querySelector("[data-theme-target=label]");
-
-    applyTheme(button, label, currentTheme());
 
     button.addEventListener("click", () => {
       const next = currentTheme() === DARK ? LIGHT : DARK;
@@ -33,7 +30,7 @@
       } catch (_) {
         /* storage unavailable; toggle is session-only */
       }
-      applyTheme(button, label, next);
+      applyTheme(button, next);
     });
   };
 
