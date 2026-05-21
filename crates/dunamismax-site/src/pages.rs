@@ -4,7 +4,7 @@ use leptos::prelude::*;
 use crate::content::{PageMeta, Post, Project, ProjectCategory, SiteContent};
 
 const SITE_BASE_URL: &str = "https://dunamismax.com";
-const ASSET_VERSION: &str = "20260518-ui3";
+const ASSET_VERSION: &str = "20260521-ui4";
 const DEFAULT_DESCRIPTION: &str = "Engineering work by Stephen Sawyer in Rust, PostgreSQL, Python automation, and self-hosted software.";
 
 #[derive(Debug, Clone)]
@@ -489,8 +489,8 @@ pub fn render_layout(meta: &PageMeta, body: String) -> String {
             <title>{title.clone()}</title>
             <meta name="viewport" content="width=device-width,initial-scale=1"/>
             <meta name="description" content=description.clone()/>
-            <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)"/>
-            <meta name="theme-color" content="#f6f7f1" media="(prefers-color-scheme: light)"/>
+            <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)"/>
+            <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)"/>
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta name="application-name" content="dunamismax"/>
             <link rel="canonical" href=canonical.clone()/>
@@ -551,9 +551,19 @@ fn Header(section: String) -> impl IntoView {
             <a href="/contact" class=active_class(&section, "contact")>"Contact"</a>
           </div>
           <div class="nav-actions">
-            <button type="button" class="theme-toggle" aria-pressed="true" aria-label="Switch to light mode">
-              <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
-              <span data-theme-target="label">"Dark"</span>
+            <button
+              type="button"
+              class="theme-toggle"
+              aria-pressed="true"
+              aria-label="Switch to light mode"
+              title="Switch to light mode"
+            >
+              <svg class="theme-toggle__moon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.499 5.499 0 1 0 7.678-7.678Z"/>
+              </svg>
+              <svg class="theme-toggle__sun" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0Zm0 13a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13ZM2.343 2.343a.75.75 0 0 1 1.06 0l1.061 1.061a.75.75 0 0 1-1.06 1.06L2.343 3.404a.75.75 0 0 1 0-1.06Zm9.193 9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 1 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061ZM16 8a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm10.657-5.657a.75.75 0 0 1 0 1.06l-1.061 1.061a.75.75 0 1 1-1.06-1.06l1.06-1.061a.75.75 0 0 1 1.061 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0Z"/>
+              </svg>
             </button>
           </div>
         </nav>
