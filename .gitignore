@@ -1,29 +1,9 @@
-# Maven / build
+# Rust
 target/
-build/
-out/
-.gradle/
-.kotlin/
-
-# Static output
-dist/
-
-# Python
-__pycache__/
-*.pyc
 
 # IDEs
 .idea/
 .vscode/
-*.iml
-*.ipr
-*.iws
-
-# Node / Tailwind
-node_modules/
-
-# Generated Tailwind output — produced by `npm run build:css`
-src/main/resources/static/css/site.css
 
 # OS
 .DS_Store

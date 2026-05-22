@@ -71,7 +71,6 @@ pub fn router_with_content_and_page_views(
         .route("/css/site.css", get(css))
         .route("/js/theme.js", get(theme_js))
         .route("/healthz", get(health))
-        .route("/actuator/health", get(actuator_health))
         .fallback(not_found)
         .with_state(state.clone())
         .layer(middleware::from_fn_with_state(state, record_page_view))
@@ -165,10 +164,6 @@ async fn theme_js() -> impl IntoResponse {
 
 async fn health() -> Json<HealthResponse> {
     Json(HealthResponse { status: "ok" })
-}
-
-async fn actuator_health() -> Json<ActuatorHealthResponse> {
-    Json(ActuatorHealthResponse { status: "UP" })
 }
 
 async fn record_page_view(
@@ -320,11 +315,6 @@ struct HealthResponse {
     status: &'static str,
 }
 
-#[derive(Debug, Serialize)]
-struct ActuatorHealthResponse {
-    status: &'static str,
-}
-
 #[cfg(test)]
 mod tests {
     use super::{feed_xml, router, router_with_content};
@@ -356,22 +346,6 @@ mod tests {
             "application/json"
         );
         assert_eq!(body(response).await, r#"{"status":"ok"}"#);
-    }
-
-    #[tokio::test]
-    async fn actuator_health_returns_spring_compatible_shape() {
-        let response = router()
-            .oneshot(
-                Request::builder()
-                    .uri("/actuator/health")
-                    .body(Body::empty())
-                    .unwrap(),
-            )
-            .await
-            .unwrap();
-
-        assert_eq!(response.status(), StatusCode::OK);
-        assert_eq!(body(response).await, r#"{"status":"UP"}"#);
     }
 
     #[tokio::test]
@@ -560,7 +534,7 @@ mod tests {
             assert!(super::is_trackable_path(path), "{path}");
         }
 
-        for path in ["/healthz", "/actuator/health", "/feed.xml", "/css/site.css"] {
+        for path in ["/healthz", "/feed.xml", "/css/site.css"] {
             assert!(!super::is_trackable_path(path), "{path}");
         }
     }
