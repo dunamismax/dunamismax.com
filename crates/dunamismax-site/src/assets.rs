@@ -206,11 +206,11 @@ code, kbd, pre, samp { font-family: var(--font-mono); }
   transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 .theme-toggle:hover { background: var(--surface-overlay); color: var(--text); border-color: var(--border); }
-.theme-toggle svg { width: 1.05rem; height: 1.05rem; display: block; }
-.theme-toggle__sun { display: none; }
-.theme-toggle__moon { display: block; }
-[data-theme="light"] .theme-toggle__sun { display: block; }
-[data-theme="light"] .theme-toggle__moon { display: none; }
+.theme-toggle svg { width: 1.05rem; height: 1.05rem; }
+.theme-toggle .theme-toggle__sun { display: none; }
+.theme-toggle .theme-toggle__moon { display: block; }
+[data-theme="light"] .theme-toggle .theme-toggle__sun { display: block; }
+[data-theme="light"] .theme-toggle .theme-toggle__moon { display: none; }
 
 /* ---------- Buttons ---------- */
 .button {
