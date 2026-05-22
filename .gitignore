@@ -1,6 +1,11 @@
 # Rust
 target/
 
+# Build/cache
+.gradle/
+__pycache__/
+*.py[cod]
+
 # IDEs
 .idea/
 .vscode/
