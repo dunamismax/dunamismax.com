@@ -225,9 +225,9 @@ Goal: deploy the Rust binary behind Caddy without losing the current site.
 - [x] Add or update `deploy/site.env.example` for Rust environment variables.
 - [x] Update `deploy/Caddyfile` if routes, health checks, headers, or upstream
       ports changed.
-- [x] Update GitHub Actions deploy to build the Rust release binary, copy it to
+- [x] Document the manual VM cutover flow: build the Rust release binary on
       the VM, install or symlink it atomically, restart systemd, and smoke
-      `/healthz`.
+      `/healthz`. (Earlier GitHub Actions deploy workflow has been removed.)
 - [x] Keep a rollback note for the last Java jar deployment until Rust has run
       in production.
 - [ ] Smoke locally on the VM with `curl`.

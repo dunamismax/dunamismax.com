@@ -216,9 +216,9 @@ just java-clean
 ## Production Deploy
 
 `dunamismax.com` runs on a single Ubuntu VM with PostgreSQL on the same box and
-Caddy in front for TLS. The Rust deployment is prepared as a manual GitHub
-Actions cutover workflow so pushing this repository does not automatically
-replace the still-live Java service.
+Caddy in front for TLS. The Rust cutover is performed manually from the VM so
+pushing this repository does not automatically replace the still-live Java
+service.
 
 The prepared Rust deployment keeps the same operational model:
 
@@ -241,9 +241,10 @@ sudoedit /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
 ```
 
-The GitHub Actions deploy workflow is `workflow_dispatch` only during cutover
-preparation. Run it manually after the VM has the Rust `site.env`, the updated
-Caddy upstream, and PostgreSQL credentials in place.
+Build and install the Rust release on the VM only after `site.env`, the
+updated Caddy upstream, and PostgreSQL credentials are in place. See
+`deploy/dunamismax-site.service` and `deploy/Caddyfile` for the expected unit
+and reverse-proxy shape.
 
 Rollback remains the last known-good Java deployment until Rust has served
 production traffic successfully. Keep the previous Java jar and Java-era
