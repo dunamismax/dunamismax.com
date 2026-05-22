@@ -4,7 +4,7 @@ use leptos::prelude::*;
 use crate::content::{PageMeta, Post, Project, ProjectCategory, SiteContent};
 
 const SITE_BASE_URL: &str = "https://dunamismax.com";
-const ASSET_VERSION: &str = "20260521-ui4";
+const ASSET_VERSION: &str = "20260522-card-list";
 const DEFAULT_DESCRIPTION: &str = "Engineering work by Stephen Sawyer in Rust, PostgreSQL, Python automation, and self-hosted software.";
 
 #[derive(Debug, Clone)]

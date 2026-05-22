@@ -498,6 +498,11 @@ h1 { font-weight: 700; }
   display: grid;
   gap: 0.9rem;
 }
+.card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 .workflow-card,
 .project-card,
 .post-card,
