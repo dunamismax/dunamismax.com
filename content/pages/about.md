@@ -10,9 +10,9 @@
 <p>
   The domains pulling me hardest are high-frequency trading
   infrastructure, crypto markets, cryptography, encryption, secure
-  networking, and local-first software. I want systems that are fast,
-  inspectable, self-hostable, and boring to operate once they are in
-  production.
+  networking, local-first software, and private web-native products. LoveWard is
+  the current primary product focus: a self-hostable meditation, journaling,
+  self-inquiry, and safety-aware AI reflection PWA.
 </p>
 
 <p>
@@ -77,6 +77,14 @@
   for Rust web surfaces, Ratatui for terminal applications, clap for serious
   CLIs, and Tauri, egui, iced, or Dioxus only when the product genuinely
   needs desktop-native or cross-platform app UI.
+</p>
+
+<p>
+  <strong>Product web apps</strong> use the boring mature web stack when that is
+  the right shape: Next.js App Router, React, TypeScript, Tailwind CSS,
+  shadcn/ui, Radix, Better Auth, Drizzle, PostgreSQL, pgvector, Dexie, Stripe,
+  Docker Compose, Caddy, OpenAI provider abstractions, Vitest, Testing Library,
+  and Playwright.
 </p>
 
 <p>

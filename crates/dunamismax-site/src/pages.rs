@@ -48,10 +48,10 @@ pub fn home_page(content: &SiteContent) -> String {
               <p class="eyebrow">"Stephen Sawyer · dunamismax"</p>
               <h1>"Rust-first systems with durable state and practical operations."</h1>
               <p class="lede lede--strong">
-                "Engineering work across Rust services, PostgreSQL-backed products, Python automation, cryptography, encryption, and self-hosted infrastructure."
+                "Engineering work across Rust services, PostgreSQL-backed products, private web apps, Python automation, cryptography, encryption, and self-hosted infrastructure."
               </p>
               <p class="lede">
-                "The public work is kept inspectable: plain-file content, minimal JavaScript, deployable on one Ubuntu VM behind Caddy."
+                "LoveWard is the current primary product focus; the public work stays inspectable, portable, and deployable on owned infrastructure."
               </p>
               <div class="hero-actions">
                 <a href="/projects" class="button button-primary">"View projects"</a>
@@ -61,6 +61,10 @@ pub fn home_page(content: &SiteContent) -> String {
                 <span class="stack-chip stack-chip--strong">"Rust"</span>
                 <span class="stack-chip stack-chip--strong">"PostgreSQL"</span>
                 <span class="stack-chip stack-chip--strong">"Python"</span>
+                <span class="stack-chip">"Next.js"</span>
+                <span class="stack-chip">"TypeScript"</span>
+                <span class="stack-chip">"Tailwind"</span>
+                <span class="stack-chip">"Drizzle"</span>
                 <span class="stack-chip">"Axum"</span>
                 <span class="stack-chip">"Leptos"</span>
                 <span class="stack-chip">"Tokio"</span>
@@ -96,7 +100,7 @@ pub fn home_page(content: &SiteContent) -> String {
                 <p class="eyebrow">"Featured projects"</p>
                 <h2>"Current public work."</h2>
               </div>
-              <p>"Rust-first tools, Python automation, PostgreSQL-backed operations, and technical references that support the next phase of work."</p>
+              <p>"LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and technical references that support the next phase of work."</p>
             </div>
             <ul class="card-list card-list--projects" inner_html=featured></ul>
             <p class="section-foot"><a href="/projects" class="section-link">"See every project"</a></p>
@@ -129,11 +133,11 @@ fn focus_panel() -> String {
         <dl class="system-panel__rows">
           <div>
             <dt>"Runtime"</dt>
-            <dd>"Rust 2024 · Axum · Leptos SSR"</dd>
+            <dd>"Rust 2024 · Axum · Leptos SSR · Next.js PWA"</dd>
           </div>
           <div>
             <dt>"State"</dt>
-            <dd>"PostgreSQL · typed migrations · privacy-aware events"</dd>
+            <dd>"PostgreSQL · Drizzle · SQLx · privacy-aware events"</dd>
           </div>
           <div>
             <dt>"Ops"</dt>
@@ -147,7 +151,7 @@ fn focus_panel() -> String {
 
 fn home_stats(project_summary: &str, writing_summary: &str) -> String {
     let stats = [
-        ("Stack", "Rust, PostgreSQL, Python"),
+        ("Stack", "Rust, Next.js, PostgreSQL"),
         ("Work", project_summary),
         ("Writing", writing_summary),
         ("Deploy", "Self-hostable behind Caddy"),
@@ -173,6 +177,10 @@ fn workflow_grid() -> String {
         (
             "Systems",
             "Rust services, protocol work, network tooling, and performance-sensitive code.",
+        ),
+        (
+            "Products",
+            "Next.js, React, TypeScript, Tailwind, Better Auth, Drizzle, and Dexie for private PWAs.",
         ),
         (
             "Data",
@@ -204,7 +212,7 @@ fn quick_nav_grid() -> String {
         (
             "/projects",
             "Projects",
-            "Rust, Python, PostgreSQL, automation, and self-hosted systems grouped by category.",
+            "LoveWard, Rust, Python, PostgreSQL, automation, and self-hosted systems grouped by category.",
         ),
         (
             "/blog",
@@ -307,7 +315,7 @@ pub fn projects_page(content: &SiteContent) -> String {
     let meta = PageMeta::new(
         "/projects",
         "Projects · dunamismax",
-        "Rust-first tools, Python automation, PostgreSQL-backed operations, and self-hosted project work by Stephen Sawyer.",
+        "LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and self-hosted project work by Stephen Sawyer.",
         "projects",
     );
     let body = view! {
@@ -315,7 +323,7 @@ pub fn projects_page(content: &SiteContent) -> String {
           <div class="section-inner">
             <p class="eyebrow">"Projects"</p>
             <h1>"Live projects."</h1>
-            <p class="lede">"Rust-first tools, Python automation, PostgreSQL-backed operations, and references that support the next phase of work."</p>
+            <p class="lede">"LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and references that support the next phase of work."</p>
             <div class="hero-summary" aria-label="Project summary">
               <span>{format!("{project_count} public projects")}</span>
               <span>{format!("{group_count} active categories")}</span>

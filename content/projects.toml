@@ -8,6 +8,19 @@
 # `position` controls sort order within a category (lower first).
 
 [[projects]]
+slug       = "loveward"
+name       = "LoveWard"
+category   = "apps"
+status     = "active"
+position   = 10
+featured   = true
+visibility = "public"
+tagline    = "Self-hostable meditation, self-inquiry, journaling, daily practice, and safety-aware AI reflection PWA for living from love."
+repo       = "https://github.com/dunamismax/loveward"
+url        = "https://loveward.app"
+stack      = "Next.js App Router, React, TypeScript, Tailwind CSS, shadcn/ui, Radix, Better Auth, Drizzle, PostgreSQL, pgvector, Dexie, Docker Compose, Caddy, OpenAI API, Vitest, Playwright"
+
+[[projects]]
 slug       = "fileferry"
 name       = "FileFerry"
 category   = "developer-tools"
