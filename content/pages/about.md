@@ -11,8 +11,8 @@
   The domains pulling me hardest are high-frequency trading
   infrastructure, crypto markets, cryptography, encryption, secure
   networking, local-first software, and private web-native products. LoveWard is
-  the current primary product focus: a self-hostable meditation, journaling,
-  self-inquiry, and safety-aware AI reflection PWA.
+  the current primary product focus: a self-hostable practice PWA for Meditate,
+  Breath, Yoga, Love, grounding, and private practice history.
 </p>
 
 <p>

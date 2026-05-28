@@ -51,7 +51,7 @@ pub fn home_page(content: &SiteContent) -> String {
                 "Engineering work across Rust services, PostgreSQL-backed products, private web apps, Python automation, cryptography, encryption, and self-hosted infrastructure."
               </p>
               <p class="lede">
-                "LoveWard is the current primary product focus; the public work stays inspectable, portable, and deployable on owned infrastructure."
+                "LoveWard is the current primary product focus: a private, self-hostable practice PWA for Meditate, Breath, Yoga, Love, and grounding."
               </p>
               <div class="hero-actions">
                 <a href="/projects" class="button button-primary">"View projects"</a>
@@ -100,7 +100,7 @@ pub fn home_page(content: &SiteContent) -> String {
                 <p class="eyebrow">"Featured projects"</p>
                 <h2>"Current public work."</h2>
               </div>
-              <p>"LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and technical references that support the next phase of work."</p>
+              <p>"LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and technical references for inspectable self-hosted systems."</p>
             </div>
             <ul class="card-list card-list--projects" inner_html=featured></ul>
             <p class="section-foot"><a href="/projects" class="section-link">"See every project"</a></p>
@@ -323,7 +323,7 @@ pub fn projects_page(content: &SiteContent) -> String {
           <div class="section-inner">
             <p class="eyebrow">"Projects"</p>
             <h1>"Live projects."</h1>
-            <p class="lede">"LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and references that support the next phase of work."</p>
+            <p class="lede">"LoveWard, Rust-first tools, Python automation, PostgreSQL-backed operations, and references for inspectable self-hosted systems."</p>
             <div class="hero-summary" aria-label="Project summary">
               <span>{format!("{project_count} public projects")}</span>
               <span>{format!("{group_count} active categories")}</span>

@@ -15,10 +15,10 @@ status     = "active"
 position   = 10
 featured   = true
 visibility = "public"
-tagline    = "Self-hostable meditation, self-inquiry, journaling, daily practice, and safety-aware AI reflection PWA for living from love."
+tagline    = "Self-hostable practice PWA for Meditate, Breath, Yoga, Love, grounding, and private practice history."
 repo       = "https://github.com/dunamismax/loveward"
 url        = "https://loveward.app"
-stack      = "Next.js App Router, React, TypeScript, Tailwind CSS, shadcn/ui, Radix, Better Auth, Drizzle, PostgreSQL, pgvector, Dexie, Docker Compose, Caddy, OpenAI API, Vitest, Playwright"
+stack      = "Next.js App Router, React, TypeScript, Tailwind CSS, shadcn/ui, Radix, Better Auth, Drizzle, PostgreSQL, Dexie, Docker Compose, Caddy, Vitest, Playwright"
 
 [[projects]]
 slug       = "fileferry"
