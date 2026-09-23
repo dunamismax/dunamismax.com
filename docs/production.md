@@ -14,6 +14,7 @@
 | System user | `dunamismax` (reused from the Rust service; nologin, home `/nonexistent` after 05) |
 | FPM pool | `/etc/dunamismax/php-fpm.conf`, linked as `/etc/php/8.5/fpm/pool.d/dunamismax.conf` |
 | FPM socket | `/run/php/dunamismax.sock`, caddy:caddy 0600, `clear_env` |
+| FPM limits | `allow_url_fopen` off; `exec`, `proc_open`, `mail` and related functions disabled; `open_basedir` limited to `/srv/www/dunamismax.com/` and `/etc/dunamismax/site.env` |
 | MySQL | database `dunamismax` on 127.0.0.1 |
 | MySQL accounts | `dunamismax_web` (SELECT), `dunamismax_publish` (SELECT/INSERT/UPDATE on `posts`) |
 | Caddy site | `/etc/caddy/sites/dunamismax.com.caddy` (apex and `www` redirect) |
