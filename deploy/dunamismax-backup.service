@@ -1,0 +1,15 @@
+[Unit]
+Description=Back up dunamismax.com database and configuration
+After=mysql.service
+Requires=mysql.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dunamismax-backup
+UMask=0077
+Nice=10
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/backups/dunamismax
