@@ -13,9 +13,10 @@ Last reviewed: 2026-09-23.
 ## Status
 
 The site was rebuilt from the Rust (Axum/Leptos/PostgreSQL) app to bespoke
-PHP on MySQL on 2026-09-23. The PHP code, tests, and root scripts are in the
-repo; **production still runs the Rust service until the owner runs
-`deploy/01`–`05`** as described in [docs/production.md](docs/production.md).
+PHP on MySQL and cut over on 2026-09-23. Production runs the PHP release from
+`/srv/www/dunamismax.com/current` on the `dunamismax` PHP-FPM pool; the Rust
+service and the PostgreSQL database were decommissioned by `deploy/05`. See
+[docs/production.md](docs/production.md).
 
 ## Verification
 
@@ -72,8 +73,8 @@ curl -fsSI https://www.dunamismax.com/ | grep -i '^location'
 
 ## Open Follow-ups
 
-- [ ] Run `deploy/01`–`05` on the server (owner, with sudo).
-- [ ] Update status.dunamismax, which still monitors `dunamismax-site.service`.
+- [x] Run `deploy/01`–`05` on the server (owner, with sudo).
+- [x] Update status.dunamismax to stop monitoring `dunamismax-site.service`.
 - [ ] Add a Mac pull of `/var/backups/dunamismax`, as Grace & Footnotes has.
 - [ ] Add a periodic link check for internal pages and project URLs.
 - [ ] Write the first blog post.
