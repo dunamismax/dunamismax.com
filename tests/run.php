@@ -116,7 +116,7 @@ try {
     $public = implode("\n", [...array_values($bodies), $css,
         $app->handle('GET', '/manifest.webmanifest')->body, $app->handle('GET', '/feed.xml')->body,
         $app->handle('GET', '/missing')->body]);
-    foreach (['rust', 'axum', 'leptos', 'tokio', 'cargo', 'sqlx', 'loveward', 'callrift', 'pod tracker', 'pod-tracker', 'fileferry', 'next.js', 'typescript', 'tailwind', 'drizzle', 'postgres'] as $word) {
+    foreach (['rust', 'axum', 'leptos', 'tokio', 'cargo', 'sqlx', 'loveward', 'callrift', 'pod tracker', 'pod-tracker', 'fileferry', 'langindex', 'next.js', 'typescript', 'tailwind', 'drizzle', 'postgres'] as $word) {
         expect(!preg_match('/\b' . preg_quote($word, '/') . '\b/i', $public), 'Public output must not mention ' . $word . '.');
     }
     foreach (['/' => 'PHP', '/about' => 'Python', '/projects' => 'PHP'] as $path => $word) {
@@ -129,16 +129,16 @@ try {
         preg_match_all('#<h3 class="project-card__name">([^<]+)</h3>#', $html, $matches);
         return $matches[1];
     };
-    $expectedProjects = ['mtg-card-bot', 'status.dunamismax', 'dunamismax.com', 'Toolworks', 'LangIndex'];
-    expect($names($bodies['/projects']) === $expectedProjects, 'The projects page must list exactly the five active projects in category order.');
-    expect($names($bodies['/']) === $expectedProjects, 'The home page must feature the same five projects.');
-    expect(str_contains($bodies['/projects'], '<li>5 public projects</li>') && str_contains($bodies['/'], '<strong>5 public projects</strong>'), 'Project counts must match the cards.');
+    $expectedProjects = ['mtg-card-bot', 'status.dunamismax', 'dunamismax.com', 'Toolworks'];
+    expect($names($bodies['/projects']) === $expectedProjects, 'The projects page must list exactly the four active projects in category order.');
+    expect($names($bodies['/']) === $expectedProjects, 'The home page must feature the same four projects.');
+    expect(str_contains($bodies['/projects'], '<li>4 public projects</li>') && str_contains($bodies['/'], '<strong>4 public projects</strong>'), 'Project counts must match the cards.');
     preg_match_all('#<section class="project-group"#', $bodies['/projects'], $groups);
-    expect(count($groups[0]) === 4 && str_contains($bodies['/projects'], '<li>4 active categories</li>'), 'Category count must match the groups.');
-    foreach (['Applications', 'Infrastructure', 'Developer tools', 'Reference'] as $group) {
+    expect(count($groups[0]) === 3 && str_contains($bodies['/projects'], '<li>3 active categories</li>'), 'Category count must match the groups.');
+    foreach (['Applications', 'Infrastructure', 'Developer tools'] as $group) {
         expect(str_contains($bodies['/projects'], '>' . $group . '</h2>'), 'Projects must group under ' . $group . '.');
     }
-    expect(substr_count($bodies['/projects'], 'class="project-status project-status--active">Active</span>') === 5, 'Every listed project must show a text status, not only a color.');
+    expect(substr_count($bodies['/projects'], 'class="project-status project-status--active">Active</span>') === 4, 'Every listed project must show a text status, not only a color.');
 
     preg_match('#<main id="main-content".*?</main>#s', $bodies['/contact'], $contactMain);
     expect(hrefs($contactMain[0]) === [

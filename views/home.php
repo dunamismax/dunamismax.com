@@ -78,7 +78,7 @@
     <div class="section-inner">
         <div class="signal-grid">
             <article class="signal-card"><p>Stack</p><strong>PHP, MySQL, Python</strong></article>
-            <article class="signal-card"><p>Work</p><strong>5 public projects</strong></article>
+            <article class="signal-card"><p>Work</p><strong>4 public projects</strong></article>
             <article class="signal-card"><p>Writing</p><strong><?= $postCount === null ? 'Notes on the blog' : e($postCount === 1 ? '1 published note' : $postCount . ' published notes') ?></strong></article>
             <article class="signal-card"><p>Deploy</p><strong>Self-hosted behind Caddy</strong></article>
         </div>
@@ -113,13 +113,12 @@
                 <p class="eyebrow">Featured projects</p>
                 <h2 id="featured-title">Current public work.</h2>
             </div>
-            <p>Python bots and automation, self-hosted operations tooling, a programming-language reference, and this site.</p>
+            <p>Python bots and automation, self-hosted operations tooling, and this site.</p>
         </div>
         <ul class="card-list card-list--projects">
 <?php require __DIR__ . '/partials/projects/apps.php'; ?>
 <?php require __DIR__ . '/partials/projects/infrastructure.php'; ?>
 <?php require __DIR__ . '/partials/projects/developer-tools.php'; ?>
-<?php require __DIR__ . '/partials/projects/reference.php'; ?>
         </ul>
         <p class="section-foot"><a href="/projects" class="section-link">See every project</a></p>
     </div>
@@ -136,7 +135,7 @@
         <nav class="nav-card-grid" aria-label="Quick navigation">
             <a href="/projects" class="nav-card">
                 <span class="nav-card__title">Projects</span>
-                <span class="nav-card__detail">Python automation, operations tooling, and reference work grouped by category.</span>
+                <span class="nav-card__detail">Python automation and operations tooling grouped by category.</span>
             </a>
             <a href="/blog" class="nav-card">
                 <span class="nav-card__title">Blog</span>

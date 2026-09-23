@@ -2,10 +2,10 @@
     <div class="section-inner">
         <p class="eyebrow">Projects</p>
         <h1 id="projects-title">Live projects.</h1>
-        <p class="lede">Python automation, self-hosted operations tooling, a programming-language reference, and this PHP site.</p>
+        <p class="lede">Python automation, self-hosted operations tooling, and this PHP site.</p>
         <ul class="hero-summary" aria-label="Project summary">
-            <li>5 public projects</li>
-            <li>4 active categories</li>
+            <li>4 public projects</li>
+            <li>3 active categories</li>
             <li>Hand-written HTML, no CMS</li>
         </ul>
     </div>
@@ -37,15 +37,6 @@
             </header>
             <ul class="card-list card-list--projects">
 <?php require __DIR__ . '/partials/projects/developer-tools.php'; ?>
-            </ul>
-        </section>
-        <section class="project-group" aria-labelledby="group-reference">
-            <header class="project-group__heading">
-                <h2 id="group-reference">Reference</h2>
-                <p>Open references that explain languages, ecosystems, and practical engineering choices.</p>
-            </header>
-            <ul class="card-list card-list--projects">
-<?php require __DIR__ . '/partials/projects/reference.php'; ?>
             </ul>
         </section>
     </div>

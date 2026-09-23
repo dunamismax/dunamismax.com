@@ -44,7 +44,7 @@ final readonly class Application
                 ]),
                 '/projects' => $this->view->page('projects', [
                     'title' => 'Projects', 'path' => $path,
-                    'description' => 'Python automation, self-hosted operations tooling, a programming-language reference, and this PHP site by Stephen Sawyer.',
+                    'description' => 'Python automation, self-hosted operations tooling, and this PHP site by Stephen Sawyer.',
                 ]),
                 '/blog' => $this->blog($query),
                 '/feed.xml' => $this->view->feed($this->posts->latest(20)),

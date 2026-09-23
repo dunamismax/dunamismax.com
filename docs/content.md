@@ -8,7 +8,7 @@ the project counts, the contact links, and that no retired stack or project
 names appear.
 
 To add or remove a project, edit the card in
-`views/partials/projects/<category>.php`, then update `5 public projects` on
+`views/partials/projects/<category>.php`, then update `4 public projects` on
 `views/home.php` and `views/projects.php` (and the category count if a group
 appears or disappears) and the expected list in `tests/run.php`.
 

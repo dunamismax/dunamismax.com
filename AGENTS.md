@@ -52,8 +52,8 @@ half-migrated state without documenting the exact boundary.
   forms, analytics, or hosted third-party services unless Stephen asks.
 - Do not break existing public URLs (see the route table in `README.md`).
 - Project copy must be true: describe a project's stack only as it actually
-  is. Rust, LoveWard, Callrift, Pod Tracker, and FileFerry are retired from
-  the public copy; `tests/run.php` enforces that.
+  is. Rust, LoveWard, Callrift, Pod Tracker, FileFerry, and LangIndex are
+  retired from the public copy; `tests/run.php` enforces that.
 
 ## Stack Rules
 
