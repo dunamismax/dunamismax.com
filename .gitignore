@@ -1,23 +1,12 @@
-# Rust
-target/
-
-# Build/cache
-.gradle/
-__pycache__/
-*.py[cod]
-
-# IDEs
-.idea/
-.vscode/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Local env
 .env
 .env.*
-!deploy/site.env.example
+!.env.example
+.DS_Store
+.idea/
+.vscode/
+*.log
+*.sql.gz
+/*.sql
+/backups/
+/storage/*
+!/storage/.gitkeep
