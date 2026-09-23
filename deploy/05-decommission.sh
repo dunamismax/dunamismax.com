@@ -99,10 +99,29 @@ fi
 
 log "Moving the $SITE_USER user's home off the removed /opt directory"
 if [ "$(getent passwd "$SITE_USER" | cut -d: -f6)" = "$OLD_DIR" ]; then
-    usermod --home /nonexistent "$SITE_USER"
+    # usermod refuses while any process runs as the user, and the PHP-FPM pool
+    # does whenever the site had a request in the last 10 seconds (ondemand
+    # idle timeout). Retry for a minute; the home of a nologin system user is
+    # cosmetic, so a still-busy user is a warning, not a failure.
+    moved=no
+    for _ in $(seq 1 30); do
+        if usermod --home /nonexistent "$SITE_USER" 2>/dev/null; then
+            moved=yes
+            break
+        fi
+        sleep 2
+    done
+    if [ "$moved" = no ]; then
+        echo "WARNING: $SITE_USER stayed busy (PHP-FPM workers); its home is still $OLD_DIR. Rerun this script later." >&2
+    fi
 fi
 
 log "Verification"
+# Timestamped names sort chronologically; the last match is the newest.
+archives=(/root/dunamismax-backup-*/opt-dunamismax-site.tar.gz)
+archive_dir=$(dirname "${archives[-1]}")
+dumps=("$BACKUPS"/postgres-"$DB_NAME"-*.dump)
+latest_dump=${dumps[-1]}
 systemctl cat "$UNIT" >/dev/null 2>&1 && { echo "FAIL: $UNIT still exists" >&2; exit 1; }
 [ ! -e "$OLD_DIR" ] && [ ! -e "$SUDOERS" ] || { echo "FAIL: old files remain" >&2; exit 1; }
 pg_database_exists && { echo "FAIL: PostgreSQL database remains" >&2; exit 1; }
@@ -113,7 +132,7 @@ cat <<EOF
 
 Decommission complete. The Rust service, its files, sudoers rule, and
 PostgreSQL database/role are gone; the site runs on Caddy + PHP-FPM + MySQL.
-Removed files are archived in $BACKUP_DIR; the PostgreSQL dump is in $BACKUPS.
+Removed files are archived in $archive_dir; the PostgreSQL dump is $latest_dump.
 Note: status.dunamismax still lists $UNIT as a monitored unit until that
 project is updated.
 Verify:
@@ -122,9 +141,9 @@ Verify:
   sudo -u postgres psql -lqt | cut -d'|' -f1 | grep -x $DB_NAME   # no output
   curl -fsS https://$DOMAIN/healthz
 Rollback (restores the Rust service; then reverse 04 to send traffic back):
-  tar -xzf $BACKUP_DIR/opt-dunamismax-site.tar.gz -C /opt
-  cp -a $BACKUP_DIR/etc/systemd/system/$UNIT /etc/systemd/system/ && cp -a $BACKUP_DIR$SUDOERS $SUDOERS
-  sudo -u postgres psql < $BACKUP_DIR/postgres-role-$DB_NAME.sql
-  sudo -u postgres createdb -O $DB_NAME $DB_NAME && sudo -u postgres pg_restore -d $DB_NAME < $BACKUPS/postgres-$DB_NAME-$STAMP.dump
+  tar -xzf $archive_dir/opt-dunamismax-site.tar.gz -C /opt
+  cp -a $archive_dir/etc/systemd/system/$UNIT /etc/systemd/system/ && cp -a $archive_dir$SUDOERS $SUDOERS
+  sudo -u postgres psql < $archive_dir/postgres-role-$DB_NAME.sql
+  sudo -u postgres createdb -O $DB_NAME $DB_NAME && sudo -u postgres pg_restore -d $DB_NAME < $latest_dump
   usermod --home $OLD_DIR $SITE_USER && systemctl daemon-reload && systemctl enable --now $UNIT
 EOF
