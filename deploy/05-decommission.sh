@@ -36,9 +36,7 @@ pg_role_exists() {
 install -d -o root -g "$OWNER" -m 0750 "$BACKUPS"
 install -d -m 0700 "$BACKUP_DIR"
 if pg_database_exists; then
-    tables=$(runuser -u postgres -- psql -d "$DB_NAME" -tAc \
-        "SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY 1")
-    unexpected=$(echo "$tables" | grep -vx -e page_view -e _sqlx_migrations -e '' || true)
+    unexpected=$(pg_unexpected_tables)
     if [ -n "$unexpected" ]; then
         echo "Unexpected PostgreSQL tables ($unexpected); they were never migrated. Aborting." >&2
         exit 1

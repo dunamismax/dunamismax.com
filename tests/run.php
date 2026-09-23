@@ -213,27 +213,41 @@ try {
     unlink($errorLog);
     expect(substr_count($logged, 'PDOException') === 5, 'Every database failure must be logged for the operator.');
 
-    // The real front controller and development router, over HTTP.
-    withHttpServer(['APP_ENV' => 'test', 'APP_URL' => 'https://canonical.example', 'DB_NAME' => ''], static function (string $base) use ($css): void {
-        [$body, $headers] = httpRead($base . '/');
-        expect(str_contains($headers, '200 OK') && str_contains(strtolower($headers), 'content-type: text/html; charset=utf-8'), 'HTTP home must be HTML.');
-        expect(str_contains(strtolower($headers), "content-security-policy: default-src 'self'") && str_contains(strtolower($headers), 'x-content-type-options: nosniff'), 'HTTP responses must carry security headers.');
-        expect(str_contains($body, 'https://canonical.example/') && !str_contains($body, 'untrusted.example'), 'The Host header must never influence canonical URLs.');
-        [$headBody, $headHeaders] = httpRead($base . '/', 'HEAD');
-        expect($headBody === '' && str_contains($headHeaders, '200 OK'), 'HEAD must return headers only.');
-        [$cssBody, $cssHeaders] = httpRead($base . '/css/site.css?v=1');
-        expect($cssBody === $css && str_contains(strtolower($cssHeaders), 'content-type: text/css'), 'The stylesheet URL must be served as CSS.');
-        [$iconBody, $iconHeaders] = httpRead($base . '/icon.svg');
-        expect(str_starts_with($iconBody, '<svg') && str_contains(strtolower($iconHeaders), 'content-type: image/svg+xml'), 'The icon URL must be served as SVG.');
-        [, $feedHeaders] = httpRead($base . '/feed.xml');
-        expect(str_contains(strtolower($feedHeaders), 'content-type: application/xml; charset=utf-8'), 'HTTP feed must keep application/xml.');
-        foreach (['/js/theme.js', '/index.php', '/.env', '/bootstrap.php'] as $path) {
-            [, $privateHeaders] = httpRead($base . $path);
-            expect(str_contains($privateHeaders, '404'), 'HTTP must not expose ' . $path);
+    // The real front controller and development router, over HTTP. A release
+    // has a production .env beside it; simulate one when the checkout has none,
+    // so these checks prove the test server never falls back to it.
+    $envFile = $root . '/.env';
+    $simulatedEnv = !file_exists($envFile) && !is_link($envFile);
+    if ($simulatedEnv) {
+        file_put_contents($envFile, "# Temporary file written by tests/run.php; safe to delete.\nAPP_ENV=production\nAPP_URL=https://must-not-be-used.example\nDB_HOST=127.0.0.1\nDB_PORT=1\nDB_NAME=must_not_be_used\nDB_USER=must_not_be_used\nDB_PASSWORD=must-not-be-used\n");
+    }
+    try {
+        withHttpServer(['APP_ENV' => 'test', 'APP_URL' => 'https://canonical.example', 'TEST_EMPTY_ENV' => 'DB_NAME,DB_USER,DB_PASSWORD'], static function (string $base) use ($css): void {
+            [$body, $headers] = httpRead($base . '/');
+            expect(str_contains($headers, '200 OK') && str_contains(strtolower($headers), 'content-type: text/html; charset=utf-8'), 'HTTP home must be HTML.');
+            expect(str_contains(strtolower($headers), "content-security-policy: default-src 'self'") && str_contains(strtolower($headers), 'x-content-type-options: nosniff'), 'HTTP responses must carry security headers.');
+            expect(str_contains($body, 'https://canonical.example/') && !str_contains($body, 'untrusted.example'), 'The Host header must never influence canonical URLs.');
+            [$headBody, $headHeaders] = httpRead($base . '/', 'HEAD');
+            expect($headBody === '' && str_contains($headHeaders, '200 OK'), 'HEAD must return headers only.');
+            [$cssBody, $cssHeaders] = httpRead($base . '/css/site.css?v=1');
+            expect($cssBody === $css && str_contains(strtolower($cssHeaders), 'content-type: text/css'), 'The stylesheet URL must be served as CSS.');
+            [$iconBody, $iconHeaders] = httpRead($base . '/icon.svg');
+            expect(str_starts_with($iconBody, '<svg') && str_contains(strtolower($iconHeaders), 'content-type: image/svg+xml'), 'The icon URL must be served as SVG.');
+            [$feedBody, $feedHeaders] = httpRead($base . '/feed.xml');
+            expect(str_contains(strtolower($feedHeaders), 'content-type: application/xml; charset=utf-8'), 'HTTP feed must keep application/xml.');
+            expect(parseFeed($feedBody)->getElementsByTagName('item')->length === 0 && !str_contains($feedBody, 'must-not-be-used'), 'The test server must never read the release .env or its database.');
+            foreach (['/js/theme.js', '/index.php', '/.env', '/bootstrap.php'] as $path) {
+                [, $privateHeaders] = httpRead($base . $path);
+                expect(str_contains($privateHeaders, '404'), 'HTTP must not expose ' . $path);
+            }
+            [, $postHeaders] = httpRead($base . '/', 'POST');
+            expect(str_contains($postHeaders, '405') && str_contains($postHeaders, 'Allow: GET, HEAD'), 'HTTP POST must be rejected.');
+        });
+    } finally {
+        if ($simulatedEnv) {
+            unlink($envFile);
         }
-        [, $postHeaders] = httpRead($base . '/', 'POST');
-        expect(str_contains($postHeaders, '405') && str_contains($postHeaders, 'Allow: GET, HEAD'), 'HTTP POST must be rejected.');
-    });
+    }
 
     require __DIR__ . '/features.php';
     printf("Passed %d application checks.\n", $checks);

@@ -40,7 +40,7 @@ function withHttpServer(array $environment, callable $check): void
     fclose($socket);
     $log = tmpfile();
     $pipes = [];
-    $process = proc_open([PHP_BINARY, '-S', $address, '-t', 'public', 'dev/router.php'],
+    $process = proc_open([PHP_BINARY, '-S', $address, '-t', 'public', 'tests/http-router.php'],
         [['pipe', 'r'], $log, $log], $pipes, dirname(__DIR__), $environment);
     if (!is_resource($process)) {
         throw new RuntimeException('Cannot start local HTTP test server.');

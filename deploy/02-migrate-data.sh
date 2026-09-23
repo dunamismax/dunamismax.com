@@ -17,15 +17,13 @@ mysql_user_exists "$DB_PUBLISH_USER" \
 
 log "Legacy PostgreSQL inventory"
 if runuser -u postgres -- psql -lqtA 2>/dev/null | cut -d'|' -f1 | grep -x "$DB_NAME" >/dev/null; then
-    tables=$(runuser -u postgres -- psql -d "$DB_NAME" -tAc \
-        "SELECT table_name FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY 1")
-    printf '    tables: %s\n' "$(echo "$tables" | tr '\n' ' ')"
-    unexpected=$(echo "$tables" | grep -vx -e page_view -e _sqlx_migrations -e '' || true)
+    printf '    tables: %s\n' "$(pg_base_tables | tr '\n' ' ')"
+    unexpected=$(pg_unexpected_tables)
     if [ -n "$unexpected" ]; then
         echo "Unexpected PostgreSQL tables need a migration plan before continuing: $unexpected" >&2
         exit 1
     fi
-    if echo "$tables" | grep -qx page_view; then
+    if pg_base_tables | grep -x public.page_view >/dev/null; then
         printf '    page_view rows (not migrated, by request): %s\n' \
             "$(runuser -u postgres -- psql -d "$DB_NAME" -tAc 'SELECT COUNT(*) FROM page_view')"
     fi

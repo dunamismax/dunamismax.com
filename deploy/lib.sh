@@ -122,3 +122,17 @@ check_routes() {
     expect_status "$base/" 405 -X POST "$@" || failures=$((failures + 1))
     [ "$failures" -eq 0 ]
 }
+
+# Legacy PostgreSQL base tables (views such as pg_stat_statements hold no data).
+pg_base_tables() {
+    runuser -u postgres -- psql -d "$DB_NAME" -tAc \
+        "SELECT table_schema || '.' || table_name FROM information_schema.tables
+         WHERE table_type = 'BASE TABLE' AND table_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY 1"
+}
+
+# Tables that hold no site content: the page_view analytics (dropped by
+# decision) and migration bookkeeping from the Rust (sqlx) and earlier Java
+# (Flyway) versions. Anything else was never migrated and must stop the run.
+pg_unexpected_tables() {
+    pg_base_tables | grep -vx -e '' -e public.page_view -e public._sqlx_migrations -e public.flyway_schema_history || true
+}
