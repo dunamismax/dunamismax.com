@@ -1,141 +1,118 @@
 # dunamismax.com
 
-Personal site, portfolio, and blog for Stephen Sawyer.
-
-The public direction is Rust-first systems, PostgreSQL-backed data, Python
-automation, cryptography, encryption, high-performance infrastructure, and
-practical IT operations.
+Personal site, portfolio, and blog for Stephen Sawyer: PHP-first web work,
+Python scripting, and hands-on systems administration.
 
 ## Stack
 
-- Rust 2024 Cargo workspace
-- Axum HTTP server
-- Leptos for server-side rendered HTML
-- Tokio runtime
-- `sqlx` for PostgreSQL access and migrations
-- `tracing` + `tower-http` for logging and middleware
-- Hand-authored CSS embedded in the Rust binary
-- Vanilla JavaScript for the theme toggle (the only client-side script)
-- PostgreSQL 18 for durable runtime state
-- Ubuntu LTS, Caddy, and systemd for production
+| Layer | Choice | Responsibility |
+| --- | --- | --- |
+| DNS | Cloudflare | Domain routing |
+| Server | Ubuntu | Hosts the application, database, and files |
+| Web server | Caddy | HTTPS, the two static files, FastCGI to PHP-FPM |
+| Application | PHP 8.5, object-oriented and bespoke | Routing, rendering, publishing |
+| Database | MySQL 8 | Blog posts and drafts |
+| Documents | Semantic HTML | Server-rendered pages |
+| Styling | Vanilla CSS | Responsive layout; light/dark via `prefers-color-scheme` |
+| Enhancement | None | **The site sends zero JavaScript** |
+
+There is no framework, ORM, CMS, Composer dependency, npm project, build
+step, Markdown library, external font, analytics, or CDN. Add a dependency
+only when a concrete need justifies its lifetime cost.
+
+```text
+Reader → Cloudflare DNS → Ubuntu → Caddy → PHP-FPM (dunamismax pool) → PHP → MySQL
+                                        ↳ /css/site.css and /icon.svg as files
+```
 
 ## Layout
 
 ```text
-content/                    editable site content (TOML + Markdown)
-crates/dunamismax-site/     Axum + Leptos server-rendered website
-  src/
-    main.rs                 listener, tracing, shutdown, router wiring
-    router.rs               route table and shared state
-    content/                TOML/Markdown loading, validation, rendering
-    db/                     PostgreSQL pool, migrations, repositories
-    pages/                  Leptos page components
-    assets.rs               embedded CSS, JS, icons, robots, manifest
-deploy/                     systemd unit, Caddyfile, env template
+app/                  Application, Config, Database, View, RssFeed, helpers
+  Http/               Response and default security headers
+  Repositories/       Post queries and the publication visibility rule
+  Publishing/         CLI publishing: command, validator, writer, config
+bin/                  check.php (lint), database.php (schema), posts.php (publishing CLI)
+database/schema.sql   MySQL schema (posts)
+deploy/               Numbered root scripts, Caddy block, FPM pool, backups
+dev/router.php        Router for PHP's development server
+docs/                 Architecture, content, and production runbook
+public/               The only web root: index.php, css/site.css, icon.svg
+storage/              Private runtime files, ignored by Git
+tests/                Dependency-free checks and an opt-in MySQL suite
+views/                Layout, pages, and project-card partials
+bootstrap.php         Autoloader for the Dunamismax namespace
 ```
-
-## Content
-
-Content stays as plain files under `content/`.
-
-```text
-content/
-  projects.toml             project list
-  pages/about.md            about page body
-  posts/                    blog posts (TOML frontmatter + Markdown)
-```
-
-The site renders Markdown with `pulldown-cmark` (CommonMark + GFM tables) and
-sanitizes the result through a narrow HTML allowlist so existing inline tags in
-`about.md` (paragraph, emphasis, code, heading, link, list, quote, table) keep
-working while arbitrary script/style is stripped.
 
 ## Routes
 
-```text
-GET  /                       home
-GET  /about                  about
-GET  /contact                contact
-GET  /projects               project index
-GET  /blog                   post index
-GET  /blog/{slug}            post detail
-GET  /feed.xml               RSS 2.0 feed
-GET  /robots.txt             robots
-GET  /manifest.webmanifest   PWA manifest
-GET  /icon.svg               favicon / app icon
-GET  /healthz                health probe
-```
+| Route | Response |
+| --- | --- |
+| `/` | Home: direction, stack, featured projects, latest post |
+| `/about` | About Stephen |
+| `/contact` | Email, Signal, GitHub, Codeberg, Reddit, site source |
+| `/projects` | Projects grouped by category |
+| `/blog`, `/blog?page=2` | Published posts, ten per page |
+| `/blog/{slug}` | One published post |
+| `/feed.xml` | RSS 2.0, latest 20 posts, `application/xml` |
+| `/robots.txt` | `text/plain` |
+| `/manifest.webmanifest` | `application/manifest+json` |
+| `/icon.svg` | SVG icon, served by Caddy |
+| `/css/site.css` | Stylesheet, served by Caddy |
+| `/healthz` | `{"status":"ok"}`, independent of MySQL |
 
-## Local Development
+`www.dunamismax.com` redirects permanently to the apex. Unknown paths are
+404, non-GET/HEAD methods are 405, and a database outage is an honest 503
+on blog routes while the home page stays up.
 
-Toolchain:
+## Content
 
-- Rust stable with `rustfmt` and Clippy
-- Docker for local PostgreSQL
-- `just`
+- **Blog posts** live in MySQL and are managed with `php bin/posts.php`
+  (create, edit, validate, publish, schedule, unpublish). Drafts and
+  future-dated posts stay private. Bodies are plain text rendered as escaped
+  paragraphs; HTML and Markdown stay literal. See [docs/content.md](docs/content.md).
+- **Pages** (home, about, contact, projects) are hand-written semantic HTML in
+  `views/`. Project cards live in `views/partials/projects/`, one file per
+  category, shared by the home and projects pages.
 
-```sh
-just site-dev
-just rust-check
-just content-validate
-```
+## Local development
 
-Useful targets:
-
-```sh
-just fmt
-just check
-just test
-just build
-just site-release
-just db-up
-just db-test
-just db-down
-just psql
-```
-
-PostgreSQL schema changes are owned by `sqlx` migrations under
-`crates/dunamismax-site/migrations/`. Startup runs migrations by default before
-the HTTP listener binds. The only runtime state table is `page_view`, which
-stores public route path, optional referrer, optional user agent, and
-timestamp; it does not store IP addresses. Contact-form persistence is
-intentionally not implemented until spam controls, retention, email delivery,
-and operational visibility are designed.
-
-Database configuration:
+PHP 8.3+ with `pdo_mysql`, POSIX, and DOM. No package installation.
 
 ```sh
-DUNAMISMAX_DATABASE_URL=postgres://dunamismax:dunamismax@localhost:5432/dunamismax
-DUNAMISMAX_DATABASE_MAX_CONNECTIONS=10
-DUNAMISMAX_DATABASE_ACQUIRE_TIMEOUT_SECS=5
-DUNAMISMAX_DATABASE_MIGRATE=true
+cp .env.example .env
+make serve      # http://127.0.0.1:8000, php -S with dev/router.php
+make check      # php -l on every file + tests/run.php
 ```
 
-`DATABASE_URL` is accepted only when it is already a `postgres://` or
-`postgresql://` URL. Use `just db-test` to start an isolated PostgreSQL
-container on `127.0.0.1:55432` and prove migrations plus the page-view
-repository path from an empty database. The general `db-*` recipes default to
-`docker-compose`; set `DOCKER_COMPOSE='docker compose'` on systems that only
-ship the Compose v2 plugin.
+With `APP_ENV=local` and an empty `DB_NAME`, pages render with an empty
+blog. To use MySQL, create a database and account, set `DB_*` in `.env`, and
+run `make database` to apply `database/schema.sql`.
+
+| Variable | Meaning |
+| --- | --- |
+| `APP_ENV` | `local`, `test`, or `production` (default) |
+| `APP_URL` | Canonical origin, no path; HTTPS in production |
+| `DB_HOST`, `DB_PORT` | MySQL, default `127.0.0.1:3306` |
+| `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Database and SELECT-only account |
+
+The MySQL integration suite needs a dedicated, empty `_test` database and
+separate setup, publisher, and read-only accounts:
+
+```sh
+APP_ENV=test DB_NAME=dunamismax_test DB_USER=... DB_PASSWORD=... \
+TEST_PUBLISH_DB_USER=... TEST_PUBLISH_DB_PASSWORD=... \
+TEST_WEB_DB_USER=... TEST_WEB_DB_PASSWORD=... php tests/database.php
+```
 
 ## Production
 
-`dunamismax.com` runs on a single Ubuntu VM with PostgreSQL on the same box and
-Caddy in front for TLS. The VM polls `origin/main` and rebuilds + redeploys
-automatically whenever new commits land, so pushing to this repository is the
-only deployment step.
-
-Operational shape on the VM:
-
-- one release binary installed under `/opt/dunamismax-site/releases/`
-- `/opt/dunamismax-site/dunamismax-site` symlinked to the active release
-- localhost-only HTTP listener on `127.0.0.1:3000` behind Caddy
-- `dunamismax-site.service` running as the unprivileged `dunamismax` user
-- `sqlx` migrations run at startup
-- `/healthz` smoke-checked after each restart
-
-Reference VM config lives under `deploy/` (`dunamismax-site.service`,
-`Caddyfile`, `site.env.example`).
+Releases live in `/srv/www/dunamismax.com/releases/<commit>` behind a
+`current` symlink, served by the `dunamismax` PHP-FPM pool as the
+`dunamismax` system user, with the `dunamismax` MySQL database on localhost.
+Pushing to Git does **not** deploy; the owner runs `deploy/03-deploy.sh`.
+See [docs/production.md](docs/production.md) for the layout, the migration
+scripts, releases, backups, and rollback.
 
 ## License
 
