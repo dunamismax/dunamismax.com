@@ -82,9 +82,9 @@ try {
 
     $app = appFor(['APP_ENV' => 'test', 'APP_URL' => 'http://localhost:8000']);
     $pages = [
-        '/' => ['PHP-first web work and hands-on systems administration.', 'dunamismax'],
+        '/' => ['I build the websites.<br>I run the systems.', 'dunamismax'],
         '/about' => ['PHP-first web development, Python scripting, and practical systems administration.', 'About · dunamismax'],
-        '/projects' => ['Live projects.', 'Projects · dunamismax'],
+        '/projects' => ['Websites, support, and systems.', 'Projects · dunamismax'],
         '/blog' => ['No posts yet.', 'Blog · dunamismax'],
         '/contact' => ['dunamismax@tutamail.com', 'Contact · dunamismax'],
     ];
@@ -111,7 +111,7 @@ try {
         }
     }
 
-    // The repositioned copy: no Rust wording, and retired projects are gone.
+    // The Rust programming stack and retired projects stay absent; RustDesk is a hosted product.
     $css = file_get_contents($root . '/public/css/site.css');
     $public = implode("\n", [...array_values($bodies), $css,
         $app->handle('GET', '/manifest.webmanifest')->body, $app->handle('GET', '/feed.xml')->body,
@@ -127,18 +127,19 @@ try {
     // Projects are semantic HTML; the summaries must match the cards they describe.
     $names = static function (string $html): array {
         preg_match_all('#<h3 class="project-card__name">([^<]+)</h3>#', $html, $matches);
-        return $matches[1];
+        return array_map(static fn (string $name): string => html_entity_decode($name, ENT_QUOTES | ENT_HTML5, 'UTF-8'), $matches[1]);
     };
-    $expectedProjects = ['mtg-card-bot', 'status.dunamismax', 'dunamismax.com', 'Toolworks'];
-    expect($names($bodies['/projects']) === $expectedProjects, 'The projects page must list exactly the four active projects in category order.');
-    expect($names($bodies['/']) === $expectedProjects, 'The home page must feature the same four projects.');
-    expect(str_contains($bodies['/projects'], '<li>4 public projects</li>') && str_contains($bodies['/'], '<strong>4 public projects</strong>'), 'Project counts must match the cards.');
+    $expectedProjects = ['RustDesk remote support', 'Dunamis Status', 'Server backup & recovery', 'Grace & Footnotes', 'Imaging Services website', 'dunamismax.com', 'MTG Card Bot', 'Dynamic DNS automation'];
+    expect($names($bodies['/projects']) === $expectedProjects, 'The projects page must list the verified portfolio in category order.');
+    expect($names($bodies['/']) === $expectedProjects, 'The home page must feature the same portfolio.');
+    expect(str_contains($bodies['/projects'], '<li>8 projects &amp; services</li>') && str_contains($bodies['/'], '<strong>8 projects &amp; services</strong>'), 'Project counts must match the cards.');
     preg_match_all('#<section class="project-group"#', $bodies['/projects'], $groups);
-    expect(count($groups[0]) === 3 && str_contains($bodies['/projects'], '<li>3 active categories</li>'), 'Category count must match the groups.');
-    foreach (['Applications', 'Infrastructure', 'Developer tools'] as $group) {
+    expect(count($groups[0]) === 3 && str_contains($bodies['/projects'], '<li>3 areas of work</li>'), 'Category count must match the groups.');
+    foreach (['Infrastructure &amp; support', 'Websites', 'Automation &amp; bots'] as $group) {
         expect(str_contains($bodies['/projects'], '>' . $group . '</h2>'), 'Projects must group under ' . $group . '.');
     }
-    expect(substr_count($bodies['/projects'], 'class="project-status project-status--active">Active</span>') === 4, 'Every listed project must show a text status, not only a color.');
+    preg_match_all('#<span class="project-status [^"]+">([^<]+)</span>#', $bodies['/projects'], $statuses);
+    expect($statuses[1] === ['In service', 'Live', 'Scheduled', 'Live', 'Hosted demo', 'Live', 'In service', 'Scheduled'], 'Project statuses must distinguish running services, scheduled jobs, and the demo.');
 
     preg_match('#<main id="main-content".*?</main>#s', $bodies['/contact'], $contactMain);
     expect(hrefs($contactMain[0]) === [
@@ -149,7 +150,7 @@ try {
         'https://www.reddit.com/user/DunamisMax/',
         'https://github.com/dunamismax/dunamismax.com',
     ], 'Contact must preserve all six destinations exactly.');
-    expect(str_contains($bodies['/'], 'Writing is ready for build notes.') && str_contains($bodies['/'], '<strong>0 published notes</strong>'), 'An empty blog must say so on the home page.');
+    expect(str_contains($bodies['/'], 'Build notes are on the way.') && str_contains($bodies['/'], '<strong>0 published notes</strong>'), 'An empty blog must say so on the home page.');
 
     // Non-HTML routes keep their URLs, types, and bodies.
     $robots = $app->handle('GET', '/robots.txt');
@@ -202,7 +203,7 @@ try {
         expect(str_contains($response->body, '<link rel="canonical" href="https://dunamismax.com' . $canonical . '">'), 'Production canonical URLs must drop query strings: ' . $path);
     }
     $degraded = $production->handle('GET', '/');
-    expect($degraded->status === 200 && !str_contains($degraded->body, 'Writing is ready') && str_contains($degraded->body, 'Notes on the blog'), 'The home page must stay up during a database outage without claiming the blog is empty.');
+    expect($degraded->status === 200 && !str_contains($degraded->body, 'Build notes are on the way') && str_contains($degraded->body, 'Notes on the blog'), 'The home page must stay up during a database outage without claiming the blog is empty.');
     foreach (['/blog', '/blog/any-post', '/feed.xml'] as $path) {
         $response = $production->handle('GET', $path);
         expect($response->status === 503 && ($response->headers['Retry-After'] ?? '') === '60' && !str_contains($response->body, '<rss'), 'A database outage must be an honest 503 on ' . $path);

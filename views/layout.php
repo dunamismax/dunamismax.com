@@ -59,7 +59,7 @@
                     <span class="brand-mark brand-mark--footer" aria-hidden="true">DM</span>
                     <span>dunamismax</span>
                 </a>
-                <p class="footer-copy">Stephen Sawyer. PHP-first web developer, Python scripter, and sysadmin who prefers plain tools, private data, careful security, and servers he runs himself.</p>
+                <p class="footer-copy">Stephen Sawyer · Web development, company remote support, and systems administration. PHP, MySQL, Python, and the Ubuntu infrastructure I operate myself.</p>
             </div>
             <nav class="footer-columns" aria-label="Footer">
                 <div class="footer-column">

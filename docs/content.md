@@ -8,9 +8,16 @@ the project counts, the contact links, and that no retired stack or project
 names appear.
 
 To add or remove a project, edit the card in
-`views/partials/projects/<category>.php`, then update `4 public projects` on
+`views/partials/projects/<category>.php`, then update `8 projects &amp; services` on
 `views/home.php` and `views/projects.php` (and the category count if a group
 appears or disappears) and the expected list in `tests/run.php`.
+
+Keep project anchors stable: the home and profile pages link to them.
+`infrastructure.php` covers support, monitoring, and recovery; `apps.php`
+covers websites; `developer-tools.php` covers automation and bots.
+Use [portfolio evidence](portfolio.md) when revising claims, status, or links.
+The cards describe maintained work, not real-time health; the status website
+provides current availability checks.
 
 ## Blog posts
 

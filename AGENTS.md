@@ -52,8 +52,14 @@ half-migrated state without documenting the exact boundary.
   forms, analytics, or hosted third-party services unless Stephen asks.
 - Do not break existing public URLs (see the route table in `README.md`).
 - Project copy must be true: describe a project's stack only as it actually
-  is. Rust, LoveWard, Callrift, Pod Tracker, FileFerry, and LangIndex are
-  retired from the public copy; `tests/run.php` enforces that.
+  is. The Rust programming stack, LoveWard, Callrift, Pod Tracker, FileFerry,
+  and LangIndex are retired from the public copy; `tests/run.php` enforces
+  that. RustDesk is an active third-party product Stephen self-hosts for his
+  company, not a claim that he authored it or uses the Rust language.
+- Portfolio evidence and publication boundaries live in
+  `docs/portfolio.md`. Distinguish live sites, running services, scheduled
+  automation, and demos. Never turn private repositories, support keys,
+  host addresses, or backup locations into public portfolio links.
 
 ## Stack Rules
 

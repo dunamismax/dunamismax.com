@@ -11,7 +11,7 @@ use Throwable;
 
 final readonly class Application
 {
-    public const DESCRIPTION = 'Web work by Stephen Sawyer in PHP and MySQL, Python scripting, and hands-on systems administration.';
+    public const DESCRIPTION = 'Stephen Sawyer: PHP and MySQL web development, Python automation, company-wide RustDesk support, and self-hosted Ubuntu systems.';
     private const PER_PAGE = 10;
     private const SHORT_CACHE = 'public, max-age=300, must-revalidate';
 
@@ -36,7 +36,7 @@ final readonly class Application
                 '/' => $this->home(),
                 '/about' => $this->view->page('about', [
                     'title' => 'About', 'path' => $path,
-                    'description' => 'Stephen Sawyer: PHP-first web developer, Python scripter, and sysadmin. Working style, stack priorities, and operating habits.',
+                    'description' => 'Stephen Sawyer’s experience and skills in web development, company remote support, Python automation, and Ubuntu systems administration.',
                 ]),
                 '/contact' => $this->view->page('contact', [
                     'title' => 'Contact', 'path' => $path,
@@ -44,7 +44,7 @@ final readonly class Application
                 ]),
                 '/projects' => $this->view->page('projects', [
                     'title' => 'Projects', 'path' => $path,
-                    'description' => 'Python automation, self-hosted operations tooling, and this PHP site by Stephen Sawyer.',
+                    'description' => 'Projects by Stephen Sawyer: company RustDesk support, PHP websites, monitoring, backup automation, and a Python Discord bot.',
                 ]),
                 '/blog' => $this->blog($query),
                 '/feed.xml' => $this->view->feed($this->posts->latest(20)),

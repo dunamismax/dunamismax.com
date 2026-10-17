@@ -46,8 +46,8 @@ sudo bash deploy/04-cutover.sh
 sudo bash deploy/05-decommission.sh
 ```
 
-After 05, status.dunamismax still expects `dunamismax-site.service`; update
-that project separately.
+The status.dunamismax inventory has since been updated to monitor PHP-FPM
+and MySQL without the retired `dunamismax-site.service`.
 
 ## Releasing
 

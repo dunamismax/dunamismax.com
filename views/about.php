@@ -1,42 +1,73 @@
 <section class="page-hero" aria-labelledby="about-title">
     <div class="section-inner">
-        <p class="eyebrow">About</p>
+        <p class="eyebrow">Professional profile · dunamismax</p>
         <h1 id="about-title">Stephen Sawyer.</h1>
-        <p class="lede">PHP-first web development, Python scripting, and practical systems administration.</p>
+        <p class="lede">Web developer, sysadmin, and the person responsible for keeping the service running.</p>
+        <p class="profile-intro">PHP-first web development, Python scripting, and practical systems administration. I connect application work with company IT, remote support, and infrastructure I operate myself.</p>
+        <p class="profile-contact"><a href="mailto:dunamismax@tutamail.com" rel="me">dunamismax@tutamail.com</a></p>
+        <div class="hero-actions">
+            <a href="/contact" class="button button-primary">Get in touch</a>
+            <a href="/projects" class="button button-secondary">Explore my work</a>
+        </div>
     </div>
 </section>
-<section class="page-section">
+<section class="page-section" aria-labelledby="experience-title">
+    <div class="section-inner profile-grid">
+        <div class="section-heading">
+            <p class="eyebrow">Practical experience</p>
+            <h2 id="experience-title">What I take responsibility for.</h2>
+            <p>My work combines building applications with the everyday work of hosting, supporting, monitoring, and maintaining them.</p>
+        </div>
+        <div class="experience-list">
+            <article class="experience-item">
+                <h3>Company remote support</h3>
+                <p>I self-host RustDesk for my entire company. I operate its server and relay, maintain the customer support website and preconfigured Windows download, and automate installer verification and service backups.</p>
+                <a href="/projects#rustdesk">RustDesk &amp; xrayservice.net <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="experience-item">
+                <h3>Web development &amp; publishing</h3>
+                <p>I build bespoke PHP applications with MySQL, semantic HTML, and responsive CSS. My work includes this portfolio, Grace &amp; Footnotes, and an Imaging Services website replacement currently hosted as a demo.</p>
+                <a href="/projects#group-apps">Website portfolio <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="experience-item">
+                <h3>Ubuntu systems administration</h3>
+                <p>I administer the shared server: Caddy for HTTPS, dedicated PHP-FPM pools, MySQL, Docker services, and systemd jobs. My operations work includes Tailscale access, fail2ban, monitoring, and encrypted backups with documented rebuild procedures.</p>
+                <a href="/projects#status">Monitoring &amp; recovery work <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="experience-item">
+                <h3>Automation &amp; integration</h3>
+                <p>I use Python for bots and scripting, PHP CLI for scheduled DNS updates and monitoring, and shell for deployment glue. The MTG Card Bot connects Discord to Scryfall; the DNS updater maintains an explicit set of records automatically.</p>
+                <a href="/projects#group-developer-tools">Automation projects <span aria-hidden="true">→</span></a>
+            </article>
+        </div>
+    </div>
+</section>
+<section class="page-section page-section--quiet" aria-labelledby="skills-title">
     <div class="section-inner">
+        <div class="section-heading">
+            <p class="eyebrow">Technical skills</p>
+            <h2 id="skills-title">The tools behind the work.</h2>
+        </div>
+        <dl class="skills-grid">
+            <div><dt>Application development</dt><dd>Object-oriented PHP, MySQL, PDO, prepared SQL, server-rendered HTML, CSS, and selective vanilla JavaScript.</dd></div>
+            <div><dt>Automation &amp; APIs</dt><dd>Python, PHP CLI, Bash, uv, Ruff, pytest, discord.py, httpx, Scryfall, and Cloudflare DNS.</dd></div>
+            <div><dt>Hosting &amp; operations</dt><dd>Ubuntu, Caddy, PHP-FPM, Docker, systemd services and timers, Git, and versioned deployments.</dd></div>
+            <div><dt>Support &amp; recovery</dt><dd>RustDesk, Windows client setup, Tailscale, fail2ban, least-privilege accounts, database backups, age encryption, and recovery documentation.</dd></div>
+        </dl>
+    </div>
+</section>
+<section class="page-section" aria-labelledby="approach-title">
+    <div class="section-inner profile-grid">
+        <div class="section-heading">
+            <p class="eyebrow">Working approach</p>
+            <h2 id="approach-title">Keep it understandable.</h2>
+        </div>
         <article class="prose">
-            <p><strong>I build for the web with plain tools:</strong> bespoke, object-oriented PHP; MySQL for durable content; semantic HTML; and hand-written CSS. JavaScript shows up only when a feature earns it, and most pages send none at all. Python handles the scripting: automation, bots, data cleanup, and the glue that keeps routine work repeatable.</p>
-
-            <p>I am a sysadmin as much as a developer. My sites run on an Ubuntu server I administer myself: Caddy in front for HTTPS, a dedicated PHP-FPM pool and system user for each site, MySQL on localhost, systemd timers for backups, and SSH that stays off the public internet.</p>
-
-            <p>The work I like best has a clear owner, a clear data model, and an operating story that can be understood without a vendor diagram. A small program on infrastructure you control is still one of the fastest ways to turn an idea into something durable.</p>
-
-            <h2>What I care about</h2>
-
-            <p><strong>Vanilla first.</strong> Frameworks, package managers, and build steps all carry a lifetime cost. I add a dependency only when a concrete need justifies it, and I would rather read fifty lines of my own PHP than debug someone else's abstraction.</p>
-
-            <p><strong>Security as architecture.</strong> Prepared SQL, escaped output, least-privilege database accounts, secrets kept out of the web root and out of Git, and trust boundaries decided before the first line of code.</p>
-
-            <p><strong>Ownership.</strong> I like software that can run on hardware you control, with data you can inspect, back up, restore, and move when you need to.</p>
-
-            <p><strong>Explicit data.</strong> Schemas, migrations, records, validation, and SQL should make the system easier to reason about, not harder. If you cannot trace a value through the system, the system is too clever.</p>
-
-            <p><strong>Operational discipline.</strong> I value iteration, but not chaos. The goal is useful software with complexity that has earned its place.</p>
-
-            <h2>The stack</h2>
-
-            <p><strong>PHP</strong> is the center: a small front controller, readable classes, templates that output semantic HTML, and plain-PHP tests. No framework, ORM, CMS, or Composer dependency unless one clearly pays for itself.</p>
-
-            <p><strong>MySQL</strong> is the data layer. Published writing, drafts, and durable records live in explicit schemas behind prepared statements, with separate read-only and writer accounts.</p>
-
-            <p><strong>HTML, CSS, and JavaScript</strong> stay vanilla. Pages are rendered on the server and work without scripts, styles are hand-written and responsive, and any enhancement is small, local, and deferred.</p>
-
-            <p><strong>Python</strong> is for scripting: automation, prototypes, data scripts, bots, operational glue, and one-off tooling. New Python work uses <code>uv</code>, project-local virtual environments, Ruff, pytest, and a checked-in <code>pyproject.toml</code>.</p>
-
-            <p><strong>Operations</strong> stay practical: macOS for local work, Ubuntu LTS for servers, Caddy for TLS, PHP-FPM and systemd for long-running services, SSH deploys, MySQL backups with restore checks, Bash and zsh on Unix, and PowerShell where Windows administration is the right tool.</p>
+            <p><strong>Choose simple tools deliberately.</strong> I prefer readable PHP, explicit SQL, and pages that work without scripts. Dependencies need to justify their ongoing maintenance cost.</p>
+            <p><strong>Make security part of the design.</strong> Prepared statements, escaped output, separate publishing and read-only accounts, and secrets outside the web root give each component a clear boundary.</p>
+            <p><strong>Own the operating work.</strong> Shipping includes deployment, monitoring, backups, and recovery documentation. I want to understand how a service behaves and how to put it back together.</p>
+            <p><strong>Be precise about what is ready.</strong> A working demo, a running service, and a verified recovery are different milestones. I describe the work according to what has actually been done.</p>
+            <p>For project questions or work conversations, <a href="/contact">get in touch</a>. Source for my public code is on <a href="https://github.com/dunamismax" rel="noopener noreferrer me" target="_blank">GitHub</a> and <a href="https://codeberg.org/dunamismax" rel="noopener noreferrer me" target="_blank">Codeberg</a>.</p>
         </article>
     </div>
 </section>

@@ -1,7 +1,10 @@
 # dunamismax.com
 
 Personal site, portfolio, and blog for Stephen Sawyer: PHP-first web work,
-Python scripting, and hands-on systems administration.
+Python scripting, company-wide RustDesk hosting, and hands-on systems
+administration. The portfolio covers eight projects and services across
+infrastructure and support, websites, and automation; About presents
+practical experience and technical skills.
 
 ## Stack
 
@@ -49,7 +52,7 @@ bootstrap.php         Autoloader for the Dunamismax namespace
 | Route | Response |
 | --- | --- |
 | `/` | Home: direction, stack, featured projects, latest post |
-| `/about` | About Stephen |
+| `/about` | Professional profile, experience, skills, and working approach |
 | `/contact` | Email, Signal, GitHub, Codeberg, Reddit, site source |
 | `/projects` | Projects grouped by category |
 | `/blog`, `/blog?page=2` | Published posts, ten per page |
@@ -73,7 +76,9 @@ on blog routes while the home page stays up.
   paragraphs; HTML and Markdown stay literal. See [docs/content.md](docs/content.md).
 - **Pages** (home, about, contact, projects) are hand-written semantic HTML in
   `views/`. Project cards live in `views/partials/projects/`, one file per
-  category, shared by the home and projects pages.
+  category, shared by the home and projects pages. See
+  [portfolio evidence](docs/portfolio.md) for the verified inventory and
+  boundaries between running services, scheduled jobs, and demos.
 
 ## Local development
 

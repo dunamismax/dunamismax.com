@@ -6,7 +6,7 @@ Build, verification, and operational notes for `dunamismax.com`.
 repo operating rules. This file is a short reference for verification gates
 and active follow-up work.
 
-Last reviewed: 2026-09-23.
+Last reviewed: 2026-10-17.
 
 ---
 
@@ -17,6 +17,20 @@ PHP on MySQL and cut over on 2026-09-23. Production runs the PHP release from
 `/srv/www/dunamismax.com/current` on the `dunamismax` PHP-FPM pool; the Rust
 service and the PostgreSQL database were decommissioned by `deploy/05`. See
 [docs/production.md](docs/production.md).
+
+The October portfolio refresh covers eight verified projects and services,
+with company-wide RustDesk support, a professional profile, and explicit demo
+status for the Imaging Services replacement. See [portfolio evidence](docs/portfolio.md).
+Release this refresh from a clean, committed checkout with
+`deploy/03-deploy.sh`; the script verifies the release, backs up the site,
+switches `current`, reloads PHP-FPM, and checks the public routes.
+
+Portfolio verification: `make check` passes all 249 application checks and
+lints 36 PHP files. Headless Chromium checks of Home, Projects, and About at
+320, 375, 768, and 1440 pixels in both color schemes found no horizontal
+overflow, duplicate IDs, or scripts. Desktop and mobile screenshots were
+reviewed, and the profile has print styles. No schema, publishing, or
+deployment-script changes were made.
 
 ## Verification
 
