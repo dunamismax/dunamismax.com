@@ -44,23 +44,46 @@ running with ExecMainStatus 0, and the service configured as
   the production blog returns 200/no-store. The www hostname redirects 301 to
   the apex. Public output shows this application's migrated stack card.
 - The root-only `last-astro-rollback` pointer exists, written at approximately
-  6:19 a.m. Eastern. The cutover script writes it after candidate checks,
-  production checks and redirect validation succeed. Its protected contents
-  and individual root-only cutover reports have not been independently read.
+  6:19 a.m. Eastern. Its checkpoint is
+  `/root/dunamismax-astro-20261022T101915Z`. The protected reports were read
+  independently through authorized root SSH: candidate and production HTTP
+  checks both passed, and the export/import/reconciliation reports all show
+  zero rows and the same SHA256 recorded in the rehearsal above.
 - Caddy, PHP-FPM, MySQL and PostgreSQL remain active; systemd reports no failed
   units. Legacy services and data remain retained for rollback.
-- The latest observed host backup commit is `0a3be35`, captured at 6:18 a.m.
-  Eastern before cutover. The PostgreSQL encrypted dump has a corresponding
-  timestamp. This establishes a pre-cutover snapshot, not a post-cutover backup.
+- Pre-cutover host backup commit `0a3be35` was captured at 6:18 a.m. Eastern.
+- Post-cutover host backup commit
+  `12e8d860050c8972303ac282e6cb1599873c1f1b` was captured at 6:25 a.m. Eastern
+  and pushed to GitHub and Codeberg; both backup main tips were checked against
+  that full commit. The backup working tree was clean afterward.
 - Application implementation commits `7f5d48b` and `c93aaec` were pushed to both
   configured remotes; both main tips were independently checked at `c93aaec`
   before the owner performed cutover.
 
-## Remaining privileged verification
+## Completed privileged acceptance
 
-The SSH account still requires interactive sudo authentication. The guarded
-rollback `--check`, post-cutover host backup and encrypted `restore check` /
-`postgres-verify` need confirmation. Read the protected cutover reports to record
-the final migration digest, live role checks and exact rollback checkpoint.
-Production is serving Astro; these remaining acceptance checks are not claimed
-complete from the public HTTP results.
+Authorized `ssh root@ubuntu-vm` works; sawyer's interactive sudo prompt was not
+an access blocker. All remaining checks were completed through that connection:
+
+- Under the shared deployment lock, `bash deploy/rollback.sh CHECKPOINT --check`
+  verified the retained PHP release, configuration, original publishing settings,
+  legacy service availability and exact PostgreSQL data reconciliation. No
+  production rollback or service interruption was performed.
+- A fresh run of `dist/cli/bin/verify-database.js` confirmed actual web denial
+  of private base-table reads/writes, DDL and writer-role switching, and bounded
+  independent publishing privileges. The test disables transaction read-only
+  before checking denial, so privileges enforce the boundary.
+- The full Caddy configuration and installed Node systemd unit validate.
+- The post-cutover backup's built-in restore gate passed for all eight databases.
+  Separately, `restore check` decrypted 79 encrypted files with zero failures,
+  and `restore postgres-verify` restored all eight databases from encrypted
+  archives, checked archive digests/owners/constraints/ACL replay/table reads,
+  and removed its isolated Unix-socket-only cluster afterward.
+- The production 109-check HTTP suite passed again after backup. Node remains
+  on 127.0.0.1:4311 and PostgreSQL on 127.0.0.1:5432. Shared services are active
+  and systemd reports no failed units. All six public site homepages returned
+  200 during acceptance.
+
+Migration acceptance is complete. Retained PHP/MySQL infrastructure, old
+releases and backup timers remain intentionally available until the separate
+final platform-cleanup assignment.

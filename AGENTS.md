@@ -38,10 +38,13 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 Deploy only this site; never restart shared PHP-FPM, MySQL, PostgreSQL or Caddy.
 Use `/usr/local/lib/caddy/caddy`, not `/usr/bin/caddy`. Build/test isolated
 candidates before taking `/run/astro-deploy/lock` via `with-deploy-lock`.
+Authorized privileged SSH is available with `ssh root@ubuntu-vm`. A failed
+`sudo -n` as sawyer does not establish that privileged access is unavailable.
 Hold it for the entire privileged transaction, including rollback. Never nest
 it or recreate the lock. Root-only scripts in `deploy/` verify descriptor 9.
 Node listens on 127.0.0.1:4311, as `astro-dunamismax-web`; systemd loads only
 `/etc/astro-apps/dunamismax/web.env`. Publishing uses an independent identity.
+Invoke deployed shell helpers with `bash`: release files are mode 0644.
 Do not serve a checkout, source, credentials or the complete server build as
 webroot. Keep immutable commit releases and atomic current symlinks.
 

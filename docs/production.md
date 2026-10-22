@@ -4,6 +4,11 @@ Follow the shared contract at
 `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md`. Root access is
 required for deployment. Pushing does not deploy. Never modify other sites.
 
+Authorized root access is `ssh root@ubuntu-vm`; sawyer's `sudo -n` may require
+interactive authentication even though root SSH is available. Run privileged
+commands in that root session, or use sudo from an authenticated operator shell.
+Deployed shell helpers are mode 0644; invoke them with `bash`.
+
 | Item | Setting |
 | --- | --- |
 | Checkout | `/home/sawyer/github/dunamismax.com` |
@@ -34,7 +39,7 @@ sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore postgres-verify
 # Use the concrete candidate path printed by prepare; do not nest the lock.
 MYSQL_CONFIG=/etc/dunamismax/publishing.env astro-runtime bash /absolute/candidate/deploy/rehearse-data.sh
 # Alternatively run this rehearsal as root under with-deploy-lock.
-sudo with-deploy-lock /absolute/candidate/deploy/cutover.sh /absolute/candidate /expected/current/release
+sudo with-deploy-lock bash /absolute/candidate/deploy/cutover.sh /absolute/candidate /expected/current/release
 ```
 
 Prepare archives only committed source into an isolated directory, installs with
@@ -68,7 +73,7 @@ systemctl is-active astro-dunamismax caddy mysql php8.5-fpm
 curl -fsS https://dunamismax.com/healthz
 curl -fsSI https://dunamismax.com/about
 curl -fsS https://dunamismax.com/feed.xml
-sudo with-deploy-lock /srv/www/dunamismax.com/current/deploy/rollback.sh /root/CHECKPOINT --check
+sudo with-deploy-lock bash /srv/www/dunamismax.com/current/deploy/rollback.sh /root/CHECKPOINT --check
 # If rollback is necessary, same command without --check.
 ```
 

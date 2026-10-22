@@ -6,8 +6,9 @@ pagination, zero browser scripts, draft privacy and database outage behavior.
 About/Contact/Projects prerender; PostgreSQL remains authoritative for posts.
 
 Production runs release `c93aaec` as of October 22, 2026 Eastern. The public
-109-check HTTP suite passes; post-cutover backup/restore and the protected
-rollback check still require confirmation. See the acceptance record below.
+109-check HTTP suite, live database privileges, guarded rollback check and
+post-cutover encrypted backup/restore verification pass. Backup snapshot
+`12e8d86` was verified on both backup remotes. See the acceptance record below.
 
 ## Gates
 
