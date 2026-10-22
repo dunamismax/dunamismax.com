@@ -25,7 +25,6 @@ restore_release() {
     if [[ -f $saved/previous.service ]]; then cp -a "$saved/previous.service" "$unit"; else rm -f "$unit"; fi
     systemctl daemon-reload
     if [[ $(cat "$saved/previous-active") == active ]]; then systemctl restart astro-dunamismax.service; else systemctl disable --now astro-dunamismax.service || true; fi
-    if [[ -f $saved/legacy-publishing.env ]]; then cp -a "$saved/legacy-publishing.env" /etc/dunamismax/publishing.env; fi
     if [[ -f $saved/previous-wrapper ]]; then cp -a "$saved/previous-wrapper" /usr/local/sbin/dunamismax-posts; else rm -f /usr/local/sbin/dunamismax-posts; fi
     systemctl reload caddy
     curl -fsS https://dunamismax.com/healthz

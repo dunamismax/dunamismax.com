@@ -37,8 +37,6 @@ sudo /home/sawyer/github/ubuntu-vm-backup/bin/backup
 sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore check
 sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore postgres-verify
 # Use the concrete candidate path printed by prepare; do not nest the lock.
-MYSQL_CONFIG=/etc/dunamismax/publishing.env astro-runtime bash /absolute/candidate/deploy/rehearse-data.sh
-# Alternatively run this rehearsal as root under with-deploy-lock.
 sudo with-deploy-lock bash /absolute/candidate/deploy/cutover.sh /absolute/candidate /expected/current/release
 ```
 
@@ -47,16 +45,11 @@ npm ci, checks types/tests/build, exercises disposable PostgreSQL 18 fixtures
 and HTTP populated/outage/recovery, then hashes the candidate. Production
 builds do not receive any database credentials or post exports.
 
-The real-source rehearsal reads a consistent MySQL snapshot and imports it twice
-into a disposable PostgreSQL 18 cluster with a private Unix socket and no TCP
-listener. It reconciles every field and destroys its temporary data on exit.
-At first cutover, the transaction freezes legacy publishing and waits for
-in-flight publisher connections to finish before exporting the final snapshot.
-The schema is additive and explicitly SET ROLEs to the owner. Import/reconcile
-compare count and SHA256 over IDs, slugs, titles, excerpts, bodies, statuses and
-all UTC timestamps, then reset the identity sequence. Differences abort.
-Releases after first cutover keep PostgreSQL authoritative and never re-import
-MySQL. Before any such release, run a fresh verified host backup.
+PostgreSQL is authoritative. Ordinary deployment supports Astro-to-Astro release
+changes only; it does not read/import MySQL. The original migration evidence is
+in docs/migration.md and protected host archives. Obtain a fresh verified host
+backup before a release. The schema remains additive and explicitly SET ROLEs
+to its owner; a code rollback never replaces live PostgreSQL data.
 
 Cutover checks the expected active release under the mandatory shared lock,
 saves root-only rollback files, installs owning identities and immutable release,
@@ -69,7 +62,7 @@ same lock. Candidate services stop before activation and on failure.
 ## Verification and rollback
 
 ```sh
-systemctl is-active astro-dunamismax caddy mysql php8.5-fpm
+systemctl is-active astro-dunamismax caddy postgresql@18-main
 curl -fsS https://dunamismax.com/healthz
 curl -fsSI https://dunamismax.com/about
 curl -fsS https://dunamismax.com/feed.xml
@@ -77,19 +70,19 @@ sudo with-deploy-lock bash /srv/www/dunamismax.com/current/deploy/rollback.sh /r
 # If rollback is necessary, same command without --check.
 ```
 
-Rollback checkpoints hold prior current link, Caddy fragment, Node unit/state,
-writer wrapper and original legacy publishing permissions, plus the final data
-snapshot and reconciliation reports. Rollback verifies current has not changed.
-Before restoring PHP/MySQL it takes the deployment lock (excluding new writers)
-and requires PostgreSQL data to match the cutover snapshot. If later writes
-exist, it refuses: reconcile those writes with a reviewed reverse migration
-before switching writers. Restoring an old dump would discard those writes.
+Rollback checkpoints hold the previous current link, Caddy fragment, Node
+unit/state and independent publishing wrapper. Rollback refuses a stale current
+link or a previous release without the Astro server. Historical PHP checkpoints
+are for isolated legacy recovery after the server-wide retirement.
 
-Retain PHP-FPM pool, MySQL database, old releases and `/etc/dunamismax` settings.
-The installed legacy `dunamismax-backup` executable/timer remain running as
-required by the shared plan; obsolete PHP deployment sources are removed here.
-The host backup additionally dumps/encrypts PostgreSQL data, roles and role
-credentials and verifies a full isolated PostgreSQL 18 restore on every backup.
-After cutover run it again, then encrypted `restore check` and `postgres-verify`.
-Verify both configured backup remote tips when the backup is pushed. No database,
-credential, shared service or legacy backup cleanup belongs to this migration.
+PHP/MySQL packages and active pools/settings are retired by final host integration.
+Original MySQL files, old releases and protected encrypted archives are retained.
+The daily dunamismax-backup timer uses the host's shared PostgreSQL site-backup
+helper with isolated restore verification. The host backup captures all databases,
+roles, credentials and exact emitted application releases; run encrypted
+`restore check`, `postgres-verify` and `applications-verify` after changes.
+
+The root-owned `dunamismax-posts` wrapper uses `/usr/sbin/runuser` explicitly
+before dropping privileges. Its restricted PATH deliberately omits sbin. Verify
+`dunamismax-posts list` with the normal operator workflow after installation;
+never place credentials on command arguments or give them to the website.
