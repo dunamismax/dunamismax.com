@@ -1,0 +1,13 @@
+---
+import type { Post } from '../lib/posts.js';
+import { shortDate, readingMinutes } from '../lib/text.js';
+interface Props { latest: Post | null; postCount: number | null }
+const { latest, postCount } = Astro.props;
+---
+{latest ? <a href={'/blog/' + latest.slug} class="latest-card">
+<span class="latest-card__kicker">Latest post</span><span class="latest-card__title">{latest.title}</span>
+<span class="latest-card__meta">{shortDate(latest.published_at)} · {readingMinutes(latest.body)} min read</span>
+{latest.excerpt && <span class="latest-card__description">{latest.excerpt}</span>}
+</a> : <a href="/blog" class="latest-card latest-card--empty"><span class="latest-card__kicker">Blog</span>
+<span class="latest-card__title">{postCount === 0 ? 'Build notes are on the way.' : 'Build logs and server notes.'}</span>
+<span class="latest-card__description">{postCount === 0 ? 'No posts yet. This is where I’ll share decisions and lessons from the systems I build and run.' : 'Read the latest writing on the blog.'}</span></a>}

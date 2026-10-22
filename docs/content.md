@@ -1,59 +1,42 @@
-# Content
+# Publishing
 
-## Pages
+Approved pages live in `src/pages/` and reusable cards in
+`src/components/projects/`. Keep the eight-card ordering and summaries aligned.
+Do not change other project claims without checking their evidence.
 
-Home, about, contact, and projects are hand-written semantic HTML in
-`views/`. Edit them directly and run `make check`; the tests assert key copy,
-the project counts, the contact links, and that no retired stack or project
-names appear.
-
-To add or remove a project, edit the card in
-`views/partials/projects/<category>.php`, then update `8 projects &amp; services` on
-`views/home.php` and `views/projects.php` (and the category count if a group
-appears or disappears) and the expected list in `tests/run.php`.
-
-Keep project anchors stable: the home and profile pages link to them.
-`infrastructure.php` covers support, monitoring, and recovery; `apps.php`
-covers websites; `developer-tools.php` covers automation and bots.
-Use [portfolio evidence](portfolio.md) when revising claims, status, or links.
-The cards describe maintained work, not real-time health; the status website
-provides current availability checks.
-
-## Blog posts
-
-Posts live in MySQL and are managed only through the CLI, over SSH or a local
-shell, as the `sawyer` account:
+Posts live authoritatively in PostgreSQL `app.posts`. Use an authorized shell:
 
 ```sh
-cd /srv/www/dunamismax.com/current
-php bin/posts.php --help
-php bin/posts.php create my-post --title 'Title' --body-file ~/drafts/my-post.txt --excerpt 'One-line summary.'
-php bin/posts.php validate my-post
-php bin/posts.php publish my-post                       # now
-php bin/posts.php schedule my-post --at 2026-10-01T09:00:00-04:00
-php bin/posts.php unpublish my-post                     # back to draft, date kept
-php bin/posts.php list
-php bin/posts.php show my-post
+sudo /usr/local/sbin/dunamismax-posts create first-note --title 'First note' --body-file /home/sawyer/drafts/first-note.txt
+sudo /usr/local/sbin/dunamismax-posts validate first-note
+sudo /usr/local/sbin/dunamismax-posts edit first-note --excerpt 'A short description.'
+sudo /usr/local/sbin/dunamismax-posts schedule first-note --at 2099-10-01T09:00:00-04:00
+sudo /usr/local/sbin/dunamismax-posts publish first-note
+sudo /usr/local/sbin/dunamismax-posts unpublish first-note
+sudo /usr/local/sbin/dunamismax-posts list --limit 50 --offset 0
+sudo /usr/local/sbin/dunamismax-posts show first-note
 ```
 
-- New posts are drafts. Only `publish` and `schedule` make them public.
-- Edits preserve unspecified fields, status, and date. Slugs cannot change.
-- Slugs are lowercase ASCII words separated by single hyphens.
-- The body is UTF-8 plain text. Blank lines separate paragraphs. HTML and
-  Markdown stay literal and are escaped on output; there is no Markdown
-  renderer.
-- Title: up to 240 characters. Excerpt: up to 600 characters, optional; it
-  becomes the meta description and RSS description.
-- Private drafts can live in `/srv/www/dunamismax.com/shared/storage/drafts`
-  (sawyer only, mode 0700).
+The sample future date illustrates the required explicit UTC offset; choose the
+intended publication time. New posts are drafts. Edit preserves slug, status and
+date; validate saves nothing; publish deliberately resets the publication instant
+to database time; schedule requires a future instant; unpublish retains the date.
+There is no public preview/admin endpoint. Blank lines become paragraphs; single
+newlines become line breaks. HTML and Markdown remain literal, escaped text.
+Titles/excerpts permit 240/600 Unicode characters, body 16,777,215 UTF-8 bytes.
+Use `--body-file -` for UTF-8 stdin. JSON list/show intentionally contain private
+content: use only trusted terminals and do not publish their output.
 
-The CLI reads only `/etc/dunamismax/publishing.env` (or `POSTS_CONFIG`). The
-file must be mode 0600 and owned by the invoking user. It never uses the
-website's credentials, and the website can never read it.
+The root-owned wrapper takes a shared deployment lock for the command, loads
+only `/etc/astro-apps/dunamismax/publishing.env`, then drops to the independent
+`sawyer` operator identity (separate from the website user). Deployment’s exclusive lock excludes
+concurrent publishing. It never passes migration credentials or a database URL
+to the web process. Direct local development uses `npm run posts -- ...` with
+`POSTS_CONFIG` pointing to an absolute 0600 file owned by the invoking user
+outside the checkout; that file is the sole configuration source. No inherited
+website/admin credential fallback is allowed. Help needs no database/config.
 
-## Feed
-
-`/feed.xml` is RSS 2.0 with the 20 newest visible posts, each with an escaped
-description and the escaped paragraph body as `content:encoded`. GUIDs are
-`https://dunamismax.com/blog/<slug>`. There are no cache validators, so
-scheduled and unpublished posts take effect on the next request.
+The old PHP command is removed from this checkout. At first cutover its
+configuration is frozen root-owned mode 0000; a protected rollback copy retains
+the original ownership/mode. Do not restore it while PostgreSQL writers are
+active. The guarded rollback refuses a MySQL switch when content has diverged.

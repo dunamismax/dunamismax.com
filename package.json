@@ -1,0 +1,35 @@
+{
+  "name": "dunamismax-com",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.22.1",
+    "npm": "11.19.1"
+  },
+  "packageManager": "npm@11.19.1",
+  "scripts": {
+    "check": "astro check && tsc --noEmit",
+    "build": "astro build && tsc -p tsconfig.cli.json",
+    "start": "node dist/cli/bin/server.js",
+    "dev": "astro dev --host 127.0.0.1 --port 8000",
+    "test": "tsx --test tests/*.test.ts",
+    "test:http": "tsx tests/http.ts",
+    "test:database": "tsx tests/database.ts",
+    "posts": "tsx bin/posts.ts",
+    "migrate:data": "tsx bin/migrate-data.ts"
+  },
+  "dependencies": {
+    "astro": "7.4.2",
+    "@astrojs/node": "11.1.9",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "typescript": "6.0.3",
+    "@types/node": "24.19.2",
+    "@types/pg": "8.15.5",
+    "tsx": "4.20.6",
+    "mysql2": "3.15.3"
+  }
+}

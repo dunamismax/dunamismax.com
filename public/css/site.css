@@ -777,3 +777,10 @@ h1 { font-weight: 700; }
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Keep long plain-text posts and keyboard/touch navigation usable. */
+.post-body { overflow-wrap: anywhere; }
+.hero-grid > *, .profile-grid > *, .section-heading--split > * { min-width: 0; }
+.button, .mobile-nav a { min-height: 44px; }
+.mobile-nav a { display: inline-flex; align-items: center; }
+.skip-link:focus { transition: none; }

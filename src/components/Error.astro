@@ -1,0 +1,6 @@
+---
+interface Props { code: number }
+const { code } = Astro.props;
+const [heading, message] = code === 503 ? ['A moment, please.', 'Writing is briefly unavailable. Please try again in a little while.'] : ['That page is not here.', 'The address may have moved, or never existed. Try the home page, the project list, or the blog.'];
+---
+<section class="page-hero" aria-labelledby="error-title"><div class="section-inner"><p class="eyebrow">{code}</p><h1 id="error-title">{heading}</h1><p class="lede">{message}</p><div class="hero-actions hero-actions--inline"><a href="/" class="button button-primary">Home</a><a href="/projects" class="button button-secondary">Projects</a><a href="/blog" class="button button-secondary">Blog</a></div></div></section>

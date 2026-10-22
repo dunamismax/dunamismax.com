@@ -1,14 +1,10 @@
-.PHONY: serve check database test-db
-
+.PHONY: serve check build test-db
 serve:
-	php -S 127.0.0.1:8000 -t public dev/router.php
-
+	APP_ENV=local npm run dev
 check:
-	php bin/check.php
-	php tests/run.php
-
-database:
-	php bin/database.php
-
+	npm run check
+	npm test
+build:
+	npm run build
 test-db:
-	php tests/database.php
+	bash deploy/rehearse.sh

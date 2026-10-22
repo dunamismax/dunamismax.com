@@ -1,81 +1,41 @@
 # Architecture
 
-One PHP application, one MySQL table, and ordinary files. There is no
-frontend application, background worker, or build step. The structure
-mirrors Grace & Footnotes, the reference site on the same server.
+Caddy → loopback Node → Astro static/SSR handler → PostgreSQL for writing.
+The Node web process is read-only and receives only web.env. About, Contact
+and Projects are prerendered; Home, Blog, Post and RSS read current data.
+All share the preserved semantic layout, CSS, icon and approved portfolio.
+The website sends zero browser scripts.
 
-## A request
+`bin/server.ts` is the uniform HTTP boundary before Astro’s standalone handler.
+It enforces GET/HEAD, headers, cache policy and an explicit public path surface.
+This matters because adapter static-file handling precedes Astro middleware.
+The middleware also protects SSR responses and sets noindex/Retry-After.
+Prerendered headers are captured by the adapter. CSP forbids inline styles and
+scripts. Only the build’s client directory is used internally for static files;
+Caddy proxies requests and never exposes a source or server-build webroot.
 
-1. Caddy serves `/css/site.css` or `/icon.svg` directly from
-   `current/public/`. Every other path is rewritten to `public/index.php` and
-   sent through the `dunamismax` PHP-FPM socket.
-2. `bootstrap.php` registers the `Dunamismax` autoloader and view helpers.
-3. `Environment` reads the literal `.env` file (linked to
-   `/etc/dunamismax/site.env` in production); process variables take
-   precedence. `Config` validates the environment, origin, and database settings.
-4. `Application::handle()` rejects methods other than GET and HEAD with 405 and
-   routes on the path alone. The canonical origin comes from `APP_URL`, never
-   from Host or forwarding headers.
-5. `PostRepository` runs the few prepared queries; `Database` connects lazily,
-   so pages that need no posts never open a connection.
-6. `View` renders a template inside `views/layout.php`. `Response` sends the
-   status, headers (`no-store`, CSP `default-src 'self'`, nosniff,
-   referrer and permissions policies), and the body, omitting it for HEAD.
+`app.posts` preserves IDs, slugs, all text, statuses and UTC instants. IDs are
+bigint identities; migration refuses overflow rather than changing IDs. The
+publication index orders timestamp then ID descending. `app.public_posts`
+is an owner-controlled security-barrier view filtered by published status and
+PostgreSQL CURRENT_TIMESTAMP. Each website query sees current database time;
+no build, scheduler or cache invalidation is required for scheduled publication.
+Lists/counts/detail/RSS all query that view. Web has no access to the private
+base table and cannot become a publisher/owner. The small lazy pool (4) has
+connection and statement deadlines and sanitized error reporting.
 
-## Routes and content
+A home database error yields a neutral writing link and unknown count. It never
+claims there are no posts during an outage. Blog routes/RSS return an honest
+503/no-store with Retry-After; static pages and health remain available.
 
-| Path | Source |
-| --- | --- |
-| `/`, `/about`, `/contact`, `/projects` | `views/*.php` (semantic HTML) |
-| `/blog`, `/blog/{slug}`, `/feed.xml` | MySQL `posts` through `PostRepository` |
-| `/robots.txt`, `/manifest.webmanifest`, `/healthz` | `Application` |
-| `/css/site.css`, `/icon.svg` | Files in `public/`, served by Caddy |
+The TypeScript publisher uses transactions and row locks, validates Unicode
+limits/plain text/timestamps, preserves unspecified fields, and leaves slugs
+immutable. Only publish/schedule change drafts to published. Unpublish retains
+the publication date. PostgreSQL is authoritative after cutover; the retained
+MySQL database is a frozen rollback source, not a second writer.
 
-The home page uses the latest post and the published count. If MySQL is
-unreachable it still renders, logs the error, and shows a neutral blog link
-instead of claiming the blog is empty. Blog routes and the feed return an
-honest 503 with `Retry-After`. `/healthz` never touches MySQL.
-
-Project cards are written once per category in `views/partials/projects/`
-and included by both the home page (one list) and `/projects` (grouped).
-
-## Visibility rule
-
-A public post has `status = 'published'` and `published_at` at or before the
-database's UTC time. One constant in `PostRepository` applies it to lists,
-counts, single posts, the home card, and RSS, so scheduled posts appear
-without cron.
-
-## Frontend
-
-The site sends zero JavaScript. The former theme toggle is replaced by
-`prefers-color-scheme`: dark by default, with the light palette in a media
-query. The stylesheet URL carries its modification time as `?v=`. There are no
-inline styles or scripts, which keeps the CSP strict. Navigation marks the
-current section with `aria-current="page"` and an underline, not color alone.
-
-## What changed from the Rust app
-
-- Same URLs, statuses, and content types. `/js/theme.js` is removed (404).
-- Markdown and TOML content became semantic HTML views; there were no posts.
-- The PostgreSQL `page_view` tracking is dropped, and its data was not migrated.
-- Dynamic responses are `Cache-Control: no-store`; the feed is still
-  `application/xml`.
-
-## Verification
-
-`make check` lints every PHP file and runs `tests/run.php` (about 250
-checks). The checks cover:
-
-- Every route, its status, headers, metadata, and copy.
-- The absence of scripts and of retired stack and project names.
-- Project counts against the cards, and exact contact links.
-- Escaping, the database-outage behavior, and CLI and feed validation.
-- The real front controller over HTTP.
-
-`tests/database.php` exercises real MySQL:
-
-- Schema reapplication, publication visibility, and SQL binding.
-- Pagination and the CLI lifecycle.
-- SELECT-only enforcement for the website account.
-- Feed behavior over HTTP.
+Migration tooling is the only remaining MySQL client dependency. It exports a
+consistent UTC snapshot privately, imports to an empty target transactionally,
+reconciles every field using an ordered SHA256 and restores the identity sequence.
+It is safe to rerun with identical data and refuses a differing nonempty target.
+No migration snapshot or credential is committed or copied into release assets.

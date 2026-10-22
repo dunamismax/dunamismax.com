@@ -1,94 +1,33 @@
-# BUILD.md
+# Verification and migration status
 
-Build, verification, and operational notes for `dunamismax.com`.
+Astro/strict TypeScript/PostgreSQL replaces this repository’s PHP implementation.
+Preserved: approved portfolio, routes, CSS/icon, metadata, RSS/plain text,
+pagination, zero browser scripts, draft privacy and database outage behavior.
+About/Contact/Projects prerender; PostgreSQL remains authoritative for posts.
 
-`README.md` covers the product, stack, and layout. `AGENTS.md` holds durable
-repo operating rules. This file is a short reference for verification gates
-and active follow-up work.
-
-Last reviewed: 2026-10-17.
-
----
-
-## Status
-
-The site was rebuilt from the Rust (Axum/Leptos/PostgreSQL) app to bespoke
-PHP on MySQL and cut over on 2026-09-23. Production runs the PHP release from
-`/srv/www/dunamismax.com/current` on the `dunamismax` PHP-FPM pool; the Rust
-service and the PostgreSQL database were decommissioned by `deploy/05`. See
-[docs/production.md](docs/production.md).
-
-The October portfolio refresh covers eight verified projects and services,
-with company-wide RustDesk support, a professional profile, and explicit demo
-status for the Imaging Services replacement. See [portfolio evidence](docs/portfolio.md).
-Release this refresh from a clean, committed checkout with
-`deploy/03-deploy.sh`; the script verifies the release, backs up the site,
-switches `current`, reloads PHP-FPM, and checks the public routes.
-
-Portfolio verification: `make check` passes all 249 application checks and
-lints 36 PHP files. Headless Chromium checks of Home, Projects, and About at
-320, 375, 768, and 1440 pixels in both color schemes found no horizontal
-overflow, duplicate IDs, or scripts. Desktop and mobile screenshots were
-reviewed, and the profile has print styles. No schema, publishing, or
-deployment-script changes were made.
-
-## Verification
-
-Docs-only changes:
+## Gates
 
 ```sh
+npm ci
+npm run check
+npm test
+APP_ENV=production npm run build
+bash deploy/rehearse.sh
+for f in deploy/*.sh; do bash -n "$f"; done
+shellcheck -x deploy/*.sh
 git diff --check
 ```
 
-Normal gate:
+On macOS set PGBIN to the installed PostgreSQL bin directory for rehearsal.
+Unit tests port meaningful legacy escaping, Unicode, dates, credential and RSS
+cases. PostgreSQL tests cover schema reapplication, real role restrictions,
+SQL binding, draft/future visibility, scheduling without builds, transactional
+CLI create/edit/validate/publish/schedule/unpublish and failed input/config.
+HTTP checks cover preserved content/project counts, landmarks, metadata, methods,
+HEAD, private paths, pagination, RSS limits and outages/recovery against the
+compiled server. Browser QA covers widths 320/375/768/1440 in light/dark mode.
+The previous implementation passed its 249 checks before replacement.
 
-```sh
-make check
-```
-
-MySQL integration (dedicated, empty `_test` database; see `README.md`):
-
-```sh
-php tests/database.php
-```
-
-Deploy scripts:
-
-```sh
-for f in deploy/*.sh; do bash -n "$f"; done
-shellcheck -x -e SC1091 deploy/*.sh
-```
-
-Local smoke:
-
-```sh
-make serve
-curl -fsS http://127.0.0.1:8000/healthz
-curl -fsS http://127.0.0.1:8000/feed.xml | head
-curl -fsS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8000/does-not-exist
-```
-
-Production smoke:
-
-```sh
-curl -fsSI https://dunamismax.com/ | sed -n '1,20p'
-curl -fsS https://dunamismax.com/healthz
-curl -fsS https://dunamismax.com/feed.xml | head
-curl -fsSI https://www.dunamismax.com/ | grep -i '^location'
-```
-
-## Product Invariants
-
-- Public URLs, status codes, and content types stay stable.
-- The site sends zero JavaScript.
-- Drafts and future-dated posts never render publicly or appear in RSS.
-- The website's MySQL account can only read.
-- Nothing needs Node, Composer, or a build step.
-
-## Open Follow-ups
-
-- [x] Run `deploy/01`–`05` on the server (owner, with sudo).
-- [x] Update status.dunamismax to stop monitoring `dunamismax-site.service`.
-- [ ] Add a Mac pull of `/var/backups/dunamismax`, as Grace & Footnotes has.
-- [ ] Add a periodic link check for internal pages and project URLs.
-- [ ] Write the first blog post.
+Real source migration, production cutover, remote tips, backup/restore and
+rollback verification results belong in [migration acceptance](docs/migration.md).
+Do not claim those deployment gates complete based on local fixtures.

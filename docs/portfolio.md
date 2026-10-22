@@ -38,8 +38,8 @@ no local checkout or running deployment establishing it as active on this
 server. This is not a claim that its public repository is retired.
 
 The inventory review did not change other sites, services, databases, server
-settings, or production releases. Deployment of the portfolio refresh is a
-separate step through `deploy/03-deploy.sh`.
+settings, or production releases. The portfolio refresh was deployed as e3f991f. The Astro migration is a separate
+release through the locked deploy/cutover.sh; see docs/migration.md.
 No uptime, user-count, cost-saving, employment-date,
 certification, or compliance claims were inferred from the inventory.
 
@@ -47,6 +47,9 @@ certification, or compliance claims were inferred from the inventory.
 
 Recheck runtime state and relevant project documentation before changing a
 status or stack. Keep the home and projects summaries aligned with the shared
-cards and the expectations in `tests/run.php`. Preserve project anchors used
+cards and the expectations in `tests/http.ts`. Preserve project anchors used
 by the experience links. Update this inventory when the demo launches or a
 service is retired.
+
+The Astro migration updates only this application’s stack card to match its new
+runtime. Other project descriptions above remain a dated editorial inventory.

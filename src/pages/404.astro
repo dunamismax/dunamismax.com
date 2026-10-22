@@ -1,0 +1,6 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Error from '../components/Error.astro';
+Astro.response.status = 404;
+---
+<Layout title="Not found" status={404}><Error code={404} /></Layout>

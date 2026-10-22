@@ -1,0 +1,107 @@
+---
+import NavLink from '../components/NavLink.astro';
+import { config } from '../lib/config.js';
+import { createHash } from 'node:crypto';
+import stylesheet from '../../public/css/site.css?raw';
+interface Props { title?: string; description?: string; path?: string; status?: number; ogType?: string }
+const { title = 'dunamismax', description = config.description, path = '/', status = 200, ogType = 'website' } = Astro.props;
+const origin = config.origin;
+const fullTitle = title === 'dunamismax' ? title : `${title} · dunamismax`;
+const section = path.startsWith('/blog') ? '/blog' : path.split('?')[0];
+const noindex = status !== 200 || !config.production;
+const cssVersion = createHash('sha256').update(stylesheet).digest('hex').slice(0,12);
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{fullTitle}</title>
+    <meta name="description" content={description}>
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="color-scheme" content="dark light">
+    <meta name="application-name" content="dunamismax">
+    {noindex && <meta name="robots" content="noindex" />}
+    {status === 200 && <>
+    <link rel="canonical" href={origin + path}>
+    <meta property="og:site_name" content="dunamismax">
+    <meta property="og:type" content={ogType}>
+    <meta property="og:title" content={fullTitle}>
+    <meta property="og:description" content={description}>
+    <meta property="og:url" content={origin + path}>
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content={fullTitle}>
+    <meta name="twitter:description" content={description}>
+    </>}
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="dunamismax · Blog" href={origin + "/feed.xml"}>
+    <link rel="stylesheet" href={"/css/site.css?v=" + cssVersion}>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <nav class="primary-nav" aria-label="Primary navigation">
+            <a href="/" class="brand-link" aria-label="dunamismax home">
+                <span class="brand-mark" aria-hidden="true">DM</span>
+                <span class="brand-word">dunamismax</span>
+            </a>
+            <div class="desktop-nav">
+                <NavLink href="/projects" label="Projects" section={section} />
+                <NavLink href="/blog" label="Blog" section={section} />
+                <NavLink href="/about" label="About" section={section} />
+                <NavLink href="/contact" label="Contact" section={section} />
+            </div>
+        </nav>
+        <nav class="mobile-nav" aria-label="Section navigation">
+            <NavLink href="/projects" label="Projects" section={section} />
+            <NavLink href="/blog" label="Blog" section={section} />
+            <NavLink href="/about" label="About" section={section} />
+            <NavLink href="/contact" label="Contact" section={section} />
+        </nav>
+    </header>
+    <main id="main-content" tabindex="-1">
+<slot />
+    </main>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-block">
+                <a href="/" class="footer-brand-link">
+                    <span class="brand-mark brand-mark--footer" aria-hidden="true">DM</span>
+                    <span>dunamismax</span>
+                </a>
+                <p class="footer-copy">Stephen Sawyer · Web development, company remote support, and systems administration. PHP, MySQL, Python, and the Ubuntu infrastructure I operate myself.</p>
+            </div>
+            <nav class="footer-columns" aria-label="Footer">
+                <div class="footer-column">
+                    <p class="footer-column__title">Site</p>
+                    <a href="/">Home</a>
+                    <a href="/projects">Projects</a>
+                    <a href="/blog">Blog</a>
+                    <a href="/about">About</a>
+                    <a href="/contact">Contact</a>
+                </div>
+                <div class="footer-column">
+                    <p class="footer-column__title">Code</p>
+                    <a href="https://github.com/dunamismax" rel="noopener noreferrer me" target="_blank">GitHub</a>
+                    <a href="https://codeberg.org/dunamismax" rel="noopener noreferrer me" target="_blank">Codeberg</a>
+                    <a href="https://github.com/dunamismax/dunamismax.com" rel="noopener noreferrer me" target="_blank">Site source</a>
+                    <a href="/feed.xml">RSS feed</a>
+                </div>
+                <div class="footer-column">
+                    <p class="footer-column__title">Elsewhere</p>
+                    <a href="mailto:dunamismax@tutamail.com" rel="me">Email</a>
+                    <a href="https://www.reddit.com/user/DunamisMax/" rel="noopener noreferrer me" target="_blank">Reddit</a>
+                </div>
+            </nav>
+        </div>
+        <div class="footer-meta">
+            <div class="footer-meta__inner">
+                <p>&copy; {new Date().getUTCFullYear()} Stephen Sawyer.</p>
+                <p class="footer-meta__claim">PHP · MySQL · Python · Served behind Caddy</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

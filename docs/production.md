@@ -1,97 +1,90 @@
-# Production runbook
+# Production
 
-## Layout
+Follow the shared contract at
+`/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md`. Root access is
+required for deployment. Pushing does not deploy. Never modify other sites.
 
-| Item | Location or setting |
+| Item | Setting |
 | --- | --- |
-| Git checkout | `/home/sawyer/github/dunamismax.com` |
-| Releases | `/srv/www/dunamismax.com/releases/<full-commit>` (root-owned, read-only to PHP) |
-| Active release | `/srv/www/dunamismax.com/current` symlink |
-| Only document root | `/srv/www/dunamismax.com/current/public` |
-| Shared storage | `/srv/www/dunamismax.com/shared/storage` (root:sawyer 0750; `drafts/` sawyer 0700) |
-| Website configuration | `/etc/dunamismax/site.env`, root:dunamismax 0640, linked as each release's `.env` |
-| Publishing configuration | `/etc/dunamismax/publishing.env`, sawyer:sawyer 0600, CLI only |
-| System user | `dunamismax` (reused from the Rust service; nologin, home `/nonexistent` after 05) |
-| FPM pool | `/etc/dunamismax/php-fpm.conf`, linked as `/etc/php/8.5/fpm/pool.d/dunamismax.conf` |
-| FPM socket | `/run/php/dunamismax.sock`, caddy:caddy 0600, `clear_env` |
-| FPM limits | `allow_url_fopen` off; `exec`, `proc_open`, `mail` and related functions disabled; `open_basedir` limited to `/srv/www/dunamismax.com/` and `/etc/dunamismax/site.env` |
-| MySQL | database `dunamismax` on 127.0.0.1 |
-| MySQL accounts | `dunamismax_web` (SELECT), `dunamismax_publish` (SELECT/INSERT/UPDATE on `posts`) |
-| Caddy site | `/etc/caddy/sites/dunamismax.com.caddy` (apex and `www` redirect) |
-| Access log | `/var/log/caddy/dunamismax-access.log`, 10 MiB × 7, seven days |
-| Backups | `/usr/local/sbin/dunamismax-backup`, `dunamismax-backup.timer` daily 06:30 UTC, `/var/backups/dunamismax` (30 days) |
+| Checkout | `/home/sawyer/github/dunamismax.com` |
+| Isolated candidates | `/home/sawyer/astro-candidates/dunamismax/<commit>` |
+| Immutable releases | `/srv/www/dunamismax.com/releases/<commit>` |
+| Active link | `/srv/www/dunamismax.com/current` |
+| Node unit/user | `astro-dunamismax.service` / `astro-dunamismax-web` |
+| Listener | `127.0.0.1:4311` (temporary candidate 4323) |
+| Runtime | `/opt/astro-runtime/bin/node` 24.22.1 |
+| Website credentials | `/etc/astro-apps/dunamismax/web.env` (root-only; systemd loads) |
+| Writer credentials | `/etc/astro-apps/dunamismax/publishing.env` (root-only wrapper) |
+| Migration credentials | `/etc/astro-apps/dunamismax/migration.env` (operator only) |
+| PostgreSQL | `dunamismax`, owner `dunamismax_owner`, schema `app` |
+| Caddy fragment | `/etc/caddy/sites/dunamismax.com.caddy` |
+| Rollback pointer | `/srv/www/dunamismax.com/last-astro-rollback` |
 
-## Migration from the Rust service
+## Release
 
-Run in order from the checkout, as root, checking each script's printed
-verification before continuing. Every script is idempotent. Each one backs up
-the files it changes to `/root/dunamismax-backup-<timestamp>/` and prints its
-rollback.
-
-| Script | What it does |
-| --- | --- |
-| `deploy/01-provision.sh` | Reuses the `dunamismax` user and creates directories. Creates the MySQL database and both accounts, generating passwords into the env files without printing them. Installs the FPM pool, runs `php-fpm8.5 -t`, reloads, and checks the socket. |
-| `deploy/02-migrate-data.sh` | Inventories PostgreSQL and aborts on any table other than `page_view` or the `_sqlx_migrations` and `flyway_schema_history` bookkeeping tables (views such as `pg_stat_statements` hold no data). Applies `database/schema.sql` and grants the publisher. No rows are copied: `page_view` is dropped by decision, and there were no posts. |
-| `deploy/03-deploy.sh` | Archives HEAD of a clean checkout into a new release and runs the checks as `dunamismax`. Smoke-tests the route checklist with production config, switches `current`, reloads PHP-FPM, and installs the backup timer. |
-| `deploy/04-cutover.sh` | Compares old and new status and content type on every route. Moves only the dunamismax blocks from `/etc/caddy/Caddyfile` into the site file, validates as `caddy`, and reloads. Verifies over HTTPS and restores automatically on any failure. |
-| `deploy/05-decommission.sh` | Runs last, only after the cutover is confirmed publicly. Writes a `pg_dump` to `/var/backups/dunamismax`. Archives and removes `dunamismax-site.service`, `/opt/dunamismax-site` (binary, `.jar` files, env), and `/etc/sudoers.d/dunamismax-site`. Drops the PostgreSQL `dunamismax` database and role and moves the user's home to `/nonexistent`. |
+On the VM, from a clean committed checkout, with the supported runtime:
 
 ```sh
-cd /home/sawyer/github/dunamismax.com
-sudo bash deploy/01-provision.sh
-sudo bash deploy/02-migrate-data.sh
-sudo bash deploy/03-deploy.sh
-sudo bash deploy/04-cutover.sh
-# watch the site for a while, then:
-sudo bash deploy/05-decommission.sh
+git pull --ff-only origin main
+bash deploy/prepare.sh
+# Before privileged cutover: fresh host backup; helper takes its own lock.
+sudo /home/sawyer/github/ubuntu-vm-backup/bin/backup
+sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore check
+sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore postgres-verify
+# Use the concrete candidate path printed by prepare; do not nest the lock.
+MYSQL_CONFIG=/etc/dunamismax/publishing.env astro-runtime bash /absolute/candidate/deploy/rehearse-data.sh
+# Alternatively run this rehearsal as root under with-deploy-lock.
+sudo with-deploy-lock /absolute/candidate/deploy/cutover.sh /absolute/candidate /expected/current/release
 ```
 
-The status.dunamismax inventory has since been updated to monitor PHP-FPM
-and MySQL without the retired `dunamismax-site.service`.
+Prepare archives only committed source into an isolated directory, installs with
+npm ci, checks types/tests/build, exercises disposable PostgreSQL 18 fixtures
+and HTTP populated/outage/recovery, then hashes the candidate. Production
+builds do not receive any database credentials or post exports.
 
-## Releasing
+The real-source rehearsal reads a consistent MySQL snapshot and imports it twice
+into a disposable PostgreSQL 18 cluster with a private Unix socket and no TCP
+listener. It reconciles every field and destroys its temporary data on exit.
+At first cutover, the transaction freezes legacy publishing and waits for
+in-flight publisher connections to finish before exporting the final snapshot.
+The schema is additive and explicitly SET ROLEs to the owner. Import/reconcile
+compare count and SHA256 over IDs, slugs, titles, excerpts, bodies, statuses and
+all UTC timestamps, then reset the identity sequence. Differences abort.
+Releases after first cutover keep PostgreSQL authoritative and never re-import
+MySQL. Before any such release, run a fresh verified host backup.
 
-Commit, then on the server:
+Cutover checks the expected active release under the mandatory shared lock,
+saves root-only rollback files, installs owning identities and immutable release,
+tests a separate hardened candidate service with read-only credentials, validates
+the full Caddy config/unit, switches current atomically, starts only the new Node
+unit, reloads Caddy and checks public HTTPS behavior/redirects. An error restores
+the old release/fragment/unit/wrapper and publishing configuration within the
+same lock. Candidate services stop before activation and on failure.
+
+## Verification and rollback
 
 ```sh
-cd ~/github/dunamismax.com && git pull --ff-only
-sudo bash deploy/03-deploy.sh
+systemctl is-active astro-dunamismax caddy mysql php8.5-fpm
+curl -fsS https://dunamismax.com/healthz
+curl -fsSI https://dunamismax.com/about
+curl -fsS https://dunamismax.com/feed.xml
+sudo with-deploy-lock /srv/www/dunamismax.com/current/deploy/rollback.sh /root/CHECKPOINT --check
+# If rollback is necessary, same command without --check.
 ```
 
-03 refuses a dirty checkout, never overwrites an existing release, and
-verifies publicly through Caddy once the site file exists.
+Rollback checkpoints hold prior current link, Caddy fragment, Node unit/state,
+writer wrapper and original legacy publishing permissions, plus the final data
+snapshot and reconciliation reports. Rollback verifies current has not changed.
+Before restoring PHP/MySQL it takes the deployment lock (excluding new writers)
+and requires PostgreSQL data to match the cutover snapshot. If later writes
+exist, it refuses: reconcile those writes with a reviewed reverse migration
+before switching writers. Restoring an old dump would discard those writes.
 
-## Rollback
-
-Code:
-
-```sh
-previous=$(sudo cat /root/dunamismax-previous-release)
-sudo test -d "$previous/public"
-sudo ln -sfn "$previous" /srv/www/dunamismax.com/current.rollback
-sudo mv -Tf /srv/www/dunamismax.com/current.rollback /srv/www/dunamismax.com/current
-sudo systemctl reload php8.5-fpm
-```
-
-Do not restore the database to undo a code release. The Caddy and
-decommission rollbacks are printed by 04 and 05, with the exact backup paths.
-
-## Backups and restore
-
-`dunamismax-backup` writes `dunamismax-<stamp>.tar.gz` with a SHA-256
-checksum. Each archive holds:
-
-- A transactional MySQL dump.
-- Both env files, the pool, the Caddy site file, and the backup units.
-- The release path, the application tree, and shared storage.
-
-Archives contain credentials. To test a restore, extract into a private
-temporary directory and load `database.sql.gz` into a new
-`dunamismax_restore_test` database. A dump does not recreate MySQL accounts;
-recreate them with the passwords from the saved env files.
-
-```sh
-sudo systemctl start dunamismax-backup.service
-systemctl list-timers dunamismax-backup.timer
-journalctl -u dunamismax-backup.service -n 20 --no-pager
-```
+Retain PHP-FPM pool, MySQL database, old releases and `/etc/dunamismax` settings.
+The installed legacy `dunamismax-backup` executable/timer remain running as
+required by the shared plan; obsolete PHP deployment sources are removed here.
+The host backup additionally dumps/encrypts PostgreSQL data, roles and role
+credentials and verifies a full isolated PostgreSQL 18 restore on every backup.
+After cutover run it again, then encrypted `restore check` and `postgres-verify`.
+Verify both configured backup remote tips when the backup is pushed. No database,
+credential, shared service or legacy backup cleanup belongs to this migration.

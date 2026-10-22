@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Error from '../../components/Error.astro';
+import { posts } from '../../lib/posts.js';
+import type { Post } from '../../lib/posts.js';
+import { shortDate, readingMinutes, paragraphs } from '../../lib/text.js';
+let post: Post | null = null;
+let code = 404;
+if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(Astro.params.slug ?? '')) { try { post = await posts.find(Astro.params.slug!); code = post ? 200 : 404; } catch { code = 503; console.error('Post database unavailable'); } }
+Astro.response.status = code;
+---
+<Layout title={post?.title ?? (code === 503 ? 'Temporarily unavailable' : 'Not found')} {...(post?.excerpt ? {description: post.excerpt} : {})} path={'/blog/' + Astro.params.slug} status={code} ogType="article">
+{post ? <article aria-labelledby="post-title"><header class="page-hero"><div class="section-inner"><div class="post-detail"><p class="eyebrow"><a href="/blog">Blog</a></p><h1 id="post-title">{post.title}</h1>{post.excerpt && <p class="lede">{post.excerpt}</p>}<p class="post-detail__meta"><time datetime={post.published_at.toISOString().slice(0,10)}>{shortDate(post.published_at)}</time><span>{readingMinutes(post.body)} min read</span></p></div></div></header><div class="page-section"><div class="section-inner"><div class="post-detail"><div class="post-body" set:html={paragraphs(post.body)} /><p class="section-foot"><a href="/blog" class="section-link">Back to all posts</a></p></div></div></div></article> : <Error code={code} />}
+</Layout>

@@ -10,3 +10,9 @@
 /backups/
 /storage/*
 !/storage/.gitkeep
+
+node_modules/
+dist/
+.astro/
+output/
+.playwright-cli/

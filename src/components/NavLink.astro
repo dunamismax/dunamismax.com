@@ -1,0 +1,5 @@
+---
+interface Props { href: string; label: string; section: string | undefined }
+const { href, label, section } = Astro.props;
+---
+<a href={href} class={section === href ? 'is-current' : undefined} aria-current={section === href ? 'page' : undefined}>{label}</a>

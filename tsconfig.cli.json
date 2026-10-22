@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "bin/**/*.ts",
+    "src/lib/**/*.ts"
+  ],
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist/cli",
+    "rootDir": ".",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2023",
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": true
+  }
+}
