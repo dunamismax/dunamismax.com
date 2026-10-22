@@ -10,4 +10,7 @@ set -a
 source /etc/astro-apps/dunamismax/publishing.env
 set +a
 cd /srv/www/dunamismax.com/current
-exec runuser -u sawyer -- env -i     PATH=/opt/astro-runtime/bin:/usr/bin:/bin POSTS_TRUSTED_WRAPPER=1     PGHOST="$PGHOST" PGPORT="$PGPORT" PGDATABASE="$PGDATABASE" PGUSER="$PGUSER" PGPASSWORD="$PGPASSWORD"     /opt/astro-runtime/bin/node dist/cli/bin/posts.js "$@"
+# Preserve credentials in the inherited environment, never command arguments.
+unset DATABASE_URL POSTS_CONFIG NODE_OPTIONS NODE_PATH PGOPTIONS PGSERVICE
+export PATH=/opt/astro-runtime/bin:/usr/bin:/bin POSTS_TRUSTED_WRAPPER=1
+exec runuser -u sawyer -- /opt/astro-runtime/bin/node dist/cli/bin/posts.js "$@"
