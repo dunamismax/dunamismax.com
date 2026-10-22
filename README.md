@@ -1,9 +1,8 @@
 # dunamismax.com
 
 Stephen Sawyer’s personal site, portfolio and blog. Approved portfolio copy,
-branding, project order, links and layout are preserved. The card describing
-this application now states its actual stack; descriptions of other projects
-remain the reviewed editorial inventory in [docs/portfolio.md](docs/portfolio.md).
+branding, project order, links and layout are preserved. Current stack descriptions follow the verified project handoffs in
+[docs/portfolio.md](docs/portfolio.md).
 
 ## Stack and routes
 

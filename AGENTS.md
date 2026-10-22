@@ -10,9 +10,8 @@ the historical PHP-only implementation restrictions.
 This is Stephen Sawyer’s (`dunamismax`) personal portfolio and blog. Preserve
 approved copy, branding, public URLs, metadata, project anchors and contact
 links. Keep other project stack/status claims grounded in their actual runtime
-and [portfolio evidence](docs/portfolio.md). Preserve the approved PHP-first
-professional profile; this application’s project card accurately describes
-Astro/TypeScript/PostgreSQL. Do not publish private sources, addresses, keys,
+and [portfolio evidence](docs/portfolio.md). The final host migration authorizes factual stack descriptions to reflect
+verified Astro/TypeScript/PostgreSQL deployments. Preserve unrelated profile copy. Do not publish private sources, addresses, keys,
 backup locations or drafts. No public admin, forms, accounts, tracking or scripts.
 
 ## Implementation

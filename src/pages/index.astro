@@ -10,22 +10,22 @@ let latest: Post | null = null;
 let postCount: number | null = null;
 try { latest = (await posts.latest(1))[0] ?? null; postCount = await posts.count(); } catch { console.error("Home writing unavailable"); }
 ---
-<Layout title="dunamismax" description="Stephen Sawyer: PHP and MySQL web development, Python automation, company-wide RustDesk support, and self-hosted Ubuntu systems." path="/">
+<Layout title="dunamismax" description="Stephen Sawyer: Astro, TypeScript, and PostgreSQL web development, Python automation, company-wide RustDesk support, and self-hosted Ubuntu systems." path="/">
 <section class="hero-section" aria-labelledby="home-title">
     <div class="hero-background" aria-hidden="true"></div>
     <div class="section-inner hero-grid">
         <div class="hero-copy">
             <p class="eyebrow">Stephen Sawyer · dunamismax</p>
             <h1 id="home-title">I build the websites.<br>I run the systems.</h1>
-            <p class="lede lede--strong">I’m Stephen Sawyer: a PHP-first web developer and hands-on sysadmin. I build with PHP and MySQL, automate with Python, and operate the Ubuntu infrastructure behind my work.</p>
+            <p class="lede lede--strong">I’m Stephen Sawyer: an Astro and TypeScript web developer and hands-on sysadmin. I build with Astro, TypeScript, and PostgreSQL, automate with Python, and operate the Ubuntu infrastructure behind my work.</p>
             <p class="lede">From self-hosted RustDesk for my entire company to public websites, monitoring, and backups, I take responsibility for the code and the service people actually use.</p>
             <div class="hero-actions">
                 <a href="/projects" class="button button-primary">View projects</a>
                 <a href="/about" class="button button-secondary">Experience &amp; skills</a>
             </div>
             <ul class="stack-row" aria-label="Primary stack">
-                <li class="stack-chip stack-chip--strong">PHP</li>
-                <li class="stack-chip stack-chip--strong">MySQL</li>
+                <li class="stack-chip stack-chip--strong">Astro / TypeScript</li>
+                <li class="stack-chip stack-chip--strong">PostgreSQL</li>
                 <li class="stack-chip stack-chip--strong">Python</li>
                 <li class="stack-chip">HTML</li>
                 <li class="stack-chip">CSS</li>
@@ -64,7 +64,7 @@ try { latest = (await posts.latest(1))[0] ?? null; postCount = await posts.count
 <section class="signal-bar" aria-label="At a glance">
     <div class="section-inner">
         <div class="signal-grid">
-            <article class="signal-card"><p>Stack</p><strong>PHP, MySQL, Python</strong></article>
+            <article class="signal-card"><p>Stack</p><strong>Astro, TypeScript, PostgreSQL, Python</strong></article>
             <article class="signal-card"><p>Portfolio</p><strong>8 projects &amp; services</strong></article>
             <article class="signal-card"><p>Writing</p><strong>{postCount === null ? 'Notes on the blog' : postCount === 1 ? '1 published note' : `${postCount} published notes`}</strong></article>
             <article class="signal-card"><p>Responsibility</p><strong>Development through operations</strong></article>
@@ -76,7 +76,7 @@ try { latest = (await posts.latest(1))[0] ?? null; postCount = await posts.count
         <div class="workflow-grid">
             <article class="workflow-card">
                 <p class="workflow-card__title">Web</p>
-                <p>Bespoke object-oriented PHP, prepared SQL, server-rendered semantic HTML, and hand-written CSS.</p>
+                <p>Astro, strict TypeScript, prepared SQL, server-rendered semantic HTML, and hand-written CSS.</p>
             </article>
             <article class="workflow-card">
                 <p class="workflow-card__title">Remote support</p>
@@ -88,7 +88,7 @@ try { latest = (await posts.latest(1))[0] ?? null; postCount = await posts.count
             </article>
             <article class="workflow-card">
                 <p class="workflow-card__title">Operations</p>
-                <p>Ubuntu, Caddy, isolated PHP-FPM pools, systemd services, monitoring, and encrypted backups.</p>
+                <p>Ubuntu, Caddy, isolated Node services, systemd services, monitoring, and encrypted backups.</p>
             </article>
         </div>
     </div>

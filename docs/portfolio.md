@@ -53,3 +53,13 @@ service is retired.
 
 The Astro migration updates only this application’s stack card to match its new
 runtime. Other project descriptions above remain a dated editorial inventory.
+
+
+## October 22 migration verification
+
+All six sites now use Astro and strict TypeScript. Portfolio, Grace & Footnotes,
+Imaging Services demo and status use PostgreSQL with separate runtime roles.
+Hodie and XrayService serve static output through Caddy. Status and Cloudflare
+DDNS use TypeScript; the bot remains Python. Public stack descriptions reflect
+these verified project handoffs; the company demo remains unlaunched and private.
+The October 17 review above is historical evidence, not the current stack.

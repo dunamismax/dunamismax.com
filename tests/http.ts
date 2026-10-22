@@ -4,7 +4,7 @@ const outage=process.env.TEST_OUTAGE === '1';
 const populated=process.env.TEST_POPULATED === '1';
 let checks=0;
 function check(value: unknown, message: string) {assert.ok(value,message);checks++;}
-const pageText: Record<string,string>={'/':'I build the websites.','/about':'PHP-first web development','/projects':'Websites, support, and systems.','/contact':'dunamismax@tutamail.com'};
+const pageText: Record<string,string>={'/':'I build the websites.','/about':'Astro and TypeScript web development','/projects':'Websites, support, and systems.','/contact':'dunamismax@tutamail.com'};
 for(const [path,text] of Object.entries(pageText)) {
  const res=await fetch(base+path);const html=await res.text();check(res.status===200,path+' status');check(html.includes(text),path+' copy');check((html.match(/<h1[ >]/g)??[]).length===1,path+' heading');check(html.includes('id="main-content"')&&html.includes('href="#main-content"'),path+' landmarks');check(!/<script| on[a-z]+=|javascript:|style=/i.test(html),path+' no scripts or inline styles');check(html.includes('rel="canonical" href="https://dunamismax.com'+path+'"'),path+' canonical');check(html.includes('property="og:title"')&&html.includes('name="twitter:card"'),path+' metadata');check(html.includes('/feed.xml')&&html.includes('/manifest.webmanifest'),path+' feed and manifest');
  if(path==='/'||path==='/projects') {check((html.match(/class="project-card__name"/g)??[]).length===8,'project count');for(const term of ['RustDesk remote support','Dunamis Status','Server backup &amp; recovery','Grace &amp; Footnotes','Imaging Services website','dunamismax.com','MTG Card Bot','Dynamic DNS automation']) check(html.includes(term),term);}

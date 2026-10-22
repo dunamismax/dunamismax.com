@@ -4,6 +4,6 @@ export function configuration(env: NodeJS.ProcessEnv) {
   const origin = env.APP_URL ?? 'https://dunamismax.com';
   const url = new URL(origin);
   if (url.origin !== origin || url.username || url.password || (mode === 'production' && url.protocol !== 'https:') || !['https:', 'http:'].includes(url.protocol)) throw new Error('Invalid canonical origin');
-  return { origin, production: mode === 'production', description: 'Stephen Sawyer: PHP and MySQL web development, Python automation, company-wide RustDesk support, and self-hosted Ubuntu systems.' };
+  return { origin, production: mode === 'production', description: 'Stephen Sawyer: Astro, TypeScript, and PostgreSQL web development, Python automation, company-wide RustDesk support, and self-hosted Ubuntu systems.' };
 }
 export const config = configuration(process.env);

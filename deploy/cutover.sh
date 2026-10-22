@@ -21,27 +21,10 @@ cp -a "$fragment" "$saved/site.caddy"
 [[ ! -f /usr/local/sbin/dunamismax-posts ]] || cp -a /usr/local/sbin/dunamismax-posts "$saved/previous-wrapper"
 failed() { local code=$?; trap - ERR; echo "Cutover failed; restoring $saved" >&2; restore_release "$saved"; exit "$code"; }
 trap failed ERR
-legacy=false
-if [[ -f $expected/public/index.php ]]; then
-    legacy=true
-    cp -a /etc/dunamismax/publishing.env "$saved/legacy-publishing.env"
-    # Freeze old CLI authoring; its owner/mode check fails closed. Credentials retained.
-    chown root:root /etc/dunamismax/publishing.env
-    chmod 0000 /etc/dunamismax/publishing.env
-fi
-if $legacy; then
-    # Wait for already-started legacy publishers before taking the final snapshot.
-    for _ in {1..30}; do count=$(mysql -NBe "SELECT COUNT(*) FROM information_schema.processlist WHERE USER='dunamismax_publish'"); [[ $count == 0 ]] && break; sleep 1; done
-    [[ $count == 0 ]]
-fi
+[[ -s $expected/dist/cli/bin/server.js ]] || { echo 'Only Astro-to-Astro deployment is supported; use isolated legacy recovery.' >&2; exit 1; }
 cd "$candidate"
 "$node" dist/cli/bin/schema.js
 "$node" dist/cli/bin/verify-database.js | tee "$saved/privilege-report.log"
-if $legacy; then
-    "$node" dist/cli/bin/migrate-data.js export "$saved/mysql-final.json" | tee "$saved/export-report.json"
-    "$node" dist/cli/bin/migrate-data.js import "$saved/mysql-final.json" | tee "$saved/import-report.json"
-    "$node" dist/cli/bin/migrate-data.js reconcile "$saved/mysql-final.json" | tee "$saved/reconcile-report.json"
-fi
 # Keep privileges and data isolated from other projects.
 id astro-dunamismax-web >/dev/null 2>&1 || useradd --system --no-create-home --home-dir /nonexistent --shell /usr/sbin/nologin astro-dunamismax-web
 release="$base/releases/$commit"
