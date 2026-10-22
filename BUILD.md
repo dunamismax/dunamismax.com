@@ -5,6 +5,10 @@ Preserved: approved portfolio, routes, CSS/icon, metadata, RSS/plain text,
 pagination, zero browser scripts, draft privacy and database outage behavior.
 About/Contact/Projects prerender; PostgreSQL remains authoritative for posts.
 
+Production runs release `c93aaec` as of October 22, 2026 Eastern. The public
+109-check HTTP suite passes; post-cutover backup/restore and the protected
+rollback check still require confirmation. See the acceptance record below.
+
 ## Gates
 
 ```sh

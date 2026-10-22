@@ -1,7 +1,8 @@
 # Astro migration acceptance
 
-Verified October 22, 2026 UTC (October 21 Eastern). The approved source and
-currently active PHP release were both `e3f991fdc6d5c05c9ba6f14715ae65e7156794ea`.
+Production verified October 22, 2026 Eastern. The active Astro release is
+`c93aaec9fba731f2a1df38f011dd0c62e6d40aa3`. The retained PHP predecessor is
+`e3f991fdc6d5c05c9ba6f14715ae65e7156794ea`.
 
 ## Completed before cutover
 
@@ -29,16 +30,37 @@ currently active PHP release were both `e3f991fdc6d5c05c9ba6f14715ae65e7156794ea
   link, minimum touch targets and long-post wrapping retained/improved.
 - Bash syntax and ShellCheck pass. No PHP implementation files remain in Git.
 
-## Pending privileged acceptance
+## Observed production cutover
 
-Production cutover requires authenticated root execution; the current SSH account
-reports sudo needs interactive authentication. Until it is available, production
-continues serving PHP at the source release above. No production migration or
-rollback execution is claimed.
+The owner performed the privileged cutover. A subsequent independent inspection
+confirmed the active release symlink above, `astro-dunamismax.service` active and
+running with ExecMainStatus 0, and the service configured as
+`astro-dunamismax-web` with only the designated web.env EnvironmentFile.
 
-Required remaining gates: fresh host backup and encrypted restore verification;
-locked final writer freeze, data sync/reconciliation and candidate service test;
-Caddy/systemd validation and atomic activation; production HTTP/redirect/header/
-private-path checks; live PG role checks; guarded rollback check; post-cutover
-backup/encrypted restore; shared-site/service checks. Record the concrete deployed
-commit, rollback checkpoint and backup evidence here after observing them.
+- All 109 empty-blog HTTP checks passed against public production from the
+  verified candidate, including content, metadata, HEAD, method restrictions,
+  private-path 404/noindex behavior and content types.
+- `/healthz` returns the expected JSON. RSS parses as RSS 2.0 with zero items;
+  the production blog returns 200/no-store. The www hostname redirects 301 to
+  the apex. Public output shows this application's migrated stack card.
+- The root-only `last-astro-rollback` pointer exists, written at approximately
+  6:19 a.m. Eastern. The cutover script writes it after candidate checks,
+  production checks and redirect validation succeed. Its protected contents
+  and individual root-only cutover reports have not been independently read.
+- Caddy, PHP-FPM, MySQL and PostgreSQL remain active; systemd reports no failed
+  units. Legacy services and data remain retained for rollback.
+- The latest observed host backup commit is `0a3be35`, captured at 6:18 a.m.
+  Eastern before cutover. The PostgreSQL encrypted dump has a corresponding
+  timestamp. This establishes a pre-cutover snapshot, not a post-cutover backup.
+- Application implementation commits `7f5d48b` and `c93aaec` were pushed to both
+  configured remotes; both main tips were independently checked at `c93aaec`
+  before the owner performed cutover.
+
+## Remaining privileged verification
+
+The SSH account still requires interactive sudo authentication. The guarded
+rollback `--check`, post-cutover host backup and encrypted `restore check` /
+`postgres-verify` need confirmation. Read the protected cutover reports to record
+the final migration digest, live role checks and exact rollback checkpoint.
+Production is serving Astro; these remaining acceptance checks are not claimed
+complete from the public HTTP results.
