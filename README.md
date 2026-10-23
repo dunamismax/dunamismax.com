@@ -75,3 +75,13 @@ are operator-only. See [publishing](docs/content.md),
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Continuous verification and dependency review
+
+GitHub Actions verifies the pinned Node 24.22.1/npm 11.19.1 toolchain with
+`npm ci`, strict checks, repository tests and builds, then `npm audit` (moderate
+and above fail). Integration checks use disposable synthetic PostgreSQL or the
+custom-Caddy fixture suite; no production credentials are supplied. The workflow
+also runs weekly. Dependabot opens bounded weekly npm proposals and monthly
+pinned-action proposals for review. Exact dependency pins and lockfiles remain
+required; these workflows never deploy unreviewed updates.
