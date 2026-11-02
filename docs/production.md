@@ -3,7 +3,8 @@
 The runbook below describes the current Astro/PostgreSQL/Drizzle workflow;
 historical acceptance is in docs/migration.md, not a fresh host inspection. The
 deployment model is unchanged by Drizzle; no Next.js, SQLite or mandatory Compose
-cutover is planned. The first Drizzle release is pending owner authorization.
+cutover is planned. The first Drizzle release (`e1c292c`) adopted production on
+November 2, 2026; evidence is in BUILD Phase 0.
 
 Follow the shared contract at
 `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md`. Root access is

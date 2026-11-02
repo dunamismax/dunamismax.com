@@ -1,8 +1,8 @@
 # Portfolio evidence
 
 The final November 2 direction keeps this site on Astro/PostgreSQL; Drizzle
-adoption (BUILD Phase 0) is verified locally and awaits an authorized release, so
-the public stack card is unchanged. Keep this dated inventory as history, and
+adoption (BUILD Phase 0) was released November 2, 2026. The public stack card
+(Astro/TypeScript/PostgreSQL) remains accurate and is unchanged. Keep this dated inventory as history, and
 verify each actual runtime before updating stack claims. Other projects' Python
 work remains legitimate portfolio content; it does not require Python in this
 site. No Swift/native application is currently required here.

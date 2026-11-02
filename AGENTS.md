@@ -3,9 +3,9 @@
 Read this file, `README.md`, `BUILD.md`, and task-relevant `docs/` before changes.
 Read `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md` and any
 successor shared host contract before deployment. The owner's final November 2,
-2026 direction retains Astro and PostgreSQL. BUILD Phase 0 Drizzle adoption is
-implemented and verified locally; its production release is pending owner
-authorization. The Next.js and SQLite proposals are superseded. Use Context7
+2026 direction retains Astro and PostgreSQL. BUILD Phase 0 Drizzle adoption was
+released to production at `e1c292c` on November 2, 2026; see BUILD for evidence
+and the remaining host-workflow item. The Next.js and SQLite proposals are superseded. Use Context7
 for current library/API guidance.
 
 ## Git rules (owner's standing instructions)
@@ -80,7 +80,7 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 | PostgreSQL | Native loopback service; database dunamismax, schema app; independent owner/web/publishing/migration roles |
 | Credentials | /etc/astro-apps/dunamismax/{web,publishing,migration}.env, one per identity |
 | Releases | /srv/www/dunamismax.com/releases/<commit>, atomic current; shared descriptor-9 deployment lock |
-| ORM | src/db/schema.ts, drizzle.config.ts, drizzle/ migrations; journal drizzle.__drizzle_migrations is owner-only; production adoption pending release |
+| ORM | src/db/schema.ts, drizzle.config.ts, drizzle/ migrations; journal drizzle.__drizzle_migrations is owner-only; production adopted at e1c292c |
 
 Read docs/production.md before changes. Retain verified nightly pg_dump and
 protected off-server restore coverage. Caddy Cloudflare DNS challenge uses a

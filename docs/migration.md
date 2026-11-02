@@ -1,8 +1,8 @@
 # Astro migration acceptance
 
 Historical October 2026 PHP-to-Astro/PostgreSQL acceptance only. The final
-November 2 direction retains Astro/PostgreSQL with pending Drizzle alignment
-in BUILD Phase 0. Next.js/SQLite proposals are superseded. This record is not
+November 2 direction retains Astro/PostgreSQL; the later Drizzle alignment and
+its release evidence are in BUILD Phase 0. Next.js/SQLite proposals are superseded. This record is not
 proof of current host state or of completed Drizzle implementation/deployment;
 record future verification separately without rewriting these historical results.
 

@@ -3,7 +3,7 @@
 ## Current implementation
 
 The following describes checked-in Astro/PostgreSQL/Drizzle code. Status is in
-[BUILD Phase 0](../BUILD.md#phase-0--astropostgresql-stack-alignment-first-pending); no framework,
+[BUILD Phase 0](../BUILD.md#phase-0--astropostgresql-stack-alignment-first); no framework,
 database-engine or language conversion is planned.
 
 Caddy → loopback Node → Astro static/SSR handler → PostgreSQL for writing.

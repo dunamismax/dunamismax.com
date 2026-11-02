@@ -8,8 +8,8 @@ branding, project order, links and layout are preserved. Current stack descripti
 
 The stack is **Astro + strict TypeScript + PostgreSQL + Drizzle**, behind
 existing Caddy/Cloudflare. Drizzle was adopted in place over the existing
-node-postgres pool and database; it is verified locally and its production
-release is pending. See [BUILD Phase 0](BUILD.md#phase-0--astropostgresql-stack-alignment-first-pending).
+node-postgres pool and database and released to production on November 2,
+2026. See [BUILD Phase 0](BUILD.md#phase-0--astropostgresql-stack-alignment-first).
 The superseded Next.js and SQLite plans do not apply.
 
 Keep existing semantic HTML/CSS and zero browser scripts. React islands,

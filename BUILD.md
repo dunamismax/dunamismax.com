@@ -1,16 +1,18 @@
 # Build plan and verification
 
-## Phase 0 — Astro/PostgreSQL stack alignment (first; pending)
+## Phase 0 — Astro/PostgreSQL stack alignment (first)
 
 Owner's final direction, November 2, 2026 Eastern: retain Astro and PostgreSQL.
 This replaces the Next.js rewrite and the subsequently withdrawn SQLite plan.
 Python and Swift are used only when this project actually needs them or the
 owner requests them.
 
-Status: Drizzle adoption (0.1–0.3, 0.5) is implemented and verified locally; see
-the [local verification record](#local-verification-record-november-2-2026-eastern).
-Section 0.4 needs an owner-authorized production release and remains open. No
-deployment or production change has been made.
+Status: Drizzle adoption is implemented, verified locally and released to
+production at `e1c292c` (owner-authorized, November 2, 2026). See the
+[local verification record](#local-verification-record-november-2-2026-eastern)
+and [production release record](#production-release-record-november-2-2026-eastern).
+One item remains open: Caddy's Cloudflare DNS assumption does not match the host
+and belongs to the shared host workflow.
 
 ### 0.1 Preserve the working application and establish the baseline
 
@@ -106,12 +108,12 @@ Drizzle adoption is the remaining implementation work, not a framework rewrite.
 
 ### 0.4 Keep the existing self-hosted deployment and backup model
 
-- [ ] Keep the site-scoped systemd Node service on 127.0.0.1:4311, native PG
+- [x] Keep the site-scoped systemd Node service on 127.0.0.1:4311, native PG
   loopback-only, existing Caddy fragment/custom binary and protected per-role
   env files. Containerization/Compose is optional, not required work. If ever
   chosen, document loopback-only port publishing and safe native-PG connectivity
   before changing it; never expose PG to make a container connection work.
-- [ ] Build/test isolated candidates before taking the existing shared deployment
+- [x] Build/test isolated candidates before taking the existing shared deployment
   lock. Hold descriptor 9 for the full privileged cutover/rollback. Exclude
   publishing while migrating; apply only additive, rollback-compatible schema
   changes. Keep immutable commit releases and atomic current pointers. Do not
@@ -119,11 +121,15 @@ Drizzle adoption is the remaining implementation work, not a framework rewrite.
 - [ ] Verify Caddy's Cloudflare DNS plugin, zone-scoped Caddy-only token and
   valid origin TLS; proxied DNS uses Full (strict). Missing shared-host support
   belongs in the owning host workflow; do not replace shared Caddy here.
-- [ ] Retain nightly pg_dump backups, encrypted off-server copies and isolated
+  Open (host workflow): on November 2 the custom Caddy v2.11.4 had only the
+  rate-limit module (no Cloudflare DNS provider), and dunamismax.com/www resolve
+  directly to the origin (not Cloudflare-proxied). Origin TLS is a valid Let's
+  Encrypt certificate (expires 2027-01-04). Caddy was not modified here.
+- [x] Retain nightly pg_dump backups, encrypted off-server copies and isolated
   restore checks including data, roles, ACLs, Drizzle journal and app release.
   Confirm actual backup/restore evidence before a release. Litestream/R2 SQLite
   replication, WAL/busy_timeout settings and SQLite files are out of scope.
-- [ ] Rehearse code rollback against newer PG writes. Do not restore old database
+- [x] Rehearse code rollback against newer PG writes. Do not restore old database
   dumps or divergent MySQL over authoritative data; stop for reconciliation if
   an old release is incompatible. Retain existing backup timers/recovery sources.
 
@@ -184,6 +190,41 @@ npm 11.19.1 (mise), Homebrew PostgreSQL 18.6 and 17.11 on macOS.
   124 populated / 121 outage / 124 recovered (new private-path checks).
 - No presentation change, so browser review was not repeated. Shell scripts:
   only rehearse.sh exports PGBIN; bash -n and ShellCheck pass.
+
+### Production release record (November 2, 2026 Eastern)
+
+Owner-authorized release of `e1c292c7c999f3dc96f54384fd9350e008339a18`,
+replacing `cfade65`. Separate from the local record above and from the October
+migration acceptance.
+
+- Source: main pushed; GitHub and Codeberg tips both verified at `e1c292c`.
+  VM checkout fast-forwarded; `deploy/prepare.sh` built the isolated candidate
+  (check 0 errors, 6 unit tests, build, PG 18 rehearsal 124/121/124 HTTP);
+  `db:check` and `npm audit` clean in the candidate.
+- Pre-release host backup `f650974` (pushed, both backup remotes verified),
+  `restore check` 95 files / 0 failures, `restore postgres-verify` 7 databases.
+- Cutover under `with-deploy-lock` (exclusive; publishing excluded) at about
+  3:18 p.m. Eastern, checkpoint `/root/dunamismax-astro-20261102T201802Z`.
+  Schema step: `adopted: true`, 1 migration, 0 rows, digest unchanged.
+  Privilege report passed, including web/publisher denial on the journal.
+  Candidate service and public production each passed 118 HTTP checks; the
+  www redirect check passed. No shared service was restarted (Caddy reload).
+- Independent checks: current → `e1c292c`; astro-dunamismax active, ExecMainStatus
+  0, user astro-dunamismax-web, only web.env; 127.0.0.1:4311 and PG
+  127.0.0.1:5432 loopback-only; no failed units. Journal holds one row whose hash
+  equals SHA256 of `drizzle/0000_baseline.sql`; `drizzle` schema owner-only;
+  app catalog still equals `database/baseline-catalog.json`. The installed
+  `dunamismax-posts list` works through Drizzle. HTTPS: CSP and no-store
+  present, /healthz ok, www 301 preserves path/query, all five host sites 200.
+- Rollback: `rollback.sh CHECKPOINT --check` passed under the lock. The retained
+  `cfade65` release, run temporarily on 127.0.0.1:4323 with only web.env against
+  the adopted live database, passed its own 109-check suite; locally it passed
+  115 populated checks against a database migrated and written by `e1c292c`.
+  No production rollback was performed.
+- Post-release host backup `44a3cac` pushed; `restore check` 95 / 0 failures,
+  `postgres-verify` 7 databases (dunamismax including the journal schema), and
+  `applications-verify` served `e1c292c` from restored PostgreSQL with HTTP 200.
+  A later unrelated snapshot `3d1d352` is the tip of both backup remotes.
 
 ### References for implementation
 
