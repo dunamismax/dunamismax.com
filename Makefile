@@ -3,6 +3,7 @@ serve:
 	APP_ENV=local npm run dev
 check:
 	npm run check
+	npm run db:check
 	npm test
 build:
 	npm run build

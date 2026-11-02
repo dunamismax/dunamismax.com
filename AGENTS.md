@@ -3,10 +3,10 @@
 Read this file, `README.md`, `BUILD.md`, and task-relevant `docs/` before changes.
 Read `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md` and any
 successor shared host contract before deployment. The owner's final November 2,
-2026 direction retains Astro and PostgreSQL;
-BUILD Phase 0 plans Drizzle adoption first. The Next.js and SQLite proposals
-are superseded. This planning session changes docs only; a future implementer
-performs the pending alignment. Use Context7 for current library/API guidance.
+2026 direction retains Astro and PostgreSQL. BUILD Phase 0 Drizzle adoption is
+implemented and verified locally; its production release is pending owner
+authorization. The Next.js and SQLite proposals are superseded. Use Context7
+for current library/API guidance.
 
 ## Git rules (owner's standing instructions)
 
@@ -36,9 +36,12 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 
 ## Implementation
 
-- Target: Astro + strict TypeScript + PostgreSQL + Drizzle. Astro/PG already
-  run here; Drizzle schema/migrations are pending BUILD Phase 0. Keep raw SQL
-  where needed to preserve PG views, constraints and ACLs. No framework rewrite.
+- Stack: Astro + strict TypeScript + PostgreSQL + Drizzle (drizzle-orm 0.45.4,
+  drizzle-kit 0.31.11, node-postgres). `src/db/schema.ts` is the schema source;
+  `drizzle/` holds reviewed migrations (grants as custom SQL). Change the schema
+  with `npx drizzle-kit generate`, review the SQL, then `npm run db:check`.
+  `bin/schema.ts` is the only applier; it adopts a pre-Drizzle database only when
+  its catalog equals `database/baseline-catalog.json`. No framework rewrite.
 - Python and Swift are conditional on a real project need or explicit request.
   Keep existing TypeScript operator tools; do not convert them to Python or
   scaffold a native app. Future requested Apple clients use Swift/SwiftUI and
@@ -77,7 +80,7 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 | PostgreSQL | Native loopback service; database dunamismax, schema app; independent owner/web/publishing/migration roles |
 | Credentials | /etc/astro-apps/dunamismax/{web,publishing,migration}.env, one per identity |
 | Releases | /srv/www/dunamismax.com/releases/<commit>, atomic current; shared descriptor-9 deployment lock |
-| Pending ORM | src/db/schema.ts, drizzle.config.ts, drizzle/ migrations; not delivered yet |
+| ORM | src/db/schema.ts, drizzle.config.ts, drizzle/ migrations; journal drizzle.__drizzle_migrations is owner-only; production adoption pending release |
 
 Read docs/production.md before changes. Retain verified nightly pg_dump and
 protected off-server restore coverage. Caddy Cloudflare DNS challenge uses a
@@ -109,7 +112,7 @@ newer PostgreSQL writes; refuse rollback to divergent MySQL until reconciled.
 
 ## Verification and repository hygiene
 
-Run `npm run check` (Astro plus TypeScript), `npm test`, `npm run build`, and
+Run `npm run check` (Astro plus TypeScript), `npm run db:check`, `npm test`, `npm run build`, and
 `bash deploy/rehearse.sh` for application/data changes. Rehearsal uses a disposable
 `_test` database and tests real PostgreSQL privileges, CLI, scheduling and
 HTTP outage/recovery. Run `bash -n` and `shellcheck -x deploy/*.sh` for shell.

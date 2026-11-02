@@ -1,7 +1,8 @@
 # Portfolio evidence
 
 The final November 2 direction keeps this site on Astro/PostgreSQL; Drizzle
-alignment is pending BUILD Phase 0. Keep this dated inventory as history, and
+adoption (BUILD Phase 0) is verified locally and awaits an authorized release, so
+the public stack card is unchanged. Keep this dated inventory as history, and
 verify each actual runtime before updating stack claims. Other projects' Python
 work remains legitimate portfolio content; it does not require Python in this
 site. No Swift/native application is currently required here.

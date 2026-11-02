@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import pg from 'pg';
-import { protectedEnv, pgConfig } from '../src/lib/credentials.js';
+import { desc, eq, getTableColumns, sql } from 'drizzle-orm';
+import { protectedEnv } from '../src/lib/credentials.js';
+import { operatorConnection, safeMessage } from '../src/db/operator.js';
+import { posts } from '../src/db/schema.js';
 import { changePost } from '../src/lib/publisher.js';
 import type { Fields } from '../src/lib/publisher.js';
 import { validateSlug, timestamp, BODY_BYTES } from '../src/lib/validation.js';
@@ -45,14 +47,16 @@ async function main() {
   const integer = (value: string, min: number, max: number) => { const n = Number(value); if (!/^(0|[1-9][0-9]*)$/.test(value) || !Number.isSafeInteger(n) || n < min || n > max) throw new Error('Invalid pagination argument'); return n; };
   const limit = integer(values.limit ?? '50',1,500), offset = integer(values.offset ?? '0',0,2147483647);
   const env = process.env.POSTS_CONFIG ? protectedEnv(process.env.POSTS_CONFIG) : process.env.POSTS_TRUSTED_WRAPPER === '1' ? process.env as Record<string,string> : protectedEnv('/etc/astro-apps/dunamismax/publishing.env');
-  const client = new pg.Client(pgConfig(env, 'dunamismax_publishing'));
+  const { client, db } = await operatorConnection(env, 'dunamismax_publishing');
   try {
-    await client.connect();
     if (command === 'list' || command === 'show') {
-      const result = command === 'list' ? await client.query("SELECT slug,title,status,published_at,CASE WHEN status='published' AND published_at>clock_timestamp() THEN 'scheduled' ELSE status END AS state FROM app.posts ORDER BY id DESC LIMIT $1 OFFSET $2",[limit,offset]) : await client.query("SELECT *,CASE WHEN status='published' AND published_at>clock_timestamp() THEN 'scheduled' ELSE status END AS state FROM app.posts WHERE slug=$1",[slug]);
-      if (command === 'show' && !result.rows.length) throw new Error('Post not found.');
-      process.stdout.write(JSON.stringify(command === 'list' ? result.rows : result.rows[0],null,2) + '\n');
-    } else { await changePost(client,command,slug!,fields,values.at); process.stdout.write(`${command === 'validate' ? 'Valid; no changes saved' : command + ' completed'}: ${slug}.\n`); }
+      const state = sql<string>`CASE WHEN ${posts.status} = 'published' AND ${posts.published_at} > clock_timestamp() THEN 'scheduled' ELSE ${posts.status} END`;
+      const output = command === 'list'
+        ? await db.select({slug: posts.slug, title: posts.title, status: posts.status, published_at: posts.published_at, state}).from(posts).orderBy(desc(posts.id)).limit(limit).offset(offset)
+        : (await db.select({...getTableColumns(posts), state}).from(posts).where(eq(posts.slug, slug!))).map(row => ({...row, id: String(row.id)}))[0];
+      if (!output) throw new Error('Post not found.');
+      process.stdout.write(JSON.stringify(output,null,2) + '\n');
+    } else { await changePost(db,command,slug!,fields,values.at); process.stdout.write(`${command === 'validate' ? 'Valid; no changes saved' : command + ' completed'}: ${slug}.\n`); }
   } finally { await client.end(); }
 }
-main().catch(error => { const safe = error instanceof Error && !('code' in error) ? error.message : 'Database operation failed; no credentials or content logged.'; console.error('Error: ' + safe); process.exitCode=1; });
+main().catch(error => { console.error('Error: ' + safeMessage(error, 'Database operation failed; no credentials or content logged.')); process.exitCode=1; });

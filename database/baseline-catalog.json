@@ -1,0 +1,583 @@
+{
+ "columns": [
+  [
+   "posts",
+   1,
+   "id",
+   "bigint",
+   true,
+   null,
+   null,
+   "d",
+   ""
+  ],
+  [
+   "posts",
+   2,
+   "slug",
+   "character varying(180)",
+   true,
+   "C",
+   null,
+   "",
+   ""
+  ],
+  [
+   "posts",
+   3,
+   "title",
+   "character varying(240)",
+   true,
+   "default",
+   null,
+   "",
+   ""
+  ],
+  [
+   "posts",
+   4,
+   "excerpt",
+   "character varying(600)",
+   true,
+   "default",
+   "''::character varying",
+   "",
+   ""
+  ],
+  [
+   "posts",
+   5,
+   "body",
+   "text",
+   true,
+   "default",
+   null,
+   "",
+   ""
+  ],
+  [
+   "posts",
+   6,
+   "status",
+   "text",
+   true,
+   "default",
+   "'draft'::text",
+   "",
+   ""
+  ],
+  [
+   "posts",
+   7,
+   "published_at",
+   "timestamp with time zone",
+   false,
+   null,
+   null,
+   "",
+   ""
+  ],
+  [
+   "posts",
+   8,
+   "created_at",
+   "timestamp with time zone",
+   true,
+   null,
+   "CURRENT_TIMESTAMP",
+   "",
+   ""
+  ],
+  [
+   "posts",
+   9,
+   "updated_at",
+   "timestamp with time zone",
+   true,
+   null,
+   "CURRENT_TIMESTAMP",
+   "",
+   ""
+  ],
+  [
+   "public_posts",
+   1,
+   "id",
+   "bigint",
+   false,
+   null,
+   null,
+   "",
+   ""
+  ],
+  [
+   "public_posts",
+   2,
+   "slug",
+   "character varying(180)",
+   false,
+   "C",
+   null,
+   "",
+   ""
+  ],
+  [
+   "public_posts",
+   3,
+   "title",
+   "character varying(240)",
+   false,
+   "default",
+   null,
+   "",
+   ""
+  ],
+  [
+   "public_posts",
+   4,
+   "excerpt",
+   "character varying(600)",
+   false,
+   "default",
+   null,
+   "",
+   ""
+  ],
+  [
+   "public_posts",
+   5,
+   "body",
+   "text",
+   false,
+   "default",
+   null,
+   "",
+   ""
+  ],
+  [
+   "public_posts",
+   6,
+   "published_at",
+   "timestamp with time zone",
+   false,
+   null,
+   null,
+   "",
+   ""
+  ]
+ ],
+ "constraints": [
+  [
+   "posts",
+   "posts_body_check",
+   "c",
+   "CHECK ((octet_length(body) <= 16777215))"
+  ],
+  [
+   "posts",
+   "posts_check",
+   "c",
+   "CHECK (((status <> 'published'::text) OR (published_at IS NOT NULL)))"
+  ],
+  [
+   "posts",
+   "posts_pkey",
+   "p",
+   "PRIMARY KEY (id)"
+  ],
+  [
+   "posts",
+   "posts_slug_check",
+   "c",
+   "CHECK (((slug)::text ~ '^[a-z0-9]+(-[a-z0-9]+)*$'::text))"
+  ],
+  [
+   "posts",
+   "posts_slug_key",
+   "u",
+   "UNIQUE (slug)"
+  ],
+  [
+   "posts",
+   "posts_status_check",
+   "c",
+   "CHECK ((status = ANY (ARRAY['draft'::text, 'published'::text])))"
+  ]
+ ],
+ "other": 0,
+ "relations": [
+  {
+   "acl": [
+    [
+     "dunamismax_owner",
+     "DELETE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "MAINTAIN",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "REFERENCES",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRIGGER",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRUNCATE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "UPDATE",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "UPDATE",
+     false
+    ]
+   ],
+   "index": null,
+   "kind": "r",
+   "name": "posts",
+   "options": null,
+   "owner": "dunamismax_owner",
+   "policies": 0,
+   "rls": false,
+   "triggers": 0,
+   "view": null
+  },
+  {
+   "acl": [
+    [
+     "dunamismax_owner",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "UPDATE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "USAGE",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "USAGE",
+     false
+    ]
+   ],
+   "index": null,
+   "kind": "S",
+   "name": "posts_id_seq",
+   "options": null,
+   "owner": "dunamismax_owner",
+   "policies": 0,
+   "rls": false,
+   "triggers": 0,
+   "view": null
+  },
+  {
+   "acl": [
+    [
+     "dunamismax_owner",
+     "DELETE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "MAINTAIN",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "REFERENCES",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRIGGER",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRUNCATE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "UPDATE",
+     false
+    ]
+   ],
+   "index": "CREATE UNIQUE INDEX posts_pkey ON app.posts USING btree (id)",
+   "kind": "i",
+   "name": "posts_pkey",
+   "options": null,
+   "owner": "dunamismax_owner",
+   "policies": 0,
+   "rls": false,
+   "triggers": 0,
+   "view": null
+  },
+  {
+   "acl": [
+    [
+     "dunamismax_owner",
+     "DELETE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "MAINTAIN",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "REFERENCES",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRIGGER",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRUNCATE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "UPDATE",
+     false
+    ]
+   ],
+   "index": "CREATE INDEX posts_publication ON app.posts USING btree (status, published_at DESC, id DESC)",
+   "kind": "i",
+   "name": "posts_publication",
+   "options": null,
+   "owner": "dunamismax_owner",
+   "policies": 0,
+   "rls": false,
+   "triggers": 0,
+   "view": null
+  },
+  {
+   "acl": [
+    [
+     "dunamismax_owner",
+     "DELETE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "MAINTAIN",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "REFERENCES",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRIGGER",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRUNCATE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "UPDATE",
+     false
+    ]
+   ],
+   "index": "CREATE UNIQUE INDEX posts_slug_key ON app.posts USING btree (slug)",
+   "kind": "i",
+   "name": "posts_slug_key",
+   "options": null,
+   "owner": "dunamismax_owner",
+   "policies": 0,
+   "rls": false,
+   "triggers": 0,
+   "view": null
+  },
+  {
+   "acl": [
+    [
+     "dunamismax_owner",
+     "DELETE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "MAINTAIN",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "REFERENCES",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRIGGER",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "TRUNCATE",
+     false
+    ],
+    [
+     "dunamismax_owner",
+     "UPDATE",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "INSERT",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "SELECT",
+     false
+    ],
+    [
+     "dunamismax_publishing",
+     "UPDATE",
+     false
+    ],
+    [
+     "dunamismax_web",
+     "SELECT",
+     false
+    ]
+   ],
+   "index": null,
+   "kind": "v",
+   "name": "public_posts",
+   "options": [
+    "security_barrier=true"
+   ],
+   "owner": "dunamismax_owner",
+   "policies": 0,
+   "rls": false,
+   "triggers": 0,
+   "view": " SELECT id,\n    slug,\n    title,\n    excerpt,\n    body,\n    published_at\n   FROM app.posts\n  WHERE status = 'published'::text AND published_at <= CURRENT_TIMESTAMP;"
+  }
+ ],
+ "schema": {
+  "acl": [
+   [
+    "dunamismax_owner",
+    "CREATE",
+    false
+   ],
+   [
+    "dunamismax_owner",
+    "USAGE",
+    false
+   ],
+   [
+    "dunamismax_publishing",
+    "USAGE",
+    false
+   ],
+   [
+    "dunamismax_web",
+    "USAGE",
+    false
+   ]
+  ],
+  "owner": "dunamismax_owner"
+ },
+ "sequences": [
+  [
+   "posts_id_seq",
+   "bigint",
+   1,
+   1,
+   1,
+   9223372036854775807,
+   1,
+   false,
+   "posts.id"
+  ]
+ ]
+}

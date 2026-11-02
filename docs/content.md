@@ -43,13 +43,11 @@ configuration is frozen root-owned mode 0000; a protected rollback copy retains
 the original ownership/mode. Do not restore it while PostgreSQL writers are
 active. The guarded rollback refuses a MySQL switch when content has diverged.
 
-## Pending Drizzle alignment
+## Drizzle implementation
 
-Keep approved pages and shared cards in their existing Astro locations. Retain
-the TypeScript publisher interface, protected configuration, transaction/row-lock
-semantics, all limits and plain-text/RSS escaping. Use Drizzle PostgreSQL queries
-without changing slug/status/date behavior. Keep list/show output private and
-publish/schedule/unpublish explicit. No Python rewrite, public editor or native
-client is required. Update commands only after the implementation passes the
-isolated database/HTTP rehearsal. Public stack wording must reflect verified
-runtime; preserve unrelated profile copy and sibling-project evidence.
+The publisher (`src/lib/publisher.ts`) and CLI use Drizzle queries over one
+dedicated node-postgres session per command, with unchanged commands, limits,
+transactions, row locks and private list/show output. Only publish and schedule
+write the publication instant, so edit and unpublish never round-trip stored
+timestamps through JavaScript dates. Database errors are reported generically:
+Drizzle query errors embed SQL parameters (post text) and are never printed.

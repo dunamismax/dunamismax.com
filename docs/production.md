@@ -1,9 +1,9 @@
 # Production
 
-The runbook below describes the current Astro/PostgreSQL workflow; historical
-acceptance is in docs/migration.md, not a fresh host inspection. The final target
-retains this deployment model. BUILD Phase 0 adopts Drizzle in place; no Next.js,
-SQLite or mandatory Compose cutover is planned. This docs session does not deploy.
+The runbook below describes the current Astro/PostgreSQL/Drizzle workflow;
+historical acceptance is in docs/migration.md, not a fresh host inspection. The
+deployment model is unchanged by Drizzle; no Next.js, SQLite or mandatory Compose
+cutover is planned. The first Drizzle release is pending owner authorization.
 
 Follow the shared contract at
 `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md`. Root access is
@@ -53,8 +53,9 @@ builds do not receive any database credentials or post exports.
 PostgreSQL is authoritative. Ordinary deployment supports Astro-to-Astro release
 changes only; it does not read/import MySQL. The original migration evidence is
 in docs/migration.md and protected host archives. Obtain a fresh verified host
-backup before a release. The schema remains additive and explicitly SET ROLEs
-to its owner; a code rollback never replaces live PostgreSQL data.
+backup before a release. Cutover runs `dist/cli/bin/schema.js` (Drizzle
+migrations as dunamismax_owner); migrations stay additive and rollback-compatible,
+and a code rollback never replaces live PostgreSQL data.
 
 Cutover checks the expected active release under the mandatory shared lock,
 saves root-only rollback files, installs owning identities and immutable release,
@@ -92,26 +93,28 @@ before dropping privileges. Its restricted PATH deliberately omits sbin. Verify
 `dunamismax-posts list` with the normal operator workflow after installation;
 never place credentials on command arguments or give them to the website.
 
-## Pending Drizzle release work
+## Drizzle schema migrations
 
-Keep the site-scoped systemd unit, loopback Node/native PostgreSQL, per-role env
-files, Caddy fragment/custom binary, immutable releases and deployment lock.
-Adapt prepare/cutover/schema/verification tooling only for the reviewed Drizzle
-artifacts and migration entrypoint. Build without production credentials; do
-not run migrations in web startup. Existing PostgreSQL credentials and ACLs
-remain independent and unchanged in purpose. No new database is required.
+`deploy/cutover.sh` already runs `dist/cli/bin/schema.js` from the candidate,
+under the exclusive deployment lock (publishing excluded), before the candidate
+service starts. On the first Drizzle release it adopts the existing database:
+it creates the owner-only `drizzle` journal schema, requires app's catalog to
+equal `database/baseline-catalog.json`, records the baseline without executing
+it, and proves posts/IDs/sequence/full-content SHA256 unchanged. It refuses and
+records nothing if the catalog differs; stop and reconcile rather than editing
+the baseline file. Later releases apply only new reviewed migrations. Output is
+one JSON line with counts and the content digest, never post text.
 
-Before an authorized release, rehearse fresh installation and nonempty schema
-adoption, preserving exact data/IDs/timestamps/sequence and privilege denials.
-Keep the previous Astro release schema-compatible for rollback; code rollback
-must never overwrite newer authoritative PostgreSQL writes. Exclude publishing
-and hold the shared exclusive lock through schema migration, switch and rollback.
-Do not restart shared PostgreSQL/Caddy or alter other sites.
+The previous Astro release remains compatible: it ignores the journal schema.
+Keep later migrations additive so code rollback stays valid. Never run
+drizzle-kit push/pull/migrate against production. `verify-database.js` also
+checks that web and publishing cannot read or modify the journal.
 
-Verify nightly pg_dump, encrypted off-server copies and an isolated restore of
-data, roles, ACLs, migration journal and the matching application release. Keep
-existing host/site timers and adapt owning backup tooling only within authorized
-scope. A successful timer exit alone does not establish restore correctness.
+Before an authorized release, confirm the nightly pg_dump and isolated restore
+include the `drizzle` schema with its owner and ACLs alongside data, roles and
+the matching application release. A successful timer exit alone does not
+establish restore correctness. Keep existing host/site timers; adapt owning
+backup tooling only within authorized scope.
 
 Verify Cloudflare DNS plugin support in the existing custom Caddy and use only
 zone-scoped Caddy credentials. For proxied DNS, retain Full (strict) with a valid

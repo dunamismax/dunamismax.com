@@ -10,7 +10,7 @@ trap cleanup EXIT
 "$pgbin/initdb" -D "$work/data" -A trust --no-locale -E UTF8 >"$work/init.log"
 "$pgbin/pg_ctl" -D "$work/data" -l "$work/postgres.log" -o "-h 127.0.0.1 -p $port -k $work" start >/dev/null
 PGUSER=$(id -un)
-export PGHOST=127.0.0.1 PGPORT="$port" PGUSER PGDATABASE=dunamismax_test
+export PGHOST=127.0.0.1 PGPORT="$port" PGUSER PGDATABASE=dunamismax_test PGBIN="$pgbin"
 "$pgbin/createdb" "$PGDATABASE"
 npm run test:database
 APP_ENV=production PORT=4322 PGUSER=dunamismax_web PGPASSWORD=synthetic-test-password node dist/cli/bin/server.js >"$work/server.log" 2>&1 &

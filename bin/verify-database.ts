@@ -12,12 +12,12 @@ async function main() {
   try {
     await web.connect();await publisher.connect();
     await web.query('SELECT count(*) FROM app.public_posts');
-    for(const sql of ['SELECT * FROM app.posts LIMIT 0', 'UPDATE app.posts SET title=title WHERE false', 'DELETE FROM app.posts WHERE false', 'SET ROLE dunamismax_publishing', 'CREATE TABLE app.permission_probe(id integer)']) await denied(web,sql);
+    for(const sql of ['SELECT * FROM app.posts LIMIT 0', 'UPDATE app.posts SET title=title WHERE false', 'DELETE FROM app.posts WHERE false', 'SET ROLE dunamismax_publishing', 'CREATE TABLE app.permission_probe(id integer)', 'SELECT * FROM drizzle.__drizzle_migrations LIMIT 0']) await denied(web,sql);
     await publisher.query('SELECT count(*) FROM app.posts');
-    for(const sql of ['DELETE FROM app.posts WHERE false','CREATE TABLE app.permission_probe(id integer)','SET ROLE dunamismax_owner']) await denied(publisher,sql);
+    for(const sql of ['DELETE FROM app.posts WHERE false','CREATE TABLE app.permission_probe(id integer)','SET ROLE dunamismax_owner','SELECT * FROM drizzle.__drizzle_migrations LIMIT 0','DELETE FROM drizzle.__drizzle_migrations WHERE false']) await denied(publisher,sql);
     const privileges=(await publisher.query<{can_insert:boolean;can_update:boolean}>("SELECT has_table_privilege(current_user,'app.posts','INSERT') AS can_insert,has_table_privilege(current_user,'app.posts','UPDATE') AS can_update")).rows[0]!;
     assert.ok(privileges.can_insert&&privileges.can_update);
-    console.log('Production roles verified: public-view-only web; independent bounded publisher.');
+    console.log('Production roles verified: public-view-only web; independent bounded publisher; private migration journal.');
   } finally {await web.end();await publisher.end();}
 }
 main().catch(() => {console.error('Production privilege verification failed; no credentials or content logged.');process.exitCode=1;});

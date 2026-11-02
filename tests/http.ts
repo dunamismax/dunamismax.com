@@ -10,7 +10,7 @@ for(const [path,text] of Object.entries(pageText)) {
  if(path==='/'||path==='/projects') {check((html.match(/class="project-card__name"/g)??[]).length===8,'project count');for(const term of ['RustDesk remote support','Dunamis Status','Server backup &amp; recovery','Grace &amp; Footnotes','Imaging Services website','dunamismax.com','MTG Card Bot','Dynamic DNS automation']) check(html.includes(term),term);}
  const head=await fetch(base+path,{method:'HEAD'});check(head.status===200&&(await head.text())==='',path+' HEAD');
 }
-for(const path of ['/missing','/.env','/.git/config','/database/schema.sql','/src/pages/about.astro','/node_modules/pg/package.json','/dist/server/entry.mjs','/storage/drafts/test.txt','/index.php','/js/theme.js','/blog/Invalid','/blog?page=0','/blog?page=no','/blog?page=100001']) {
+for(const path of ['/missing','/.env','/.git/config','/database/schema.sql','/database/baseline-catalog.json','/drizzle/meta/_journal.json','/drizzle/0000_baseline.sql','/src/pages/about.astro','/node_modules/pg/package.json','/dist/server/entry.mjs','/storage/drafts/test.txt','/index.php','/js/theme.js','/blog/Invalid','/blog?page=0','/blog?page=no','/blog?page=100001']) {
  const res=await fetch(base+path);const html=await res.text();check(res.status===404,path+' private/invalid 404');check(!html.includes('rel="canonical"'),path+' error canonical');check(res.headers.get('x-robots-tag')==='noindex',path+' noindex');
 }
 for(const path of ['/blog','/feed.xml','/blog/synthetic-public-0']) {const res=await fetch(base+path);check(res.status===(outage?503: path==='/blog/synthetic-public-0'&&!populated?404:200),path+' database behavior');if(outage) check(res.headers.get('retry-after')==='60',path+' retry');}

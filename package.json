@@ -10,6 +10,7 @@
   "packageManager": "npm@11.19.1",
   "scripts": {
     "check": "astro check && tsc --noEmit",
+    "db:check": "drizzle-kit check && drizzle-kit generate --name=unreviewed 2>&1 | grep 'No schema changes'",
     "build": "astro build && tsc -p tsconfig.cli.json",
     "start": "node dist/cli/bin/server.js",
     "dev": "astro dev --host 127.0.0.1 --port 8000",
@@ -17,19 +18,27 @@
     "test:http": "tsx tests/http.ts",
     "test:database": "tsx tests/database.ts",
     "posts": "tsx bin/posts.ts",
+    "schema": "tsx bin/schema.ts",
     "migrate:data": "tsx bin/migrate-data.ts"
   },
   "dependencies": {
     "@astrojs/node": "11.1.9",
     "astro": "7.4.2",
+    "drizzle-orm": "0.45.4",
     "pg": "8.16.3"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
     "@types/node": "24.19.2",
     "@types/pg": "8.15.5",
+    "drizzle-kit": "0.31.11",
     "mysql2": "3.24.6",
     "tsx": "4.20.6",
     "typescript": "6.0.3"
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": {
+      "esbuild": "0.25.12"
+    }
   }
 }
