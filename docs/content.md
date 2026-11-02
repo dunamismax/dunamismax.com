@@ -1,6 +1,6 @@
 # Publishing
 
-## Current workflow
+The commands below describe the current TypeScript/PostgreSQL workflow.
 
 Approved pages live in `src/pages/` and reusable cards in
 `src/components/projects/`. Keep the eight-card ordering and summaries aligned.
@@ -43,21 +43,13 @@ configuration is frozen root-owned mode 0000; a protected rollback copy retains
 the original ownership/mode. Do not restore it while PostgreSQL writers are
 active. The guarded rollback refuses a MySQL switch when content has diverged.
 
-## Rewrite requirements (pending BUILD Phase 0)
+## Pending Drizzle alignment
 
-Move approved page content to `src/app/**/page.tsx` and shared cards to React
-components without changing their order, anchors or unrelated profile copy.
-Update this site's stack descriptions consistently in the home/about/blog copy,
-shared layout/footer, config description/manifest metadata and own project card
-only when implementation and release evidence support them. Recheck sibling
-project evidence before changing their descriptions; no cross-repo migration is
-implied by the owner's common stack prompt.
-
-Keep PostgreSQL content in place. Adopt Drizzle for schema, view reads and
-publisher transactions while retaining every command, limit, status/date/slug
-rule and credential boundary above. There is still no public editor, preview,
-account or login requirement. The planned Compose publisher is a one-off
-operator tool behind the same `dunamismax-posts` interface and shared lock;
-the web container never receives publishing credentials. `list`/`show` output
-stays private. Do not change the installed wrapper until the implementation,
-permissions and rollback path pass rehearsal.
+Keep approved pages and shared cards in their existing Astro locations. Retain
+the TypeScript publisher interface, protected configuration, transaction/row-lock
+semantics, all limits and plain-text/RSS escaping. Use Drizzle PostgreSQL queries
+without changing slug/status/date behavior. Keep list/show output private and
+publish/schedule/unpublish explicit. No Python rewrite, public editor or native
+client is required. Update commands only after the implementation passes the
+isolated database/HTTP rehearsal. Public stack wording must reflect verified
+runtime; preserve unrelated profile copy and sibling-project evidence.
