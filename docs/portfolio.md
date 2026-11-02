@@ -1,5 +1,11 @@
 # Portfolio evidence
 
+The November 2, 2026 common-stack request plans this site's rewrite in
+[BUILD Phase 0](../BUILD.md#phase-0--unified-stack-rewrite-first-not-started).
+It is not evidence that this or any sibling project now runs Next.js. Keep the
+dated inventory below as history; verify each project's actual runtime before
+changing public stack/status claims. Preserve unrelated profile/experience copy.
+
 Reviewed 2026-10-17 against the server's running services, Docker container
 state, Caddy site definitions, scheduled jobs, sibling repository documentation,
 and public HTTPS responses. This is a dated editorial inventory, not a live

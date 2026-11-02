@@ -1,5 +1,12 @@
 # Astro migration acceptance
 
+Historical acceptance for the October 2026 PHP-to-Astro migration only. The
+November 2, 2026 Next.js/React/Drizzle/Compose rewrite is **planned, not
+implemented or deployed**; see [BUILD Phase 0](../BUILD.md#phase-0--unified-stack-rewrite-first-not-started).
+Retain this evidence unchanged in meaning. Add a separately dated acceptance
+record after the next rewrite/release; do not carry these test, backup or
+production claims forward as proof for the new stack or current host state.
+
 Production verified October 22, 2026 Eastern. The active Astro release is
 `c93aaec9fba731f2a1df38f011dd0c62e6d40aa3`. The retained PHP predecessor is
 `e3f991fdc6d5c05c9ba6f14715ae65e7156794ea`.

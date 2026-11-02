@@ -1,5 +1,7 @@
 # Publishing
 
+## Current workflow
+
 Approved pages live in `src/pages/` and reusable cards in
 `src/components/projects/`. Keep the eight-card ordering and summaries aligned.
 Do not change other project claims without checking their evidence.
@@ -40,3 +42,22 @@ The old PHP command is removed from this checkout. At first cutover its
 configuration is frozen root-owned mode 0000; a protected rollback copy retains
 the original ownership/mode. Do not restore it while PostgreSQL writers are
 active. The guarded rollback refuses a MySQL switch when content has diverged.
+
+## Rewrite requirements (pending BUILD Phase 0)
+
+Move approved page content to `src/app/**/page.tsx` and shared cards to React
+components without changing their order, anchors or unrelated profile copy.
+Update this site's stack descriptions consistently in the home/about/blog copy,
+shared layout/footer, config description/manifest metadata and own project card
+only when implementation and release evidence support them. Recheck sibling
+project evidence before changing their descriptions; no cross-repo migration is
+implied by the owner's common stack prompt.
+
+Keep PostgreSQL content in place. Adopt Drizzle for schema, view reads and
+publisher transactions while retaining every command, limit, status/date/slug
+rule and credential boundary above. There is still no public editor, preview,
+account or login requirement. The planned Compose publisher is a one-off
+operator tool behind the same `dunamismax-posts` interface and shared lock;
+the web container never receives publishing credentials. `list`/`show` output
+stays private. Do not change the installed wrapper until the implementation,
+permissions and rollback path pass rehearsal.
