@@ -83,8 +83,11 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 | ORM | src/db/schema.ts, drizzle.config.ts, drizzle/ migrations; journal drizzle.__drizzle_migrations is owner-only; production adopted at e1c292c |
 
 Read docs/production.md before changes. Retain verified nightly pg_dump and
-protected off-server restore coverage. Caddy Cloudflare DNS challenge uses a
-zone-scoped Caddy-only token; proxied DNS uses Full (strict). Check shared host
+protected off-server restore coverage. DNS is owner-managed, DNS-only
+(not proxied) Cloudflare records pointing at the server's public IP; Caddy is
+the reverse proxy and obtains its own Let's Encrypt certificates. There is no
+Cloudflare DNS challenge, Caddy DNS plugin, token or proxy/SSL-mode work; do not
+plan or add any, and never change Cloudflare settings. Check shared host
 prerequisites without replacing its Caddy binary or restarting shared services.
 
 ## Deployment and safety

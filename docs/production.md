@@ -117,10 +117,10 @@ the matching application release. A successful timer exit alone does not
 establish restore correctness. Keep existing host/site timers; adapt owning
 backup tooling only within authorized scope.
 
-Verify Cloudflare DNS plugin support in the existing custom Caddy and use only
-zone-scoped Caddy credentials. For proxied DNS, retain Full (strict) with a valid
-origin certificate. Missing shared-host prerequisites must be coordinated in
-that workflow rather than replacing shared Caddy here. Keep current www/apex
+DNS is owner-managed, DNS-only Cloudflare records pointing at the server's public
+IP; the existing custom Caddy obtains its own Let's Encrypt certificates. There
+is no Cloudflare DNS challenge, plugin or token. Shared-host changes must be
+coordinated in that workflow rather than replacing shared Caddy here. Keep current www/apex
 routing and validate complete config before a permitted reload.
 
 Containers remain an optional future packaging choice. They must not require

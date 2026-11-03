@@ -11,8 +11,8 @@ Status: Drizzle adoption is implemented, verified locally and released to
 production at `e1c292c` (owner-authorized, November 2, 2026). See the
 [local verification record](#local-verification-record-november-2-2026-eastern)
 and [production release record](#production-release-record-november-2-2026-eastern).
-One item remains open: Caddy's Cloudflare DNS assumption does not match the host
-and belongs to the shared host workflow.
+The former open item (a Caddy Cloudflare DNS-challenge assumption) was closed by
+the owner's clarification on November 2, 2026: no such setup is part of the stack.
 
 ### 0.1 Preserve the working application and establish the baseline
 
@@ -118,13 +118,13 @@ Drizzle adoption is the remaining implementation work, not a framework rewrite.
   publishing while migrating; apply only additive, rollback-compatible schema
   changes. Keep immutable commit releases and atomic current pointers. Do not
   restart shared PostgreSQL/Caddy or modify sibling apps.
-- [ ] Verify Caddy's Cloudflare DNS plugin, zone-scoped Caddy-only token and
-  valid origin TLS; proxied DNS uses Full (strict). Missing shared-host support
-  belongs in the owning host workflow; do not replace shared Caddy here.
-  Open (host workflow): on November 2 the custom Caddy v2.11.4 had only the
-  rate-limit module (no Cloudflare DNS provider), and dunamismax.com/www resolve
-  directly to the origin (not Cloudflare-proxied). Origin TLS is a valid Let's
-  Encrypt certificate (expires 2027-01-04). Caddy was not modified here.
+- [x] Verify DNS and TLS. *(Owner, November 2, 2026: domains are on Cloudflare
+  with DNS-only records the owner manages himself, pointing at the server's
+  public IP; Caddy is the reverse proxy and obtains its own Let's Encrypt
+  certificates. No Cloudflare DNS challenge, Caddy DNS plugin, token or proxy
+  mode is part of the stack.)* Verified November 2: dunamismax.com/www resolve
+  directly to the origin, and origin TLS is a valid Let's Encrypt certificate
+  (expires 2027-01-04). Caddy was not modified here.
 - [x] Retain nightly pg_dump backups, encrypted off-server copies and isolated
   restore checks including data, roles, ACLs, Drizzle journal and app release.
   Confirm actual backup/restore evidence before a release. Litestream/R2 SQLite
