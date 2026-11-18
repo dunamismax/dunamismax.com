@@ -23,7 +23,7 @@ HTTPS; no native client is planned here. Containerization is optional.
 
 Astro 7.4.2, strict TypeScript 6.0.3, PostgreSQL with Drizzle ORM 0.45.4
 (node-postgres driver), semantic HTML and hand-written CSS. Zero browser JavaScript, external fonts, analytics or third-party assets.
-Node 24.22.1 / npm 11.19.1 are pinned; commit the npm v3 lockfile.
+Node 24.22.3 / npm 11.19.1 are pinned; commit the npm v3 lockfile.
 Astro’s [Node adapter](https://docs.astro.build/en/guides/integrations-guide/node/)
 builds static pages and server handlers. Caddy proxies to loopback port 4311.
 
@@ -102,7 +102,7 @@ MIT. See [LICENSE](LICENSE).
 
 ## Continuous verification and dependency review
 
-GitHub Actions verifies the pinned Node 24.22.1/npm 11.19.1 toolchain with
+GitHub Actions verifies the pinned Node 24.22.3/npm 11.19.1 toolchain with
 `npm ci`, strict checks, repository tests and builds, then `npm audit` (moderate
 and above fail). Integration checks use disposable synthetic PostgreSQL or the
 custom-Caddy fixture suite; no production credentials are supplied. The workflow

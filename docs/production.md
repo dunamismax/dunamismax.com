@@ -23,7 +23,7 @@ Deployed shell helpers are mode 0644; invoke them with `bash`.
 | Active link | `/srv/www/dunamismax.com/current` |
 | Node unit/user | `astro-dunamismax.service` / `astro-dunamismax-web` |
 | Listener | `127.0.0.1:4311` (temporary candidate 4323) |
-| Runtime | `/opt/astro-runtime/bin/node` 24.22.1 |
+| Runtime | `/opt/astro-runtime/bin/node` 24.22.3 |
 | Website credentials | `/etc/astro-apps/dunamismax/web.env` (root-only; systemd loads) |
 | Writer credentials | `/etc/astro-apps/dunamismax/publishing.env` (root-only wrapper) |
 | Migration credentials | `/etc/astro-apps/dunamismax/migration.env` (operator only) |

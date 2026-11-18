@@ -56,7 +56,7 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 
 - Current runtime: Astro 7.4.2 / Node adapter 11.1.9, TypeScript 6.0.3 strict with
   noUncheckedIndexedAccess and exactOptionalPropertyTypes.
-- Pin Node 24.22.1 / npm 11.19.1 and exact dependencies; use `npm ci`.
+- Pin Node 24.22.3 / npm 11.19.1 and exact dependencies; use `npm ci`.
 - Semantic HTML, existing vanilla CSS, zero browser JavaScript and inline styles.
   Theme follows prefers-color-scheme. Preserve CSP, skip links and aria-current.
 - Prerender genuinely static pages; query PostgreSQL for home/blog/posts/RSS.

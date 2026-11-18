@@ -22,7 +22,7 @@ the owner's clarification on November 2, 2026: no such setup is part of the stac
 - [x] Run the current gates below and capture actual source/runtime evidence.
   Do not assume production has no posts from the October zero-row import.
 - [x] Retain Astro 7.4.2, @astrojs/node 11.1.9 standalone, strict TypeScript
-  6.0.3, Node 24.22.1/npm 11.19.1, existing pages/components/CSS and systemd
+  6.0.3, Node 24.22.3/npm 11.19.1, existing pages/components/CSS and systemd
   deployment unless a verified compatibility issue requires a coordinated update.
   Pin exact dependencies and use npm ci. Fetch current Context7 documentation
   before selecting compatible Drizzle ORM/Kit versions and migration APIs.
