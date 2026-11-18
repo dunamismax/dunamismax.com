@@ -43,7 +43,7 @@ install -m 0644 deploy/astro-dunamismax.service "$unit"
 install -m 0644 deploy/Caddyfile "$fragment"
 install -m 0755 deploy/posts-wrapper.sh /usr/local/sbin/dunamismax-posts
 systemd-analyze verify "$unit"
-"$caddy" validate --config /etc/caddy/Caddyfile
+validate_caddy
 switch_release "$release"
 systemctl daemon-reload
 systemctl enable --now astro-dunamismax.service

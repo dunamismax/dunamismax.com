@@ -10,6 +10,9 @@ base=/srv/www/dunamismax.com
 fragment=/etc/caddy/sites/dunamismax.com.caddy
 unit=/etc/systemd/system/astro-dunamismax.service
 caddy=/usr/local/lib/caddy/caddy
+validate_caddy() {
+    runuser -u caddy -g caddy -- env HOME=/var/lib/caddy "$caddy" validate --config /etc/caddy/Caddyfile
+}
 switch_release() { ln -s "$1" "$base/current.next"; mv -Tf "$base/current.next" "$base/current"; }
 wait_health() {
     local address=$1
@@ -20,7 +23,7 @@ restore_release() {
     local saved=$1
     systemctl stop astro-dunamismax-candidate.service 2>/dev/null || true
     cp -a "$saved/site.caddy" "$fragment"
-    "$caddy" validate --config /etc/caddy/Caddyfile
+    validate_caddy
     switch_release "$(cat "$saved/previous-release")"
     if [[ -f $saved/previous.service ]]; then cp -a "$saved/previous.service" "$unit"; else rm -f "$unit"; fi
     systemctl daemon-reload
