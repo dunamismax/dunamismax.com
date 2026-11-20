@@ -21,7 +21,7 @@ cp -a "$fragment" "$saved/site.caddy"
 [[ ! -f /usr/local/sbin/dunamismax-posts ]] || cp -a /usr/local/sbin/dunamismax-posts "$saved/previous-wrapper"
 failed() { local code=$?; trap - ERR; echo "Cutover failed; restoring $saved" >&2; restore_release "$saved"; exit "$code"; }
 trap failed ERR
-[[ -s $expected/dist/cli/bin/server.js ]] || { echo 'Only Astro-to-Astro deployment is supported; use isolated legacy recovery.' >&2; exit 1; }
+[[ -s $expected/dist/cli/bin/server.js ]] || { echo 'Only Node-release to Node-release (Astro or SvelteKit) deployment is supported; use isolated legacy recovery.' >&2; exit 1; }
 cd "$candidate"
 "$node" dist/cli/bin/schema.js
 "$node" dist/cli/bin/verify-database.js | tee "$saved/privilege-report.log"

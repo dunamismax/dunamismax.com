@@ -1,8 +1,11 @@
 # Portfolio evidence
 
-The final November 2 direction keeps this site on Astro/PostgreSQL; Drizzle
-adoption (BUILD Phase 0) was released November 2, 2026. The public stack card
-(Astro/TypeScript/PostgreSQL) remains accurate and is unchanged. Keep this dated inventory as history, and
+The owner's November 20, 2026 direction moves this site from Astro to
+SvelteKit 3 / Svelte 5 / TypeScript / Tailwind CSS 4 / PostgreSQL 18 + Drizzle /
+Node (adapter-node) / Caddy (BUILD Phase 1). This application's own stack card
+and footer colophon name that stack in source; they describe production only
+once the SvelteKit release is deployed. Other project cards and the profile copy
+(which describe Stephen's Astro work elsewhere) are unchanged. Keep this dated inventory as history, and
 verify each actual runtime before updating stack claims. Other projects' Python
 work remains legitimate portfolio content; it does not require Python in this
 site. No Swift/native application is currently required here.

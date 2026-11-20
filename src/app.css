@@ -1,0 +1,8 @@
+/* Tailwind CSS 4 entry, served as /css/site.css. Preflight is omitted so the
+   existing hand-written base styles keep rendering identically. Utilities are
+   generated only from classes used in Svelte markup and win over the components layer. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "./**/*.svelte";
+@import "./styles/site.css" layer(components);

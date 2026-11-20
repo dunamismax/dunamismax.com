@@ -4,28 +4,36 @@ Stephen Sawyer’s personal site, portfolio and blog. Approved portfolio copy,
 branding, project order, links and layout are preserved. Current stack descriptions follow the verified project handoffs in
 [docs/portfolio.md](docs/portfolio.md).
 
-## Stack direction (November 2, 2026)
+## Stack (November 20, 2026)
 
-The stack is **Astro + strict TypeScript + PostgreSQL + Drizzle**, behind
-Caddy (owner-managed DNS-only Cloudflare records). Drizzle was adopted in place over the existing
-node-postgres pool and database and released to production on November 2,
-2026. See [BUILD Phase 0](BUILD.md#phase-0--astropostgresql-stack-alignment-first).
-The superseded Next.js and SQLite plans do not apply.
+**SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy**
 
-Keep existing semantic HTML/CSS and zero browser scripts. React islands,
-Tailwind/shadcn, Actions, auth and AI libraries are optional when needed. Python
-and Swift belong only where a project need or explicit request justifies them;
-this site needs neither. Retain existing TypeScript CLI tools and systemd
-hosting. Use Swift for a future requested Apple client, calling Astro APIs over
-HTTPS; no native client is planned here. Containerization is optional.
+The owner's November 20, 2026 direction replaces Astro with SvelteKit. The port
+is implemented and verified locally; see
+[BUILD Phase 1](BUILD.md#phase-1--sveltekit-stack-migration-november-20-2026).
+Production keeps serving the Astro release until a SvelteKit release is
+authorized and deployed. PostgreSQL, Drizzle, the schema, roles, systemd
+service and Caddy front end are unchanged. The superseded Next.js and SQLite
+plans do not apply.
+
+Keep semantic HTML, the preserved stylesheet and zero browser scripts
+(`csr = false`). Client-side Svelte, form actions, remote functions, auth and AI
+libraries are optional when a real feature needs them. Python and Swift belong
+only where a project need or explicit request justifies them; this site needs
+neither. Retain existing TypeScript CLI tools and systemd hosting. Use Swift for
+a future requested Apple client, calling SvelteKit endpoints over HTTPS; no
+native client is planned here. Containerization is optional.
 
 ## Current stack and routes
 
-Astro 7.4.2, strict TypeScript 6.0.3, PostgreSQL with Drizzle ORM 0.45.4
-(node-postgres driver), semantic HTML and hand-written CSS. Zero browser JavaScript, external fonts, analytics or third-party assets.
+SvelteKit 3.4.0 with Svelte 5.58.1 and Vite 8.3.8, `@sveltejs/adapter-node`
+6.0.5, strict TypeScript 6.0.3, Tailwind CSS 4.3.5 (`@tailwindcss/vite`),
+PostgreSQL 18 with Drizzle ORM 0.45.4 (node-postgres driver). Zero browser
+JavaScript, external fonts, analytics or third-party assets.
 Node 24.22.3 / npm 11.19.1 are pinned; commit the npm v3 lockfile.
-Astro’s [Node adapter](https://docs.astro.build/en/guides/integrations-guide/node/)
-builds static pages and server handlers. Caddy proxies to loopback port 4311.
+SvelteKit configuration lives in `vite.config.ts` (SvelteKit 3 no longer reads
+`svelte.config.js`). adapter-node builds `dist/web/`; `bin/server.ts` wraps its
+`handler.js` and Caddy proxies to loopback port 4311.
 
 | URL | Behavior |
 | --- | --- |
@@ -36,7 +44,7 @@ builds static pages and server handlers. Caddy proxies to loopback port 4311.
 | `/feed.xml` | Latest twenty visible posts, RSS 2.0, `application/xml` |
 | `/robots.txt`, `/manifest.webmanifest` | Existing content types and metadata |
 | `/healthz` | `{"status":"ok"}`, independent of PostgreSQL |
-| `/css/site.css`, `/icon.svg` | Preserved stylesheet and icon URLs |
+| `/css/site.css`, `/icon.svg` | Preserved stylesheet (Tailwind-compiled, prerendered) and icon URLs |
 
 GET/HEAD only (other methods 405); unknown/private paths 404/noindex.
 The www hostname permanently redirects to the apex, preserving path and query.
@@ -78,15 +86,17 @@ cannot express), then `npm run db:check` and the rehearsal. Never use
 
 | Path | Purpose |
 | --- | --- |
-| `src/pages/` | Astro pages/endpoints; static pages explicitly prerender |
-| `src/layouts/`, `src/components/` | Metadata, navigation and shared project cards |
+| `src/routes/` | SvelteKit pages, loads and endpoints; static pages set `prerender = true` |
+| `src/routes/+layout.svelte`, `src/lib/components/` | Metadata, navigation and shared project cards (imported as `#lib/*`) |
+| `src/app.css`, `src/styles/site.css` | Tailwind CSS 4 entry and the preserved hand-written stylesheet |
+| `src/hooks.server.ts`, `src/app.html` | Response headers/sanitized errors and the HTML shell |
 | `src/lib/` | Post reads, publishing, validation, safe text/RSS |
 | `src/db/` | Drizzle schema, website/operator connections, catalog/content digests |
 | `drizzle/` | Reviewed SQL migrations, journal and snapshots (drizzle-kit) |
 | `database/baseline-catalog.json` | Production pre-Drizzle catalog required for adoption |
 | `bin/*.ts` | Publishing, schema migration, data reconciliation and HTTP server |
 | `tests/` | TypeScript unit, HTTP and isolated database tests |
-| `public/` | Only CSS and icon, copied into build client output |
+| `static/` | Only the icon, copied into build client output |
 | `deploy/` | Candidate, locked cutover, rehearsal and guarded rollback |
 | `docs/` | Architecture, editorial evidence and operational runbooks |
 

@@ -2,23 +2,36 @@
 
 ## Current implementation
 
-The following describes checked-in Astro/PostgreSQL/Drizzle code. Status is in
-[BUILD Phase 0](../BUILD.md#phase-0--astropostgresql-stack-alignment-first); no framework,
-database-engine or language conversion is planned.
+The following describes checked-in SvelteKit 3 / Svelte 5 / TypeScript /
+Tailwind CSS 4 / PostgreSQL 18 + Drizzle code on Node (adapter-node) behind Caddy.
+Status is in [BUILD Phase 1](../BUILD.md#phase-1--sveltekit-stack-migration-november-20-2026);
+the earlier Astro implementation is historical (BUILD Phase 0).
 
-Caddy → loopback Node → Astro static/SSR handler → PostgreSQL for writing.
+Caddy → loopback Node → SvelteKit adapter-node handler → PostgreSQL for writing.
 The Node web process is read-only and receives only web.env. About, Contact
 and Projects are prerendered; Home, Blog, Post and RSS read current data.
 All share the preserved semantic layout, CSS, icon and approved portfolio.
-The website sends zero browser scripts.
+The website sends zero browser scripts: the root `+layout.ts` sets `csr = false`,
+so SvelteKit emits server-rendered HTML with no hydration or client bundle.
+Svelte components live in `src/lib/components/` and are imported via the
+`#lib/*` subpath import declared in package.json (SvelteKit 3 replaced `$lib`).
 
-`bin/server.ts` is the uniform HTTP boundary before Astro’s standalone handler.
-It enforces GET/HEAD, headers, cache policy and an explicit public path surface.
-This matters because adapter static-file handling precedes Astro middleware.
-The middleware also protects SSR responses and sets noindex/Retry-After.
-Prerendered headers are captured by the adapter. CSP forbids inline styles and
-scripts. Only the build’s client directory is used internally for static files;
-Caddy proxies requests and never exposes a source or server-build webroot.
+Styling is the preserved hand-written stylesheet (`src/styles/site.css`)
+compiled by Tailwind CSS 4 (`src/app.css`, `@tailwindcss/vite`) into the
+components layer. Preflight is omitted so base rendering is unchanged, and
+utilities are generated only from classes used in `.svelte` markup. The
+compiled CSS is a prerendered endpoint at the stable `/css/site.css` URL,
+linked with a content-hash query, rather than a hashed `/_app` asset.
+
+`bin/server.ts` is the uniform HTTP boundary before adapter-node’s handler
+(`dist/web/handler.js`). It enforces GET/HEAD, headers, cache policy and an
+explicit public path surface. This matters because the adapter serves static and
+prerendered files before `src/hooks.server.ts` runs. The hook also protects SSR
+responses, sets noindex/Retry-After and logs only sanitized errors. CSP forbids
+inline styles and scripts. Only the build’s client/prerendered directories are
+read internally; Caddy proxies requests and never exposes a source or
+server-build webroot. SvelteKit’s prerendered `__data.json` files and `/_app`
+paths are outside the allowlist and return 404.
 
 `app.posts` preserves IDs, slugs, all text, statuses and UTC instants. IDs are
 bigint identities; migration refuses overflow rather than changing IDs. The
@@ -66,7 +79,8 @@ its CREATE statements. Before and after, it compares row count, maximum ID,
 sequence state and an ordered SHA256 of every stored field; any difference fails.
 Repeated runs are no-ops. Web startup and builds never run migrations.
 
-Python/Swift, client frameworks, Actions, auth and AI features are added only
-for actual requirements or explicit requests. Existing TypeScript publishing
-and maintenance code stays TypeScript; no new Swift/Python project is needed.
-Any future native client calls Astro HTTPS endpoints rather than PostgreSQL.
+Python/Swift, client-side interactivity, form actions, remote functions, auth
+and AI features are added only for actual requirements or explicit requests.
+Existing TypeScript publishing and maintenance code stays TypeScript; no new
+Swift/Python project is needed. Any future native client calls SvelteKit HTTPS
+endpoints rather than PostgreSQL.

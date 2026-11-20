@@ -2,8 +2,9 @@
 
 The commands below describe the current TypeScript/PostgreSQL workflow.
 
-Approved pages live in `src/pages/` and reusable cards in
-`src/components/projects/`. Keep the eight-card ordering and summaries aligned.
+Approved pages live in `src/routes/` (`+page.svelte`, with metadata in the
+matching `+page.ts` or `+page.server.ts`) and reusable cards in
+`src/lib/components/projects/`. Keep the eight-card ordering and summaries aligned.
 Do not change other project claims without checking their evidence.
 
 Posts live authoritatively in PostgreSQL `app.posts`. Use an authorized shell:

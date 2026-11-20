@@ -1,5 +1,5 @@
 [Unit]
-Description=dunamismax.com Astro website
+Description=dunamismax.com SvelteKit website
 After=network.target postgresql.service
 Wants=postgresql.service
 

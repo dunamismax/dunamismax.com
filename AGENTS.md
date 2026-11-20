@@ -2,11 +2,14 @@
 
 Read this file, `README.md`, `BUILD.md`, and task-relevant `docs/` before changes.
 Read `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md` and any
-successor shared host contract before deployment. The owner's final November 2,
-2026 direction retains Astro and PostgreSQL. BUILD Phase 0 Drizzle adoption was
-released to production at `e1c292c` on November 2, 2026; see BUILD for evidence
-and the remaining host-workflow item. The Next.js and SQLite proposals are superseded. Use Context7
-for current library/API guidance.
+successor shared host contract before deployment. The owner's November 20,
+2026 direction sets the stack to SvelteKit 3 · Svelte 5 · TypeScript · Tailwind
+CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy, replacing
+Astro. BUILD Phase 1 records the port (implemented and verified locally; not yet
+released). BUILD Phase 0 Drizzle adoption was released at `e1c292c` on November
+2, 2026 and production still runs Astro until a SvelteKit release is authorized.
+The Next.js and SQLite proposals are superseded. Use Context7 for current
+library/API guidance.
 
 ## Git rules (owner's standing instructions)
 
@@ -30,34 +33,40 @@ These override any other workflow described in this repository or by your tools.
 This is Stephen Sawyer’s (`dunamismax`) personal portfolio and blog. Preserve
 approved copy, branding, public URLs, metadata, project anchors and contact
 links. Keep other project stack/status claims grounded in their actual runtime
-and [portfolio evidence](docs/portfolio.md). The final host migration authorizes factual stack descriptions to reflect
-verified Astro/TypeScript/PostgreSQL deployments. Preserve unrelated profile copy. Do not publish private sources, addresses, keys,
+and [portfolio evidence](docs/portfolio.md). This site's own stack card and footer colophon name its SvelteKit stack;
+other projects' stack claims and profile copy change only with verified evidence. Preserve unrelated profile copy. Do not publish private sources, addresses, keys,
 backup locations or drafts. No public admin, forms, accounts, tracking or scripts.
 
 ## Implementation
 
-- Stack: Astro + strict TypeScript + PostgreSQL + Drizzle (drizzle-orm 0.45.4,
-  drizzle-kit 0.31.11, node-postgres). `src/db/schema.ts` is the schema source;
+- Stack: SvelteKit 3 + Svelte 5 + strict TypeScript + Tailwind CSS 4 +
+  PostgreSQL 18 + Drizzle (drizzle-orm 0.45.4, drizzle-kit 0.31.11,
+  node-postgres) on Node via adapter-node, behind Caddy. `src/db/schema.ts` is the schema source;
   `drizzle/` holds reviewed migrations (grants as custom SQL). Change the schema
   with `npx drizzle-kit generate`, review the SQL, then `npm run db:check`.
   `bin/schema.ts` is the only applier; it adopts a pre-Drizzle database only when
-  its catalog equals `database/baseline-catalog.json`. No framework rewrite.
+  its catalog equals `database/baseline-catalog.json`. No further framework change.
 - Python and Swift are conditional on a real project need or explicit request.
   Keep existing TypeScript operator tools; do not convert them to Python or
   scaffold a native app. Future requested Apple clients use Swift/SwiftUI and
-  Astro HTTPS APIs; record actual Swift/OS/build requirements when applicable.
+  SvelteKit HTTPS endpoints; record actual Swift/OS/build requirements when applicable.
   Future needed Python tools use uv/Ruff and only useful libraries/timers.
-- Keep existing vanilla CSS and zero browser JavaScript. React islands,
-  Tailwind/shadcn, Astro Actions, Better Auth and AI SDK are optional only for
-  needed features; no new public API/forms/accounts in this assignment.
+- Keep the preserved stylesheet (`src/styles/site.css`, compiled by Tailwind
+  CSS 4 via `src/app.css`, no preflight) and zero browser JavaScript
+  (`csr = false` in the root layout). Use Tailwind utilities in `.svelte` markup
+  for new styling. Client-side Svelte, form actions, remote functions, Better
+  Auth and AI SDK are optional only for needed features; no new public
+  API/forms/accounts.
 - Keep current systemd deployment. Containers/Compose are optional; no new
   proxy, SQLite database or Litestream service. Static-only projects can use
   Caddy directly; this live database-backed blog retains Node standalone SSR.
 
-- Current runtime: Astro 7.4.2 / Node adapter 11.1.9, TypeScript 6.0.3 strict with
-  noUncheckedIndexedAccess and exactOptionalPropertyTypes.
+- Current runtime: SvelteKit 3.4.0 / Svelte 5.58.1 / Vite 8.3.8 / adapter-node
+  6.0.5 / Tailwind CSS 4.3.5, TypeScript 6.0.3 strict with
+  noUncheckedIndexedAccess and exactOptionalPropertyTypes. Configuration lives
+  in `vite.config.ts`; `$lib` is replaced by the `#lib/*` package import.
 - Pin Node 24.22.3 / npm 11.19.1 and exact dependencies; use `npm ci`.
-- Semantic HTML, existing vanilla CSS, zero browser JavaScript and inline styles.
+- Semantic HTML, the preserved stylesheet, zero browser JavaScript and inline styles.
   Theme follows prefers-color-scheme. Preserve CSP, skip links and aria-current.
 - Prerender genuinely static pages; query PostgreSQL for home/blog/posts/RSS.
   Never bake drafts, post exports or credentials into any build artifact.
@@ -67,14 +76,15 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 - Publishing uses its own PG role/config; edits preserve slug/status/date,
   scheduling requires an explicit offset and future database time. No credentials
   or post bodies in diagnostic logs. Do not use website credentials for writing.
-- `bin/server.ts` applies methods, headers and path boundaries before Astro’s
-  static/SSR handler. Standalone’s static handler bypasses Astro middleware.
+- `bin/server.ts` applies methods, headers and path boundaries before
+  adapter-node’s handler (`dist/web/handler.js`). Its static and prerendered
+  file serving bypasses `src/hooks.server.ts`.
 
 ## Deployment layout
 
 | Item | Current convention to retain |
 | --- | --- |
-| Runtime | deploy/astro-dunamismax.service, astro-dunamismax-web user; Node standalone |
+| Runtime | deploy/astro-dunamismax.service, astro-dunamismax-web user; Node, SvelteKit adapter-node handler (unit/user names are host contract) |
 | Listener | 127.0.0.1:4311; candidate 4323 after checking availability |
 | Caddy | /etc/caddy/Caddyfile imports /etc/caddy/sites/dunamismax.com.caddy; template deploy/Caddyfile |
 | PostgreSQL | Native loopback service; database dunamismax, schema app; independent owner/web/publishing/migration roles |
@@ -115,7 +125,7 @@ newer PostgreSQL writes; refuse rollback to divergent MySQL until reconciled.
 
 ## Verification and repository hygiene
 
-Run `npm run check` (Astro plus TypeScript), `npm run db:check`, `npm test`, `npm run build`, and
+Run `npm run check` (svelte-check plus TypeScript), `npm run db:check`, `npm test`, `npm run build`, and
 `bash deploy/rehearse.sh` for application/data changes. Rehearsal uses a disposable
 `_test` database and tests real PostgreSQL privileges, CLI, scheduling and
 HTTP outage/recovery. Run `bash -n` and `shellcheck -x deploy/*.sh` for shell.

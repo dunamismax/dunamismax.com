@@ -1,6 +1,81 @@
 # Build plan and verification
 
+## Phase 1 — SvelteKit stack migration (November 20, 2026)
+
+Owner's direction, November 20, 2026: change the planned and implemented stack to
+**SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle
+ORM · Node (adapter-node) · Caddy**. This replaces Astro as the web framework.
+PostgreSQL, Drizzle, the schema/migrations, roles, publishing CLI, systemd
+deployment and Caddy are retained unchanged.
+
+Status: implemented and verified locally (record below). **Not released.**
+Production continues to serve the Astro release until the owner authorizes a
+SvelteKit release through the existing `deploy/prepare.sh` + locked
+`deploy/cutover.sh` workflow. Nothing is committed or deployed by this record.
+
+### 1.1 Framework port
+
+- [x] Pin SvelteKit 3.4.0, Svelte 5.58.1, Vite 8.3.8, @sveltejs/vite-plugin-svelte
+  7.3.1, @sveltejs/adapter-node 6.0.5, svelte-check 4.7.8, Tailwind CSS 4.3.5 and
+  @tailwindcss/vite 4.3.5 exactly; remove astro, @astrojs/node, @astrojs/check.
+  Keep Node 24.22.3 / npm 11.19.1, TypeScript 6.0.3 strict, Drizzle and pg pins.
+  Current SvelteKit 3 docs fetched with Context7 (config in `vite.config.ts`,
+  `#lib` subpath import, hook types in `@sveltejs/kit/hooks`, `$app/tsconfig`).
+- [x] Port pages to `src/routes/`: Home (`+page.server.ts`, honest 200 on outage),
+  Blog index/pagination and post detail (`error(404|503)` → `+error.svelte`),
+  prerendered About/Contact/Projects (`+page.ts`), `+server.ts` endpoints for
+  feed.xml, healthz, robots.txt, manifest.webmanifest and css/site.css.
+- [x] Root `+layout.svelte` reproduces head metadata, canonical/OG/Twitter tags,
+  noindex rules, skip link, both navs with aria-current and the footer.
+  `+layout.ts` sets `csr = false` (zero browser JavaScript); `app.html` has no
+  inline style wrapper so the CSP stays unchanged.
+- [x] `src/hooks.server.ts` replaces Astro middleware (same headers, 405,
+  noindex, Retry-After) and adds a sanitized `handleError`. `bin/server.ts` now
+  wraps `dist/web/handler.js`; the allowlist, CSP and cache policy are unchanged,
+  so `/_app` and prerendered `__data.json` paths stay 404.
+- [x] Tailwind CSS 4: `src/app.css` imports theme and utilities (no preflight)
+  and the preserved stylesheet (`src/styles/site.css`) as the components layer;
+  utilities are scanned only from `.svelte` files. The compiled stylesheet is a
+  prerendered endpoint at the preserved `/css/site.css` URL with a content hash.
+- [x] Keep `dist/cli/bin/*.js` entry points so `deploy/*.sh`, the systemd unit
+  and the publishing wrapper work unchanged, and rollback to the retained Astro
+  release stays valid (no schema change). Host contract names (`astro-*`) kept.
+- [x] Update only this site's stack card and footer colophon to the new stack.
+  Profile copy and other projects' Astro claims are unchanged (they describe
+  other deployments and Stephen's experience; change only with evidence).
+
+### 1.2 Release (pending owner authorization)
+
+- [ ] Commit and push main; confirm GitHub Actions (check, db:check, unit, build,
+  PG 18 rehearsal, audit) passes on Ubuntu.
+- [ ] On the VM: `deploy/prepare.sh`, fresh host backup + `restore check` /
+  `postgres-verify`, then locked cutover. Record service, listener, HTTP suite,
+  privileges, backup/restore and rollback evidence separately below.
+
+### Local verification record (November 20, 2026 Eastern)
+
+Local implementation only; not a release record. macOS, Node 24.22.3 /
+npm 11.19.1 (mise), Homebrew PostgreSQL 18.6.
+
+- `npm ci` from the regenerated lockfile; `npm audit` 0 vulnerabilities.
+- `npm run check`: svelte-kit sync, svelte-check 0 errors / 0 warnings, tsc clean.
+- `npm run db:check`: drizzle-kit check passes, no schema changes.
+- `npm test`: 6 unit tests pass. `APP_ENV=production npm run build` passes;
+  prerendered pages contain no `<script>`, inline style or event handler.
+- `bash deploy/rehearse.sh` on PostgreSQL 18.6: database suite passes; HTTP
+  130 populated / 127 outage / 130 recovered (two new private paths:
+  `/src/app.css`, `/_app/version.json`; `/dist/web/handler.js` replaces the
+  Astro entry path).
+- Browser comparison against live production (Astro `e1c292c` or later) using
+  computed styles and box sizes of every body element: Home at 1280 px dark is
+  identical except the intentionally changed dunamismax.com stack chips and
+  footer colophon; About, Contact, Blog and 404 at 375 px light are identical.
+- `bash -n` and `shellcheck -x deploy/*.sh` pass; `git diff --check` clean.
+
 ## Phase 0 — Astro/PostgreSQL stack alignment (first)
+
+Historical: superseded as the framework direction by Phase 1. The Drizzle
+adoption below remains current and in production.
 
 Owner's final direction, November 2, 2026 Eastern: retain Astro and PostgreSQL.
 This replaces the Next.js rewrite and the subsequently withdrawn SQLite plan.
@@ -231,7 +306,10 @@ migration acceptance.
 Recheck current, version-compatible docs with Context7; avoid stale CLI examples
 or introspection instructions for another SQL dialect.
 
-- [Astro Node adapter](https://docs.astro.build/en/guides/integrations-guide/node/)
+- [Migrating to SvelteKit 3](https://svelte.dev/docs/kit/migrating-to-sveltekit-3)
+- [SvelteKit adapter-node](https://svelte.dev/docs/kit/adapter-node)
+- [Tailwind CSS: disabling preflight](https://tailwindcss.com/docs/preflight)
+- [Astro Node adapter](https://docs.astro.build/en/guides/integrations-guide/node/) (historical)
 - [Drizzle with existing PostgreSQL](https://orm.drizzle.team/docs/get-started/postgresql-existing)
 - [Drizzle schema introspection](https://orm.drizzle.team/docs/drizzle-kit-pull)
 - [Drizzle migrations](https://orm.drizzle.team/docs/migrations)

@@ -1,8 +1,10 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": "$app/tsconfig",
   "include": [
-    ".astro/types.d.ts",
-    "**/*"
+    "src",
+    "bin",
+    "tests",
+    "*.ts"
   ],
   "exclude": [
     "dist",
@@ -14,7 +16,8 @@
     "exactOptionalPropertyTypes": true,
     "noEmit": true,
     "types": [
-      "node"
+      "node",
+      "$app/types"
     ],
     "lib": [
       "ES2024",

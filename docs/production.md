@@ -1,10 +1,14 @@
 # Production
 
-The runbook below describes the current Astro/PostgreSQL/Drizzle workflow;
-historical acceptance is in docs/migration.md, not a fresh host inspection. The
-deployment model is unchanged by Drizzle; no Next.js, SQLite or mandatory Compose
-cutover is planned. The first Drizzle release (`e1c292c`) adopted production on
-November 2, 2026; evidence is in BUILD Phase 0.
+The runbook below describes the SvelteKit/PostgreSQL/Drizzle workflow
+(SvelteKit 3, adapter-node, Tailwind CSS 4, PostgreSQL 18, Caddy). Production
+still serves the Astro release `e1c292c` (or a later Astro release) until the
+SvelteKit migration in BUILD Phase 1 is released; historical acceptance is in
+docs/migration.md, not a fresh host inspection. The deployment model is
+unchanged by the framework change: the same unit, user, listener, credentials,
+lock, candidate/release layout and `dist/cli/bin/*.js` entry points. Host names
+such as `astro-dunamismax`, `/etc/astro-apps`, `/run/astro-deploy/lock` and
+`astro-runtime` are shared-host contract names and are retained as-is.
 
 Follow the shared contract at
 `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md`. Root access is
@@ -51,8 +55,8 @@ npm ci, checks types/tests/build, exercises disposable PostgreSQL 18 fixtures
 and HTTP populated/outage/recovery, then hashes the candidate. Production
 builds do not receive any database credentials or post exports.
 
-PostgreSQL is authoritative. Ordinary deployment supports Astro-to-Astro release
-changes only; it does not read/import MySQL. The original migration evidence is
+PostgreSQL is authoritative. Ordinary deployment supports Node release to Node
+release changes only (Astro and SvelteKit releases share `dist/cli/bin/server.js`); it does not read/import MySQL. The original migration evidence is
 in docs/migration.md and protected host archives. Obtain a fresh verified host
 backup before a release. Cutover runs `dist/cli/bin/schema.js` (Drizzle
 migrations as dunamismax_owner); migrations stay additive and rollback-compatible,
@@ -79,7 +83,8 @@ sudo with-deploy-lock bash /srv/www/dunamismax.com/current/deploy/rollback.sh /r
 
 Rollback checkpoints hold the previous current link, Caddy fragment, Node
 unit/state and independent publishing wrapper. Rollback refuses a stale current
-link or a previous release without the Astro server. Historical PHP checkpoints
+link or a previous release without the Node server (`dist/cli/bin/server.js`,
+present in both Astro and SvelteKit releases). Historical PHP checkpoints
 are for isolated legacy recovery after the server-wide retirement.
 
 PHP/MySQL packages and active pools/settings are retired by final host integration.
@@ -106,7 +111,9 @@ records nothing if the catalog differs; stop and reconcile rather than editing
 the baseline file. Later releases apply only new reviewed migrations. Output is
 one JSON line with counts and the content digest, never post text.
 
-The previous Astro release remains compatible: it ignores the journal schema.
+The previous Astro release remains compatible: it ignores the journal schema,
+and the SvelteKit migration changes no schema, so either release can serve the
+same database and a code rollback to Astro stays valid.
 Keep later migrations additive so code rollback stays valid. Never run
 drizzle-kit push/pull/migrate against production. `verify-database.js` also
 checks that web and publishing cannot read or modify the journal.

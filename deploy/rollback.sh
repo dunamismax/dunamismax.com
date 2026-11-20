@@ -11,6 +11,6 @@ previous=$(cat "$saved/previous-release")
 [[ -d $previous && -f $saved/site.caddy ]]
 cd "$base/current"
 [[ -s $previous/dist/cli/bin/server.js ]] || { echo 'Use isolated recovery for retired PHP releases.' >&2; exit 1; }
-if [[ ${2:-} == --check ]]; then echo 'Compatible Astro rollback prerequisites verified; no state changed.'; exit 0; fi
+if [[ ${2:-} == --check ]]; then echo 'Compatible Node-release rollback prerequisites verified; no state changed.'; exit 0; fi
 restore_release "$saved"
 printf 'Restored %s. PostgreSQL data and all retained backups remain available.\n' "$previous"

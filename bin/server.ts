@@ -1,8 +1,7 @@
 import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-// Use the adapter's static + SSR handler, with a uniform read-only boundary.
-process.env.ASTRO_NODE_AUTOSTART = 'disabled';
-const entry = await import(new URL('../../server/entry.mjs', import.meta.url).href) as { handler: (request: IncomingMessage, response: ServerResponse) => void };
+// Use adapter-node's static + prerendered + SSR handler, with a uniform read-only boundary.
+const entry = await import(new URL('../../web/handler.js', import.meta.url).href) as { handler: (request: IncomingMessage, response: ServerResponse) => unknown };
 if (process.env.HOST && process.env.HOST !== '127.0.0.1') throw new Error('Only loopback binding is supported');
 const port = Number(process.env.PORT ?? '4311');
 const routes = new Set(['/', '/about', '/contact', '/projects', '/blog', '/feed.xml', '/robots.txt', '/manifest.webmanifest', '/healthz', '/css/site.css', '/icon.svg']);
