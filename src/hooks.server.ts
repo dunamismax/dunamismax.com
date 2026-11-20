@@ -16,5 +16,9 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (response.status === 503) headers.set('Retry-After', '60');
   return new Response(method === 'HEAD' ? null : response.body, { status: response.status, headers });
 };
-// Never log raw errors: they may carry connection details.
-export const handleError: HandleServerError = () => { console.error('Request failed'); return { message: 'Internal Error' }; };
+// Routine 404s arrive as framework errors; log only unexpected faults, and never
+// the raw error, which may carry connection details.
+export const handleError: HandleServerError = (caught) => {
+  if (caught.kind === 'unknown') { console.error('Request failed'); return { message: 'Internal Error' }; }
+  return { message: caught.error.message };
+};
