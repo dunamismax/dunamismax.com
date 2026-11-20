@@ -67,7 +67,7 @@
                 <span class="brand-mark brand-mark--footer" aria-hidden="true">DM</span>
                 <span>dunamismax</span>
             </a>
-            <p class="footer-copy">Stephen Sawyer · Web development, company remote support, and systems administration. Astro, TypeScript, PostgreSQL, Python, and the Ubuntu infrastructure I operate myself.</p>
+            <p class="footer-copy">Stephen Sawyer · Web applications, game servers, company remote support, and systems administration. SvelteKit, TypeScript, PostgreSQL, Go, Python, Swift, and the Ubuntu infrastructure I operate myself.</p>
         </div>
         <nav class="footer-columns" aria-label="Footer">
             <div class="footer-column">

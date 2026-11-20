@@ -86,7 +86,8 @@ cannot express), then `npm run db:check` and the rehearsal. Never use
 | Path | Purpose |
 | --- | --- |
 | `src/routes/` | SvelteKit pages, loads and endpoints; static pages set `prerender = true` |
-| `src/routes/+layout.svelte`, `src/lib/components/` | Metadata, navigation and shared project cards (imported as `#lib/*`) |
+| `src/routes/+layout.svelte`, `src/lib/components/` | Metadata, navigation and the shared project card (imported as `#lib/*`) |
+| `src/lib/projects.ts` | Typed portfolio inventory: groups, order, anchors and featured projects |
 | `src/app.css`, `src/styles/site.css` | Tailwind CSS 4 entry and the preserved hand-written stylesheet |
 | `src/hooks.server.ts`, `src/app.html` | Response headers/sanitized errors and the HTML shell |
 | `src/lib/` | Post reads, publishing, validation, safe text/RSS |

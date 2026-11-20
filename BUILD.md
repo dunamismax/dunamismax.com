@@ -1,5 +1,25 @@
 # Build plan and verification
 
+## Portfolio refresh (November 20, 2026)
+
+Content-only change; routes, schema, deployment and the stylesheet are
+unchanged. The portfolio grows from eight to fifteen cards in five groups
+(games, websites, apps in development, infrastructure, bots/tools/teaching),
+generated from the typed inventory in `src/lib/projects.ts`; the home page
+shows six featured cards. Home, About, Projects, Blog, footer and metadata copy
+now describe the actual stack (SvelteKit/TypeScript/PostgreSQL, plus Go,
+Python and Swift where projects use them). Evidence:
+[docs/portfolio.md](docs/portfolio.md#november-20-2026-review). All existing
+anchors are kept; new ones are `#lorehallow`, `#rivermind-poker`,
+`#azeroth-trail`, `#vincent-sawyer`, `#field-cadence`, `#day-by-word`,
+`#c-from-the-ground-up`, `#group-games` and `#group-in-development`.
+
+- [x] Local: `npm run check`, `npm run db:check`, `npm test`, production
+  `npm run build`, `bash deploy/rehearse.sh` (135 populated / 132 outage HTTP
+  checks), `git diff --check`; mobile light and desktop dark layouts reviewed,
+  no horizontal overflow at 375px.
+- [ ] Release to production (needs the owner's authorization).
+
 ## Phase 1 — SvelteKit stack migration (November 20, 2026)
 
 Owner's direction, November 20, 2026: change the planned and implemented stack to

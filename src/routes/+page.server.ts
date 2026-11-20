@@ -6,5 +6,5 @@ export const load: PageServerLoad = async () => {
   let latest: Post | null = null;
   let postCount: number | null = null;
   try { latest = (await posts.latest(1))[0] ?? null; postCount = await posts.count(); } catch { console.error('Home writing unavailable'); }
-  return { latest, postCount, meta: { title: 'dunamismax', description: 'Stephen Sawyer: Astro, TypeScript, and PostgreSQL web development, Python automation, company-wide RustDesk support, and self-hosted Ubuntu systems.', path: '/' } };
+  return { latest, postCount, meta: { title: 'dunamismax', description: 'Stephen Sawyer: full-stack developer and sysadmin. SvelteKit, TypeScript, and PostgreSQL web apps, Go and Python game servers, company-wide RustDesk support, and self-hosted Ubuntu infrastructure.', path: '/' } };
 };

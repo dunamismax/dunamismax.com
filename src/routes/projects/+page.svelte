@@ -1,56 +1,37 @@
 <script lang="ts">
-    import Infrastructure from '#lib/components/projects/Infrastructure.svelte';
-    import Apps from '#lib/components/projects/Apps.svelte';
-    import DeveloperTools from '#lib/components/projects/DeveloperTools.svelte';
+    import ProjectCard from '#lib/components/ProjectCard.svelte';
+    import { projectGroups, allProjects } from '#lib/projects.js';
 </script>
 
 <section class="page-hero" aria-labelledby="projects-title">
     <div class="section-inner">
         <p class="eyebrow">Portfolio</p>
-        <h1 id="projects-title">Websites, support, and systems.</h1>
-        <p class="lede">Company remote support, public websites, and practical automation. My work spans development, deployment, and the ongoing responsibility of running the service.</p>
+        <h1 id="projects-title">Games, websites, apps, and the systems behind them.</h1>
+        <p class="lede">An MMO server in Go, a poker AI you can play against, the websites I build for my family and my company, and the infrastructure I run for all of it. I own each project from the first commit through deployment, monitoring, and backups.</p>
         <ul class="hero-summary" aria-label="Project summary">
-            <li>8 projects &amp; services</li>
-            <li>3 areas of work</li>
+            <li>{allProjects.length} projects &amp; services</li>
+            <li>{projectGroups.length} areas of work</li>
             <li>Self-hosted on Ubuntu</li>
         </ul>
         <nav class="section-nav" aria-label="Project categories">
-            <a href="#group-infrastructure">Infrastructure &amp; support</a>
-            <a href="#group-apps">Websites</a>
-            <a href="#group-developer-tools">Automation &amp; bots</a>
+            {#each projectGroups as group (group.id)}<a href={'#' + group.id}>{group.title}</a>{/each}
         </nav>
     </div>
 </section>
 <section class="page-section">
     <div class="section-inner">
-        <section class="project-group" aria-labelledby="group-infrastructure">
-            <header class="project-group__heading">
-                <h2 id="group-infrastructure">Infrastructure &amp; support</h2>
-                <p>Services I operate: remote access for the company, visibility into system health, and recovery workflows.</p>
-            </header>
-            <ul class="card-list card-list--projects">
-<Infrastructure />
-            </ul>
-        </section>
-        <section class="project-group" aria-labelledby="group-apps">
-            <header class="project-group__heading">
-                <h2 id="group-apps">Websites</h2>
-                <p>Purpose-built Astro, TypeScript, and PostgreSQL applications, from personal publishing to a business website replacement.</p>
-            </header>
-            <ul class="card-list card-list--projects">
-<Apps />
-            </ul>
-        </section>
-        <section class="project-group" aria-labelledby="group-developer-tools">
-            <header class="project-group__heading">
-                <h2 id="group-developer-tools">Automation &amp; bots</h2>
-                <p>Small, focused programs that make support, community tools, and server operations repeatable.</p>
-            </header>
-            <ul class="card-list card-list--projects">
-<DeveloperTools />
-            </ul>
-        </section>
-        <p class="fine-print">This is a portfolio, not a live availability feed. For current service checks, visit <a href="https://status.dunamismax.com" rel="noopener noreferrer" target="_blank">Dunamis Status</a>. The Imaging Services replacement is a demo pending launch.</p>
+        {#each projectGroups as group (group.id)}
+            <section class="project-group" aria-labelledby={group.id}>
+                <header class="project-group__heading">
+                    <h2 id={group.id}>{group.title}</h2>
+                    <p>{group.summary}</p>
+                </header>
+                <ul class="card-list card-list--projects">
+                    {#each group.projects as project (project.id)}<ProjectCard {project} />{/each}
+                </ul>
+            </section>
+        {/each}
+        <p class="fine-print">This is a portfolio, not a live availability feed. For current service checks, visit <a href="https://status.dunamismax.com" rel="noopener noreferrer" target="_blank">Dunamis Status</a>. The Imaging Services replacement is a demo pending launch, and apps marked in development have not been released.</p>
     </div>
 </section>
 <section class="page-section page-section--quiet" aria-labelledby="portfolio-contact">
@@ -58,7 +39,7 @@
         <div class="section-heading">
             <p class="eyebrow">Behind the projects</p>
             <h2 id="portfolio-contact">One person, from application to operations.</h2>
-            <p>I work across the page, the database, and the server. Read more about my responsibilities and technical skills, or get in touch about the work.</p>
+            <p>I work across the interface, the server, the database, and the machine it all runs on. Read more about my responsibilities and technical skills, or get in touch about the work.</p>
         </div>
         <div class="hero-actions">
             <a href="/about" class="button button-secondary">Experience &amp; skills</a>

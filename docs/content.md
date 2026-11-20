@@ -3,9 +3,11 @@
 The commands below describe the current TypeScript/PostgreSQL workflow.
 
 Approved pages live in `src/routes/` (`+page.svelte`, with metadata in the
-matching `+page.ts` or `+page.server.ts`) and reusable cards in
-`src/lib/components/projects/`. Keep the eight-card ordering and summaries aligned.
-Do not change other project claims without checking their evidence.
+matching `+page.ts` or `+page.server.ts`). Every portfolio card comes from the
+typed inventory in `src/lib/projects.ts` (groups, order, anchors and the home
+page's featured subset), rendered by `src/lib/components/ProjectCard.svelte`.
+Do not change other project claims without checking their evidence in
+[docs/portfolio.md](portfolio.md), and keep `tests/http.ts` in step with it.
 
 Posts live authoritatively in PostgreSQL `app.posts`. Use an authorized shell:
 
