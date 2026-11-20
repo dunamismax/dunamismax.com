@@ -48,8 +48,8 @@ Status: implemented, verified locally and released to production at `064bca5`
 - [x] Commit and push main; GitHub Actions Verify passed on Ubuntu for `10ee7d4`
   (check, db:check, unit, build, PG 18 rehearsal, audit).
 - [x] On the VM: `deploy/prepare.sh`, backup/restore verification, then locked
-  cutover. Evidence below. Open: the full host backup is blocked by the shared
-  inventory (see the release record), which the ubuntu-vm-backup owner must update.
+  cutover. Evidence below. The shared backup inventory was then fixed for Grace's
+  SvelteKit build and a full verified host snapshot taken (see the record).
 
 ### Local verification record (November 20, 2026 Eastern)
 
@@ -110,8 +110,12 @@ Owner-authorized. Separate from the local record above and from Phase 0.
   checkpoints; Astro `e1c292c` remains retained and schema-compatible. No
   rollback was performed.
 - Post-release: `dunamismax-backup.service` archive verified (postgres-verify
-  PASS). A full host snapshot with `applications-verify` of `064bca5` is pending
-  the shared-inventory fix above.
+  PASS). ubuntu-vm-backup `8124335` pointed Grace's inventory entry at
+  `build/index.js` (sites may declare a build `output`; archives skip
+  `.svelte-kit`). Full `bin/backup --push` then passed: snapshot `989fde9` on
+  both backup remotes, `restore check` 108 / 0 failures, `postgres-verify` 9
+  databases, and `applications-verify` 10 artifacts with dunamismax.com
+  `064bca5` and graceandfootnotes.com `1a17b1e` HTTP 200 from restored data.
 
 ## Phase 0 — Astro/PostgreSQL stack alignment (first)
 
