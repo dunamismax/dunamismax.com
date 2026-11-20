@@ -31,8 +31,8 @@ anchors are kept; new ones are `#lorehallow`, `#rivermind-poker`,
     (`adopted: false`, 1 migration, 0 rows); production roles verified;
     full Caddy config valid and reloaded; public production 129 HTTP checks
     (empty blog). No shared service restarted.
-  - Independent checks: current → `4fbdc4f`; astro-dunamismax active,
-    ExecMainStatus 0, 0 restarts, user astro-dunamismax-web; 4311 and 5432
+  - Independent checks: current → `4fbdc4f`; dunamismax active,
+    ExecMainStatus 0, 0 restarts, user dunamismax-web; 4311 and 5432
     loopback-only; no failed units; no error lines in the unit log. Public
     HTTPS: /, /projects (15 cards), /about, /feed.xml, /healthz 200; CSP and
     no-store present; no `<script>`; www 301 preserves path and query; the
@@ -142,8 +142,8 @@ Owner-authorized. Separate from the local record above and from Phase 0.
 - Cutover 2 at about 8:48 a.m. Eastern: `62dbde1` → `064bca5`, checkpoint
   `/root/dunamismax-astro-20261120T134852Z`; same schema/privilege/124-check
   results. No `Request failed` lines after it, versus 20 from 404 checks before.
-- Independent checks: current → `064bca5`; astro-dunamismax active,
-  ExecMainStatus 0, user astro-dunamismax-web, only web.env; 127.0.0.1:4311 and
+- Independent checks: current → `064bca5`; dunamismax active,
+  ExecMainStatus 0, user dunamismax-web, only web.env; 127.0.0.1:4311 and
   PG 127.0.0.1:5432 loopback-only; no failed units; `dunamismax-posts list`
   works. Public HTTPS: CSP/nosniff/referrer headers, no-store, no `<script>`,
   /healthz ok, /css/site.css cached 300 s, www 301 preserves path/query,
@@ -371,8 +371,8 @@ migration acceptance.
   Privilege report passed, including web/publisher denial on the journal.
   Candidate service and public production each passed 118 HTTP checks; the
   www redirect check passed. No shared service was restarted (Caddy reload).
-- Independent checks: current → `e1c292c`; astro-dunamismax active, ExecMainStatus
-  0, user astro-dunamismax-web, only web.env; 127.0.0.1:4311 and PG
+- Independent checks: current → `e1c292c`; dunamismax active, ExecMainStatus
+  0, user dunamismax-web, only web.env; 127.0.0.1:4311 and PG
   127.0.0.1:5432 loopback-only; no failed units. Journal holds one row whose hash
   equals SHA256 of `drizzle/0000_baseline.sql`; `drizzle` schema owner-only;
   app catalog still equals `database/baseline-catalog.json`. The installed

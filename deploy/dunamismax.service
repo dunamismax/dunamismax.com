@@ -5,17 +5,17 @@ Wants=postgresql.service
 
 [Service]
 Type=simple
-User=astro-dunamismax-web
-Group=astro-dunamismax-web
+User=dunamismax-web
+Group=dunamismax-web
 WorkingDirectory=/srv/www/dunamismax.com/current
 Environment=NODE_ENV=production APP_ENV=production APP_URL=https://dunamismax.com HOST=127.0.0.1 PORT=4311
-EnvironmentFile=/etc/astro-apps/dunamismax/web.env
-ExecStart=/opt/astro-runtime/bin/node /srv/www/dunamismax.com/current/dist/cli/bin/server.js
+EnvironmentFile=/etc/web-apps/dunamismax/web.env
+ExecStart=/opt/node-runtime/bin/node /srv/www/dunamismax.com/current/dist/cli/bin/server.js
 Restart=on-failure
 RestartSec=3
 TimeoutStopSec=30
 UMask=0077
-StateDirectory=astro-dunamismax
+StateDirectory=dunamismax
 NoNewPrivileges=true
 PrivateTmp=true
 PrivateDevices=true

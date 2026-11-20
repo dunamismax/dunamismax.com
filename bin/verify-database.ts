@@ -7,8 +7,8 @@ async function denied(client: pg.Client, sql: string): Promise<void> {
   finally { await client.query('ROLLBACK'); }
 }
 async function main() {
-  const web=new pg.Client(pgConfig(protectedEnv('/etc/astro-apps/dunamismax/web.env'),'dunamismax_web'));
-  const publisher=new pg.Client(pgConfig(protectedEnv('/etc/astro-apps/dunamismax/publishing.env'),'dunamismax_publishing'));
+  const web=new pg.Client(pgConfig(protectedEnv('/etc/web-apps/dunamismax/web.env'),'dunamismax_web'));
+  const publisher=new pg.Client(pgConfig(protectedEnv('/etc/web-apps/dunamismax/publishing.env'),'dunamismax_publishing'));
   try {
     await web.connect();await publisher.connect();
     await web.query('SELECT count(*) FROM app.public_posts');

@@ -2,13 +2,13 @@
 set -euo pipefail
 require_lock() {
     [[ $EUID == 0 ]] || { echo 'Root required.' >&2; exit 1; }
-    [[ -e /proc/$$/fd/9 && $(readlink /proc/$$/fd/9) == /run/astro-deploy/lock ]] || { echo 'Use with-deploy-lock around this entire transaction.' >&2; exit 1; }
+    [[ -e /proc/$$/fd/9 && $(readlink /proc/$$/fd/9) == /run/web-deploy/lock ]] || { echo 'Use with-deploy-lock around this entire transaction.' >&2; exit 1; }
     flock -n 9 || exit 75
 }
-export node=/opt/astro-runtime/bin/node
+export node=/opt/node-runtime/bin/node
 base=/srv/www/dunamismax.com
 fragment=/etc/caddy/sites/dunamismax.com.caddy
-unit=/etc/systemd/system/astro-dunamismax.service
+unit=/etc/systemd/system/dunamismax.service
 caddy=/usr/local/lib/caddy/caddy
 validate_caddy() {
     runuser -u caddy -g caddy -- env HOME=/var/lib/caddy "$caddy" validate --config /etc/caddy/Caddyfile
@@ -21,13 +21,13 @@ wait_health() {
 }
 restore_release() {
     local saved=$1
-    systemctl stop astro-dunamismax-candidate.service 2>/dev/null || true
+    systemctl stop dunamismax-candidate.service 2>/dev/null || true
     cp -a "$saved/site.caddy" "$fragment"
     validate_caddy
     switch_release "$(cat "$saved/previous-release")"
     if [[ -f $saved/previous.service ]]; then cp -a "$saved/previous.service" "$unit"; else rm -f "$unit"; fi
     systemctl daemon-reload
-    if [[ $(cat "$saved/previous-active") == active ]]; then systemctl restart astro-dunamismax.service; else systemctl disable --now astro-dunamismax.service || true; fi
+    if [[ $(cat "$saved/previous-active") == active ]]; then systemctl restart dunamismax.service; else systemctl disable --now dunamismax.service || true; fi
     if [[ -f $saved/previous-wrapper ]]; then cp -a "$saved/previous-wrapper" /usr/local/sbin/dunamismax-posts; else rm -f /usr/local/sbin/dunamismax-posts; fi
     systemctl reload caddy
     curl -fsS https://dunamismax.com/healthz

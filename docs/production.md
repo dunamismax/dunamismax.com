@@ -7,11 +7,11 @@ evidence is in BUILD Phase 1. Historical acceptance is in docs/migration.md,
 not a fresh host inspection. The deployment model is
 unchanged by the framework change: the same unit, user, listener, credentials,
 lock, candidate/release layout and `dist/cli/bin/*.js` entry points. Host names
-such as `astro-dunamismax`, `/etc/astro-apps`, `/run/astro-deploy/lock` and
-`astro-runtime` are shared-host contract names and are retained as-is.
+such as `dunamismax`, `/etc/web-apps`, `/run/web-deploy/lock` and
+`node-runtime` are shared-host contract names and are retained as-is.
 
 Follow the shared contract at
-`/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md`. Root access is
+`/home/sawyer/github/ubuntu-vm-backup/docs/web-platform.md`. Root access is
 required for deployment. Pushing does not deploy. Never modify other sites.
 
 Authorized root access is `ssh root@ubuntu-vm`; sawyer's `sudo -n` may require
@@ -22,18 +22,18 @@ Deployed shell helpers are mode 0644; invoke them with `bash`.
 | Item | Setting |
 | --- | --- |
 | Checkout | `/home/sawyer/github/dunamismax.com` |
-| Isolated candidates | `/home/sawyer/astro-candidates/dunamismax/<commit>` |
+| Isolated candidates | `/home/sawyer/web-candidates/dunamismax/<commit>` |
 | Immutable releases | `/srv/www/dunamismax.com/releases/<commit>` |
 | Active link | `/srv/www/dunamismax.com/current` |
-| Node unit/user | `astro-dunamismax.service` / `astro-dunamismax-web` |
+| Node unit/user | `dunamismax.service` / `dunamismax-web` |
 | Listener | `127.0.0.1:4311` (temporary candidate 4323) |
-| Runtime | `/opt/astro-runtime/bin/node` 24.22.3 |
-| Website credentials | `/etc/astro-apps/dunamismax/web.env` (root-only; systemd loads) |
-| Writer credentials | `/etc/astro-apps/dunamismax/publishing.env` (root-only wrapper) |
-| Migration credentials | `/etc/astro-apps/dunamismax/migration.env` (operator only) |
+| Runtime | `/opt/node-runtime/bin/node` 24.22.3 |
+| Website credentials | `/etc/web-apps/dunamismax/web.env` (root-only; systemd loads) |
+| Writer credentials | `/etc/web-apps/dunamismax/publishing.env` (root-only wrapper) |
+| Migration credentials | `/etc/web-apps/dunamismax/migration.env` (operator only) |
 | PostgreSQL | `dunamismax`, owner `dunamismax_owner`, schema `app` |
 | Caddy fragment | `/etc/caddy/sites/dunamismax.com.caddy` |
-| Rollback pointer | `/srv/www/dunamismax.com/last-astro-rollback` |
+| Rollback pointer | `/srv/www/dunamismax.com/last-web-rollback` |
 
 ## Release
 
@@ -73,7 +73,7 @@ same lock. Candidate services stop before activation and on failure.
 ## Verification and rollback
 
 ```sh
-systemctl is-active astro-dunamismax caddy postgresql@18-main
+systemctl is-active dunamismax caddy postgresql@18-main
 curl -fsS https://dunamismax.com/healthz
 curl -fsSI https://dunamismax.com/about
 curl -fsS https://dunamismax.com/feed.xml

@@ -10,7 +10,7 @@ import { catalog, contentState } from '../src/db/catalog.js';
 const folder = 'drizzle', journal = { migrationsFolder: folder, migrationsSchema: 'drizzle', migrationsTable: '__drizzle_migrations' };
 let connection: Awaited<ReturnType<typeof operatorConnection>> | undefined;
 try {
-  connection = await operatorConnection(protectedEnv(process.env.MIGRATION_CONFIG ?? '/etc/astro-apps/dunamismax/migration.env'), 'dunamismax_migration');
+  connection = await operatorConnection(protectedEnv(process.env.MIGRATION_CONFIG ?? '/etc/web-apps/dunamismax/migration.env'), 'dunamismax_migration');
   const { client, db } = connection;
   await client.query('SET ROLE dunamismax_owner');
   await client.query("SELECT pg_advisory_lock(hashtext('dunamismax.com schema migrations'))");

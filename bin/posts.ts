@@ -20,7 +20,7 @@ Usage: npm run posts -- COMMAND [SLUG] [options]
 Body FILE is UTF-8 plain text, or - for stdin. Slugs cannot change.
 POSTS_CONFIG: absolute owner-only 0600 configuration outside the checkout.
 Production: sudo /usr/local/sbin/dunamismax-posts COMMAND ...
-Credentials are /etc/astro-apps/dunamismax/publishing.env; never use web.env.
+Credentials are /etc/web-apps/dunamismax/publishing.env; never use web.env.
 `;
 async function main() {
   const args = process.argv.slice(2);
@@ -46,7 +46,7 @@ async function main() {
   }
   const integer = (value: string, min: number, max: number) => { const n = Number(value); if (!/^(0|[1-9][0-9]*)$/.test(value) || !Number.isSafeInteger(n) || n < min || n > max) throw new Error('Invalid pagination argument'); return n; };
   const limit = integer(values.limit ?? '50',1,500), offset = integer(values.offset ?? '0',0,2147483647);
-  const env = process.env.POSTS_CONFIG ? protectedEnv(process.env.POSTS_CONFIG) : process.env.POSTS_TRUSTED_WRAPPER === '1' ? process.env as Record<string,string> : protectedEnv('/etc/astro-apps/dunamismax/publishing.env');
+  const env = process.env.POSTS_CONFIG ? protectedEnv(process.env.POSTS_CONFIG) : process.env.POSTS_TRUSTED_WRAPPER === '1' ? process.env as Record<string,string> : protectedEnv('/etc/web-apps/dunamismax/publishing.env');
   const { client, db } = await operatorConnection(env, 'dunamismax_publishing');
   try {
     if (command === 'list' || command === 'show') {

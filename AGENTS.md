@@ -1,7 +1,7 @@
 # Repository operating rules
 
 Read this file, `README.md`, `BUILD.md`, and task-relevant `docs/` before changes.
-Read `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md` and any
+Read `/home/sawyer/github/ubuntu-vm-backup/docs/web-platform.md` and any
 successor shared host contract before deployment. The owner's November 20,
 2026 direction sets the stack to SvelteKit 3 · Svelte 5 · TypeScript · Tailwind
 CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy, replacing
@@ -84,11 +84,11 @@ backup locations or drafts. No public admin, forms, accounts, tracking or script
 
 | Item | Current convention to retain |
 | --- | --- |
-| Runtime | deploy/astro-dunamismax.service, astro-dunamismax-web user; Node, SvelteKit adapter-node handler (unit/user names are host contract) |
+| Runtime | deploy/dunamismax.service, dunamismax-web user; Node, SvelteKit adapter-node handler (unit/user names are host contract) |
 | Listener | 127.0.0.1:4311; candidate 4323 after checking availability |
 | Caddy | /etc/caddy/Caddyfile imports /etc/caddy/sites/dunamismax.com.caddy; template deploy/Caddyfile |
 | PostgreSQL | Native loopback service; database dunamismax, schema app; independent owner/web/publishing/migration roles |
-| Credentials | /etc/astro-apps/dunamismax/{web,publishing,migration}.env, one per identity |
+| Credentials | /etc/web-apps/dunamismax/{web,publishing,migration}.env, one per identity |
 | Releases | /srv/www/dunamismax.com/releases/<commit>, atomic current; shared descriptor-9 deployment lock |
 | ORM | src/db/schema.ts, drizzle.config.ts, drizzle/ migrations; journal drizzle.__drizzle_migrations is owner-only; production adopted at e1c292c |
 
@@ -104,13 +104,13 @@ prerequisites without replacing its Caddy binary or restarting shared services.
 
 Deploy only this site; never restart shared PHP-FPM, MySQL, PostgreSQL or Caddy.
 Use `/usr/local/lib/caddy/caddy`, not `/usr/bin/caddy`. Build/test isolated
-candidates before taking `/run/astro-deploy/lock` via `with-deploy-lock`.
+candidates before taking `/run/web-deploy/lock` via `with-deploy-lock`.
 Authorized privileged SSH is available with `ssh root@ubuntu-vm`. A failed
 `sudo -n` as sawyer does not establish that privileged access is unavailable.
 Hold it for the entire privileged transaction, including rollback. Never nest
 it or recreate the lock. Root-only scripts in `deploy/` verify descriptor 9.
-Node listens on 127.0.0.1:4311, as `astro-dunamismax-web`; systemd loads only
-`/etc/astro-apps/dunamismax/web.env`. Publishing uses an independent identity.
+Node listens on 127.0.0.1:4311, as `dunamismax-web`; systemd loads only
+`/etc/web-apps/dunamismax/web.env`. Publishing uses an independent identity.
 Invoke deployed shell helpers with `bash`: release files are mode 0644.
 Do not serve a checkout, source, credentials or the complete server build as
 webroot. Keep immutable commit releases and atomic current symlinks.

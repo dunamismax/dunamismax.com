@@ -5,7 +5,7 @@ set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 require_lock
 saved=$(realpath "$1")
-[[ $saved == /root/dunamismax-astro-* && -f $saved/previous-release ]]
+[[ $saved == /root/dunamismax-web-* && -f $saved/previous-release ]]
 [[ $(readlink -f "$base/current") == "$base/releases/$(cat "$saved/deployed-commit")" ]] || { echo 'Current release changed; refusing stale rollback.' >&2; exit 1; }
 previous=$(cat "$saved/previous-release")
 [[ -d $previous && -f $saved/site.caddy ]]

@@ -16,7 +16,7 @@ This is an editorial inventory, not a live health report or a security audit.
 ### Host
 
 Ubuntu 26.04.1 LTS. Caddy 2.11.9 (`/usr/local/lib/caddy/caddy`), PostgreSQL
-18.6, Node 24.22.3 (`/opt/astro-runtime`), Go 1.27.4, Docker 29.10, Tailscale,
+18.6, Node 24.22.3 (`/opt/node-runtime`), Go 1.27.4, Docker 29.10, Tailscale,
 fail2ban and a Lynis timer. PHP-FPM and MySQL are no longer running, so no
 portfolio copy may describe them as current. Caddy serves ten site files:
 dunamismax.com, graceandfootnotes.com, status.dunamismax.com, vincentsawyer.org,
@@ -47,7 +47,7 @@ build, disk cleanup.
 | RustDesk remote support | `hbbs`/`hbbr` containers up; installer build and RustDesk backup timers; xrayservice.net 200 (static Astro) | Operation, not authorship, of RustDesk. No keys or direct installer links. |
 | Dunamis Status | Public repo; SvelteKit release `8c72b37`; collector timer | Portfolio is not an uptime feed. |
 | Server backup & recovery | Timers above; private ubuntu-vm-backup repo | No repo links, locations, inventory or keys. |
-| Dynamic DNS automation | `astro-cloudflare-ddns.timer`, TypeScript updater in the private xrayservice repo | No addresses, zones, tokens or record IDs. |
+| Dynamic DNS automation | `cloudflare-ddns.timer`, TypeScript updater in the private xrayservice repo | No addresses, zones, tokens or record IDs. |
 | MTG Card Bot | Public repo at 5.0.0; `mtg-card-bot` Python service running | No claim of an end-to-end Discord test in this review. |
 | C From The Ground Up | Public repo (173 stars, the account's most-starred); GitHub Pages book 200 | Teaching workbook, not an application suite. |
 

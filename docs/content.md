@@ -33,7 +33,7 @@ Use `--body-file -` for UTF-8 stdin. JSON list/show intentionally contain privat
 content: use only trusted terminals and do not publish their output.
 
 The root-owned wrapper takes a shared deployment lock for the command, loads
-only `/etc/astro-apps/dunamismax/publishing.env`, then drops to the independent
+only `/etc/web-apps/dunamismax/publishing.env`, then drops to the independent
 `sawyer` operator identity (separate from the website user). Deployment’s exclusive lock excludes
 concurrent publishing. It never passes migration credentials or a database URL
 to the web process. Direct local development uses `npm run posts -- ...` with

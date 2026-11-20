@@ -40,9 +40,9 @@ Production verified October 22, 2026 Eastern. The active Astro release is
 ## Observed production cutover
 
 The owner performed the privileged cutover. A subsequent independent inspection
-confirmed the active release symlink above, `astro-dunamismax.service` active and
+confirmed the active release symlink above, `dunamismax.service` active and
 running with ExecMainStatus 0, and the service configured as
-`astro-dunamismax-web` with only the designated web.env EnvironmentFile.
+`dunamismax-web` with only the designated web.env EnvironmentFile.
 
 - All 109 empty-blog HTTP checks passed against public production from the
   verified candidate, including content, metadata, HEAD, method restrictions,
@@ -50,7 +50,7 @@ running with ExecMainStatus 0, and the service configured as
 - `/healthz` returns the expected JSON. RSS parses as RSS 2.0 with zero items;
   the production blog returns 200/no-store. The www hostname redirects 301 to
   the apex. Public output shows this application's migrated stack card.
-- The root-only `last-astro-rollback` pointer exists, written at approximately
+- The root-only `last-web-rollback` pointer exists, written at approximately
   6:19 a.m. Eastern. Its checkpoint is
   `/root/dunamismax-astro-20261022T101915Z`. The protected reports were read
   independently through authorized root SSH: candidate and production HTTP

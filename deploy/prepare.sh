@@ -4,16 +4,16 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 [[ -z $(git status --porcelain) ]] || { echo 'Commit all changes first.' >&2; exit 1; }
 commit=$(git rev-parse HEAD)
-candidate="/home/sawyer/astro-candidates/dunamismax/$commit"
+candidate="/home/sawyer/web-candidates/dunamismax/$commit"
 [[ ! -e $candidate ]] || { echo 'Candidate already exists; inspect rather than overwrite.' >&2; exit 1; }
 mkdir -p "$candidate"
 git archive "$commit" | tar -x -C "$candidate"
 cd "$candidate"
-astro-runtime npm ci --no-audit
-astro-runtime npm run check
-astro-runtime npm test
-APP_ENV=production APP_URL=https://dunamismax.com astro-runtime npm run build
-astro-runtime bash deploy/rehearse.sh
+node-runtime npm ci --no-audit
+node-runtime npm run check
+node-runtime npm test
+APP_ENV=production APP_URL=https://dunamismax.com node-runtime npm run build
+node-runtime bash deploy/rehearse.sh
 for file in deploy/*.sh; do bash -n "$file"; done
 shellcheck -x deploy/*.sh
 printf '%s\n' "$commit" > .release-commit

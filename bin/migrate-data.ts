@@ -30,7 +30,7 @@ async function main() {
  if (!mode || !['export','import','reconcile'].includes(mode) || !path || !path.startsWith('/')) throw new Error('Usage: migrate-data.ts export|import|reconcile /absolute/private/snapshot.json');
  if (mode === 'export') { const rows = await source(); writeFileSync(path,JSON.stringify(rows),{ mode:0o600, flag:'wx' }); console.log(JSON.stringify({operation:'export',rows:rows.length,sha256:digest(rows)})); return; }
  const rows = parseRows(path);
- const env = protectedEnv(process.env.MIGRATION_CONFIG ?? '/etc/astro-apps/dunamismax/migration.env');
+ const env = protectedEnv(process.env.MIGRATION_CONFIG ?? '/etc/web-apps/dunamismax/migration.env');
  const client = new pg.Client(pgConfig(env,'dunamismax_migration'));
  try {
   await client.connect();
