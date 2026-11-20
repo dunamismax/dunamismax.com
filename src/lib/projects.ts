@@ -69,8 +69,8 @@ const azerothtrail: Project = {
   tone: 'active',
   role: 'Game guide · Development & hosting',
   tagline: 'A World of Warcraft leveling guide for Paladins and Druids that answers one question for every spec: what should I do at my level?',
-  detail: 'Levels 1 to 60 with zones, quests, training, talent order, and dungeons, sourced and dated. A verifier fails the build if a talent build drifts from its source. Static pages work with JavaScript off, and a small Node service tracks server status in every region and sends Web Push alerts when servers come back.',
-  stack: ['Astro', 'TypeScript', 'Node.js', 'Web Push', 'Caddy'],
+  detail: 'Levels 1 to 60 with zones, quests, training, talent order, and dungeons, sourced and dated. A verifier fails the build if a talent build drifts from its source. Prerendered SvelteKit pages work with JavaScript off, and the same server tracks server status in every region in PostgreSQL and sends Web Push alerts when servers come back.',
+  stack: ['SvelteKit', 'TypeScript', 'PostgreSQL', 'Web Push', 'Caddy'],
   links: [
     { label: 'Website', href: 'https://azerothtrail.com' },
     { label: 'Source', href: gh('azerothtrail') },
@@ -120,8 +120,8 @@ const imaging: Project = {
   tone: 'phase-0',
   role: 'Business website · Development & deployment',
   tagline: 'A bespoke replacement for an existing WordPress website, covering company services, equipment, practice specialties, and contact information.',
-  detail: 'Thirteen approved pages run as a review demo on Astro, strict TypeScript, and PostgreSQL with a typed Drizzle data layer. A SvelteKit port is approved to go live on the demo before launch; the company’s main website has not been cut over.',
-  stack: ['Astro', 'SvelteKit', 'TypeScript', 'PostgreSQL', 'Drizzle'],
+  detail: 'Thirteen approved pages run as a review demo on SvelteKit, strict TypeScript, and PostgreSQL with a typed Drizzle data layer. The company’s main website has not been cut over.',
+  stack: ['SvelteKit', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Drizzle'],
   links: [],
   note: 'Demo under review · Private source',
 };
@@ -159,7 +159,7 @@ const rustdesk: Project = {
   role: 'Company IT · Deployment & operations',
   tagline: 'I self-host RustDesk for my entire company, with the server and relay running on Ubuntu in Docker. The customer-facing support site at xrayservice.net provides a preconfigured Windows client.',
   detail: 'I maintain the download flow, weekly installer builds with checksum, Authenticode, and certificate verification, monitoring, and daily service backups. Customers get connected without entering any server settings.',
-  stack: ['RustDesk', 'Docker', 'Ubuntu', 'Caddy', 'Astro', 'Windows'],
+  stack: ['RustDesk', 'Docker', 'Ubuntu', 'Caddy', 'SvelteKit', 'Windows'],
   links: [{ label: 'Support website', href: 'https://xrayservice.net' }],
   featured: true,
 };
@@ -223,11 +223,12 @@ const cbook: Project = {
   status: 'Published',
   tone: 'shipped',
   role: 'Open-source book · Writing & teaching',
-  tagline: 'A progressive C workbook, from Hello World to sockets, processes, threads, and an ncurses text adventure, readable online as a book.',
-  detail: 'Five parts of short, runnable lessons with the explanation in the comments and the code inline, built against C23 with a C17 fallback. It is my most-starred public repository.',
-  stack: ['C', 'POSIX', 'ncurses', 'Make', 'mdBook'],
+  tagline: 'A free, progressive C course of 35 runnable lessons, from Hello World to sockets, processes, threads, and an ncurses text adventure.',
+  detail: 'Five parts of short lessons with the explanation in the comments and the code inline, built against C23 with a C17 fallback. The course website is SvelteKit, built from the same lesson files, with an mdBook edition kept as a mirror. It is my most-starred public repository.',
+  stack: ['C', 'POSIX', 'ncurses', 'SvelteKit', 'mdBook'],
   links: [
-    { label: 'Read online', href: 'https://dunamismax.github.io/c-from-the-ground-up/' },
+    { label: 'Course website', href: 'https://cfromthegroundup.com' },
+    { label: 'Book edition', href: 'https://dunamismax.github.io/c-from-the-ground-up/' },
     { label: 'Source', href: gh('c-from-the-ground-up') },
   ],
 };

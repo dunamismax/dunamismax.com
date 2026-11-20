@@ -59,7 +59,7 @@
             <h2 id="skills-title">The tools behind the work.</h2>
         </div>
         <dl class="skills-grid">
-            <div><dt>Web applications</dt><dd>SvelteKit 3, Svelte 5, strict TypeScript, Tailwind CSS 4, PostgreSQL 18, Drizzle ORM, Better Auth, Astro for static sites, semantic HTML, and accessible, script-free server rendering.</dd></div>
+            <div><dt>Web applications</dt><dd>SvelteKit 3, Svelte 5, strict TypeScript, Tailwind CSS 4, PostgreSQL 18, Drizzle ORM, Better Auth, semantic HTML, and accessible, script-free server rendering.</dd></div>
             <div><dt>Languages</dt><dd>TypeScript, Go, Python, Swift, SQL, C, and Bash.</dd></div>
             <div><dt>Games &amp; realtime</dt><dd>Authoritative Go servers, goroutine-per-zone design, Protocol Buffers with Buf, WebSockets, fuzz-tested game engines, and MCCFR poker training.</dd></div>
             <div><dt>Python &amp; automation</dt><dd>uv, Ruff, pytest, Alembic, discord.py, httpx, the Scryfall and Cloudflare APIs, and QuickBooks reconciliation tooling.</dd></div>

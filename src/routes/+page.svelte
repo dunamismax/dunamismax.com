@@ -43,7 +43,7 @@
                 <dl class="system-panel__rows">
                     <div>
                         <dt>Web applications</dt>
-                        <dd>SvelteKit apps on Node and static Astro sites behind Caddy, with separate service accounts and least-privilege PostgreSQL 18 roles.</dd>
+                        <dd>SvelteKit apps on Node behind Caddy, with separate service accounts and least-privilege PostgreSQL 18 roles.</dd>
                     </div>
                     <div>
                         <dt>Long-running services</dt>

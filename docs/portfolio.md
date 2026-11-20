@@ -25,6 +25,11 @@ game prototype), rivermindpoker.com, xrayservice.net,
 demo.xrayservice.net and data.xrayservice.net (email images). The eight public
 websites named on the home page are the first eight; the demo is noindex.
 
+A later recheck the same day found twelve site files: the ten above plus
+cfromthegroundup.com (the C course site) and daybyword.com, which returned 200
+from release `52126aa`. The Day by Word card and its entry below were not
+changed in that recheck; describing the web version as released is the owner's call.
+
 Backup timers: dunamismax, graceandfootnotes, status-dunamismax,
 vincentsawyer, rustdesk and the host-wide ubuntu-vm-backup (age-encrypted,
 with isolated PostgreSQL and application restore checks). Other timers: status
@@ -37,19 +42,19 @@ build, disk cleanup.
 | --- | --- | --- |
 | Lorehallow | Public repo; `lorehallow-server` (Go binary) running; lorehallow.com 200 from the script-free SvelteKit release `9c4a1c7`; play.lorehallow.com serves the Phaser client and a named connection joins the shared map (checked 2026-11-20); BUILD.md Phase 2 current | Pre-alpha. An open prototype with no accounts; no v0.2.0 release yet. Scale is a target, never a claim. |
 | RiverMind Poker | Public GPL repo; `rivermind-poker serve-nl` running behind Caddy; rivermindpoker.com 200 | Play money only, bots always labelled. Credit its open-source origins. |
-| Azeroth Trail | Public repo; Caddy static site plus `azerothtrail-status` Node service; azerothtrail.com 200 | Paladin and Druid only; Web Push status alerts. |
+| Azeroth Trail | Public repo; `azerothtrail.service` (SvelteKit, adapter-node on 127.0.0.1:4315) active from release `1bbe241`, which includes the SvelteKit, PostgreSQL 18 and Drizzle move `9740b04`; Caddy serves the prerendered pages and proxies the tracker API; the old `azerothtrail-status` service is inactive; azerothtrail.com 200 (rechecked 2026-11-20) | Paladin and Druid only; Web Push status alerts. |
 | vincentsawyer.org | Private repo; `vincentsawyer-web` SvelteKit (adapter-node) release `4de8492`; 200 | Live. Admin and store are not public features; do not describe them. |
 | Grace & Footnotes | Private repo; SvelteKit release `1a17b1e` running; 200 | Personal Christian writing site. |
 | dunamismax.com | This repository; SvelteKit release `064bca5` | No browser JavaScript. |
-| Imaging Services website | Private repo; demo still Astro release `353f937`; SvelteKit port approved for the demo before launch | Thirteen pages. Omit the demo link; main site not cut over. |
+| Imaging Services website | Private repo; `imagingservices.service` active; demo `current` and `/healthz` both at release `a176d39`, which includes the SvelteKit port `3958955`; `astro-imagingservices` inactive (rechecked 2026-11-20) | Thirteen pages. Omit the demo link; main site not cut over. |
 | Field Cadence | Private repo; Phase S0 foundation built and tested on SvelteKit; no Caddy site | In development, nothing deployed. Private source. |
 | Day by Word | Public repo; Swift/SwiftUI app and SvelteKit web workspace; daybyword.com does not resolve | In development, not released. |
-| RustDesk remote support | `hbbs`/`hbbr` containers up; installer build and RustDesk backup timers; xrayservice.net 200 (static Astro) | Operation, not authorship, of RustDesk. No keys or direct installer links. |
+| RustDesk remote support | `hbbs`/`hbbr` containers up; installer build and RustDesk backup timers; xrayservice.net 200 from `xrayservice-web.service` (prerendered SvelteKit on 127.0.0.1:4319), release `ed19680`; its stylesheet is a Tailwind CSS 4.3.5 build (rechecked 2026-11-20) | Operation, not authorship, of RustDesk. No keys or direct installer links. |
 | Dunamis Status | Public repo; SvelteKit release `8c72b37`; collector timer | Portfolio is not an uptime feed. |
 | Server backup & recovery | Timers above; private ubuntu-vm-backup repo | No repo links, locations, inventory or keys. |
 | Dynamic DNS automation | `cloudflare-ddns.timer`, TypeScript updater in the private xrayservice repo | No addresses, zones, tokens or record IDs. |
 | MTG Card Bot | Public repo at 5.0.0; `mtg-card-bot` Python service running | No claim of an end-to-end Discord test in this review. |
-| C From The Ground Up | Public repo (173 stars, the account's most-starred); GitHub Pages book 200 | Teaching workbook, not an application suite. |
+| C From The Ground Up | Public repo (173 stars, the account's most-starred); `cfromthegroundup.service` (SvelteKit) active from release `a14e994`; cfromthegroundup.com 200 and the GitHub Pages book mirror 200 (rechecked 2026-11-20) | Teaching workbook, not an application suite. |
 
 Not listed: toolworks (server cleanup and deploy helpers), imagingservices_work
 (private company office automation, summarized only as Python/QuickBooks
