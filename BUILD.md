@@ -18,7 +18,29 @@ anchors are kept; new ones are `#lorehallow`, `#rivermind-poker`,
   `npm run build`, `bash deploy/rehearse.sh` (135 populated / 132 outage HTTP
   checks), `git diff --check`; mobile light and desktop dark layouts reviewed,
   no horizontal overflow at 375px.
-- [ ] Release to production (needs the owner's authorization).
+- [x] Released to production (owner-authorized), November 20, 2026 at about
+  9:20 a.m. Eastern: `064bca5` → `4fbdc4f`.
+  - Source: `4fbdc4f` pushed to GitHub and Codeberg; VM checkout
+    fast-forwarded; `deploy/prepare.sh` candidate passed svelte-check, unit,
+    build, shellcheck and the PG 18 rehearsal (135 / 132 / 135 HTTP).
+  - Pre-release: full `bin/backup --push` passed (`postgres-verify` 9
+    databases, `applications-verify` 10 artifacts); `restore check` 108 files,
+    0 failures.
+  - Cutover under `with-deploy-lock`, checkpoint
+    `/root/dunamismax-astro-20261120T142031Z`. Schema step no-op
+    (`adopted: false`, 1 migration, 0 rows); production roles verified;
+    full Caddy config valid and reloaded; public production 129 HTTP checks
+    (empty blog). No shared service restarted.
+  - Independent checks: current → `4fbdc4f`; astro-dunamismax active,
+    ExecMainStatus 0, 0 restarts, user astro-dunamismax-web; 4311 and 5432
+    loopback-only; no failed units; no error lines in the unit log. Public
+    HTTPS: /, /projects (15 cards), /about, /feed.xml, /healthz 200; CSP and
+    no-store present; no `<script>`; www 301 preserves path and query; the
+    seven other public sites 200.
+  - Rollback: `rollback.sh CHECKPOINT --check` passed under the lock; not
+    performed.
+  - Post-release: `bin/backup --push` passed, and `applications-verify`
+    served `4fbdc4f` with HTTP 200 from restored data.
 
 ## Phase 1 — SvelteKit stack migration (November 20, 2026)
 
