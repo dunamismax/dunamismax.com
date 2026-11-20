@@ -8,12 +8,12 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`) and the portfolio refresh (live at `4fbdc4f`). No feature work is planned. |
-| **Next step** | **M.1** (record the `fb9ea59` release), then **M.2** (release the portfolio updates on `main`) when the owner authorizes it. |
-| **In progress** | Nothing claimed. The working tree may hold another session's uncommitted portfolio recheck (`docs/portfolio.md`, `src/lib/projects.ts`, Home and About copy); leave it to that session. |
-| **Open items** | Production runs `fb9ea59`, which has no release record here (M.1). `3605c15` (Lorehallow card) is on `main` but not deployed; its commit notes the release needs a fresh host-wide backup first. |
-| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `fb9ea59` and `dunamismax` active (read-only check over `ssh root@ubuntu-vm`, 2026-11-20). Last recorded release: `064bca5` → `4fbdc4f`, November 20, 2026 ([record](#portfolio-refresh-november-20-2026)). |
-| **`main`** | `3605c15`, pushed to GitHub and Codeberg. |
+| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`), the portfolio refresh (`4fbdc4f`) and the portfolio updates (M.2, live at `eeeb06d`). No feature work is planned. |
+| **Next step** | **M.1** (record the `fb9ea59` release from what evidence exists). |
+| **In progress** | Nothing claimed. |
+| **Open items** | `fb9ea59`, live before M.2, has no release record (M.1). The Day by Word card says it is not released, but daybyword.com answers 200 ([portfolio evidence](docs/portfolio.md)); whether to call it released is the owner's call. |
+| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `eeeb06d`, `dunamismax` active. Last recorded release: `fb9ea59` → `eeeb06d`, November 20, 2026 ([record](#portfolio-updates-november-20-2026)). |
+| **`main`** | `eeeb06d` plus this release record, pushed to GitHub and Codeberg. |
 | **Last updated** | 2026-11-20 |
 
 ## How to use this file
@@ -71,7 +71,7 @@ Use the default until the owner decides otherwise.
     that cutover (time, checkpoint, schema step, host backups, service and
     public checks, rollback check), or says plainly which parts were not
     recorded; **Now** is updated.
-- [ ] **M.2 · Release the portfolio updates on `main`.** Owner gate.
+- [x] **M.2 · Release the portfolio updates on `main`.** Owner gate.
   `3605c15`, plus any committed portfolio recheck.
   - Done when: a release record below meets the
     [release record contents](#release-record-contents) and **Now** names the
@@ -132,6 +132,16 @@ release record below.
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
 
+**2026-11-20 · M.2 released: `fb9ea59` → `eeeb06d`.** Owner-authorized. Ships
+the Lorehallow card (`3605c15`) and the portfolio recheck (`eeeb06d`: Azeroth
+Trail, Imaging Services and the support site on SvelteKit, the C course at
+cfromthegroundup.com; evidence in docs/portfolio.md). The first pre-release
+host backup failed twice for reasons outside this site: Vincent Sawyer's new
+25 GiB media tree did not fit the `/tmp` staging tmpfs, and the RiverMind web
+archive still required a retired `200.html`. Both were fixed in
+ubuntu-vm-backup (`d05d4f8`, `58a8a44`, `b931862`) before cutover; see the
+[record](#portfolio-updates-november-20-2026). Next action: M.1.
+
 **2026-11-20 · Docs: README, BUILD and AGENTS restructured.** Asked to bring
 the three files in line with the owner's other repositories (Lorehallow,
 RiverMind Poker, C From The Ground Up). BUILD gains **Now**, settled decisions,
@@ -155,6 +165,50 @@ recorded here. Next action: M.1, then M.2 with the owner.
 
 Dated records, newest first. They are evidence as written at the time and are
 not rewritten; later sections supersede earlier directions where they say so.
+
+## Portfolio updates (November 20, 2026)
+
+Content-only change (M.2): `src/lib/projects.ts`, one line each of Home and
+About copy, and docs. Routes, schema, server, deployment scripts and the
+stylesheet are unchanged. The Lorehallow card shows its open prototype
+(`3605c15`); Azeroth Trail, the Imaging Services demo and RustDesk remote
+support name SvelteKit instead of Astro; the C course links
+cfromthegroundup.com with the mdBook edition as a mirror (`eeeb06d`).
+Evidence: [docs/portfolio.md](docs/portfolio.md#verified-entries).
+
+- [x] Local: `npm run check` (0 errors, 0 warnings), `npm run db:check`,
+  `npm test` (6 of 6) on Node 24.22.3; production build and 129 HTTP checks
+  (empty) against a local server; `git diff --check`.
+- [x] Released to production (owner-authorized), November 20, 2026 at
+  23:00:34 UTC: `fb9ea59` → `eeeb06d`.
+  - Source: `eeeb06d` pushed to GitHub and Codeberg (both tips verified);
+    VM checkout fast-forwarded; `deploy/prepare.sh` candidate passed
+    svelte-check (0 errors, 0 warnings), unit tests, build, shellcheck, the
+    PostgreSQL database test and the PG 18 rehearsal (135 populated / 132
+    outage / 135 recovered HTTP checks).
+  - Pre-release: the first two `bin/backup --push` runs failed (media
+    staging out of `/tmp` space, then the stale RiverMind web requirement);
+    after the ubuntu-vm-backup fixes, snapshot `b0be8a5` committed and both
+    mirrors verified; its own restore verification passed; `restore check`
+    131 files, 0 failures; `postgres-verify` 12 databases;
+    `applications-verify` 18 artifacts.
+  - Cutover under `with-deploy-lock`, checkpoint
+    `/root/dunamismax-web-20261120T230030Z`. Schema step no-op
+    (`adopted: false`, 1 migration, 0 rows); production roles verified;
+    candidate HTTP checks passed; full Caddy config valid; public production
+    129 HTTP checks (empty blog). No shared service restarted.
+  - Independent checks: current → `eeeb06d`; dunamismax active,
+    ExecMainStatus 0, 0 restarts, user dunamismax-web; 4311 and 5432
+    loopback-only; no failed units; no error lines in the unit log since
+    cutover; caddy and postgresql@18-main active. Public HTTPS: /,
+    /projects (15 cards), /about, /blog, /feed.xml, /healthz 200; no Astro
+    on /projects or /about; CSP and no-store present; no `<script>`; www
+    301 preserves path and query; the eight other public sites 200.
+  - Rollback: `rollback.sh CHECKPOINT --check` passed under the lock; not
+    performed.
+  - Post-release: `bin/backup --push` snapshot `49de3de`, both mirrors
+    verified, inventory records `current=eeeb06d`; `applications-verify`
+    passed, 18 artifacts.
 
 ## Portfolio refresh (November 20, 2026)
 
