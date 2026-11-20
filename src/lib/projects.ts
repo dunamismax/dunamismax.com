@@ -39,8 +39,8 @@ const lorehallow: Project = {
   tone: 'phase-0',
   role: 'Multiplayer game · Design, server & hosting',
   tagline: 'A small pixel-art fantasy MMO built around a shared, persistent world, in the spirit of early World of Warcraft: zones, quests, grouping, and other people already there when you log in.',
-  detail: 'The authoritative game server is Go, with each zone owned by a single goroutine and a versioned Protocol Buffers protocol. It targets hundreds to thousands of connected players, and no number is claimed until it is measured. lorehallow.com publishes the full build plan, a live progress tracker, and a devlog; a Phaser browser client comes next.',
-  stack: ['Go', 'Protocol Buffers', 'TypeScript', 'Astro', 'Caddy'],
+  detail: 'The authoritative game server is Go, with each zone owned by a single goroutine and a versioned Protocol Buffers protocol. It targets hundreds to thousands of connected players, and no number is claimed until it is measured. lorehallow.com publishes the full build plan, a live progress tracker, and a devlog; an early Phaser browser prototype is open at play.lorehallow.com.',
+  stack: ['Go', 'Protocol Buffers', 'TypeScript', 'SvelteKit', 'Caddy'],
   links: [
     { label: 'Website', href: 'https://lorehallow.com' },
     { label: 'Source', href: gh('lorehallow') },

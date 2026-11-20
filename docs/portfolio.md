@@ -20,8 +20,8 @@ Ubuntu 26.04.1 LTS. Caddy 2.11.9 (`/usr/local/lib/caddy/caddy`), PostgreSQL
 fail2ban and a Lynis timer. PHP-FPM and MySQL are no longer running, so no
 portfolio copy may describe them as current. Caddy serves ten site files:
 dunamismax.com, graceandfootnotes.com, status.dunamismax.com, vincentsawyer.org,
-azerothtrail.com, lorehallow.com (with play.lorehallow.com, which returns 404
-until the browser game ships), rivermindpoker.com, xrayservice.net,
+azerothtrail.com, lorehallow.com (with play.lorehallow.com, which serves the browser
+game prototype), rivermindpoker.com, xrayservice.net,
 demo.xrayservice.net and data.xrayservice.net (email images). The eight public
 websites named on the home page are the first eight; the demo is noindex.
 
@@ -35,7 +35,7 @@ build, disk cleanup.
 
 | Card | Evidence | Public boundary |
 | --- | --- | --- |
-| Lorehallow | Public repo; `lorehallow-server` (Go binary) running; lorehallow.com 200 from a static Astro build; BUILD.md Phase 2 current | Pre-alpha, nothing to play. Scale is a target, never a claim. Phaser client is next, not shipped. |
+| Lorehallow | Public repo; `lorehallow-server` (Go binary) running; lorehallow.com 200 from the script-free SvelteKit release `9c4a1c7`; play.lorehallow.com serves the Phaser client and a named connection joins the shared map (checked 2026-11-20); BUILD.md Phase 2 current | Pre-alpha. An open prototype with no accounts; no v0.2.0 release yet. Scale is a target, never a claim. |
 | RiverMind Poker | Public GPL repo; `rivermind-poker serve-nl` running behind Caddy; rivermindpoker.com 200 | Play money only, bots always labelled. Credit its open-source origins. |
 | Azeroth Trail | Public repo; Caddy static site plus `azerothtrail-status` Node service; azerothtrail.com 200 | Paladin and Druid only; Web Push status alerts. |
 | vincentsawyer.org | Private repo; `vincentsawyer-web` SvelteKit (adapter-node) release `4de8492`; 200 | Live. Admin and store are not public features; do not describe them. |
