@@ -9,10 +9,9 @@ branding, project order, links and layout are preserved. Current stack descripti
 **SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy**
 
 The owner's November 20, 2026 direction replaces Astro with SvelteKit. The port
-is implemented and verified locally; see
+was released to production at `064bca5` on November 20, 2026; see
 [BUILD Phase 1](BUILD.md#phase-1--sveltekit-stack-migration-november-20-2026).
-Production keeps serving the Astro release until a SvelteKit release is
-authorized and deployed. PostgreSQL, Drizzle, the schema, roles, systemd
+PostgreSQL, Drizzle, the schema, roles, systemd
 service and Caddy front end are unchanged. The superseded Next.js and SQLite
 plans do not apply.
 

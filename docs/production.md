@@ -1,10 +1,10 @@
 # Production
 
 The runbook below describes the SvelteKit/PostgreSQL/Drizzle workflow
-(SvelteKit 3, adapter-node, Tailwind CSS 4, PostgreSQL 18, Caddy). Production
-still serves the Astro release `e1c292c` (or a later Astro release) until the
-SvelteKit migration in BUILD Phase 1 is released; historical acceptance is in
-docs/migration.md, not a fresh host inspection. The deployment model is
+(SvelteKit 3, adapter-node, Tailwind CSS 4, PostgreSQL 18, Caddy). The first
+SvelteKit releases (`62dbde1`, then `064bca5`) went live on November 20, 2026;
+evidence is in BUILD Phase 1. Historical acceptance is in docs/migration.md,
+not a fresh host inspection. The deployment model is
 unchanged by the framework change: the same unit, user, listener, credentials,
 lock, candidate/release layout and `dist/cli/bin/*.js` entry points. Host names
 such as `astro-dunamismax`, `/etc/astro-apps`, `/run/astro-deploy/lock` and

@@ -5,9 +5,9 @@ Read `/home/sawyer/github/ubuntu-vm-backup/docs/astro-migration.md` and any
 successor shared host contract before deployment. The owner's November 20,
 2026 direction sets the stack to SvelteKit 3 · Svelte 5 · TypeScript · Tailwind
 CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy, replacing
-Astro. BUILD Phase 1 records the port (implemented and verified locally; not yet
-released). BUILD Phase 0 Drizzle adoption was released at `e1c292c` on November
-2, 2026 and production still runs Astro until a SvelteKit release is authorized.
+Astro. BUILD Phase 1 records the port, released to production at `064bca5` on
+November 20, 2026. BUILD Phase 0 Drizzle adoption was released at `e1c292c` on
+November 2, 2026; the retained Astro releases remain valid rollback targets.
 The Next.js and SQLite proposals are superseded. Use Context7 for current
 library/API guidance.
 

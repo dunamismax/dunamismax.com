@@ -8,10 +8,9 @@ ORM · Node (adapter-node) · Caddy**. This replaces Astro as the web framework.
 PostgreSQL, Drizzle, the schema/migrations, roles, publishing CLI, systemd
 deployment and Caddy are retained unchanged.
 
-Status: implemented and verified locally (record below). **Not released.**
-Production continues to serve the Astro release until the owner authorizes a
-SvelteKit release through the existing `deploy/prepare.sh` + locked
-`deploy/cutover.sh` workflow. Nothing is committed or deployed by this record.
+Status: implemented, verified locally and released to production at `064bca5`
+(owner-authorized, November 20, 2026). See the local record and the
+[production release record](#production-release-record-november-20-2026-eastern).
 
 ### 1.1 Framework port
 
@@ -44,13 +43,13 @@ SvelteKit release through the existing `deploy/prepare.sh` + locked
   Profile copy and other projects' Astro claims are unchanged (they describe
   other deployments and Stephen's experience; change only with evidence).
 
-### 1.2 Release (pending owner authorization)
+### 1.2 Release
 
-- [ ] Commit and push main; confirm GitHub Actions (check, db:check, unit, build,
-  PG 18 rehearsal, audit) passes on Ubuntu.
-- [ ] On the VM: `deploy/prepare.sh`, fresh host backup + `restore check` /
-  `postgres-verify`, then locked cutover. Record service, listener, HTTP suite,
-  privileges, backup/restore and rollback evidence separately below.
+- [x] Commit and push main; GitHub Actions Verify passed on Ubuntu for `10ee7d4`
+  (check, db:check, unit, build, PG 18 rehearsal, audit).
+- [x] On the VM: `deploy/prepare.sh`, backup/restore verification, then locked
+  cutover. Evidence below. Open: the full host backup is blocked by the shared
+  inventory (see the release record), which the ubuntu-vm-backup owner must update.
 
 ### Local verification record (November 20, 2026 Eastern)
 
@@ -71,6 +70,48 @@ npm 11.19.1 (mise), Homebrew PostgreSQL 18.6.
   identical except the intentionally changed dunamismax.com stack chips and
   footer colophon; About, Contact, Blog and 404 at 375 px light are identical.
 - `bash -n` and `shellcheck -x deploy/*.sh` pass; `git diff --check` clean.
+
+### Production release record (November 20, 2026 Eastern)
+
+Owner-authorized. Separate from the local record above and from Phase 0.
+
+- Source: `10ee7d4` (port), `62dbde1` (keep ignoring the retired `.astro/`
+  cache so the VM checkout stays clean for prepare) and `064bca5` (log only
+  unexpected server errors; SvelteKit 3 passes routine 404s to `handleError`).
+  GitHub and Codeberg tips verified after each push; VM checkout fast-forwarded.
+- Restore-drill compatibility: the host's `applications-verify` reinstalls with
+  `npm ci --omit=dev --ignore-scripts` and runs `dist/cli/bin/server.js`
+  (inventory entry unchanged). A local copy of the build with only production
+  dependencies served /, /blog, /about, /feed.xml, /healthz and /css/site.css 200.
+- Pre-release backup: the full `bin/backup --push` **failed** in application
+  archiving because graceandfootnotes.com had just been redeployed by another
+  session as SvelteKit (`build/`), while `config/applications.json` still
+  expects its `dist/server/entry.mjs`. Not caused or changed here. In its place:
+  `dunamismax-backup.service` (fresh dunamismax dump, isolated postgres-verify
+  PASS) before each cutover, `restore check` 108 files / 0 failures, and
+  `restore postgres-verify` 9 databases PASS.
+- `deploy/prepare.sh` on the VM for both candidates: svelte-check 0/0, unit,
+  build, PG 18 rehearsal 130 / 127 / 130 HTTP.
+- Cutover 1 under `with-deploy-lock` at about 8:45 a.m. Eastern: `e1c292c` →
+  `62dbde1`, checkpoint `/root/dunamismax-astro-20261120T134522Z`. Schema step
+  no-op (`adopted: false`, 1 migration, 0 rows, empty-content digest);
+  privilege report passed; candidate and public production 124 HTTP checks
+  each (empty blog); Caddy validated and reloaded; no shared service restarted.
+- Cutover 2 at about 8:48 a.m. Eastern: `62dbde1` → `064bca5`, checkpoint
+  `/root/dunamismax-astro-20261120T134852Z`; same schema/privilege/124-check
+  results. No `Request failed` lines after it, versus 20 from 404 checks before.
+- Independent checks: current → `064bca5`; astro-dunamismax active,
+  ExecMainStatus 0, user astro-dunamismax-web, only web.env; 127.0.0.1:4311 and
+  PG 127.0.0.1:5432 loopback-only; no failed units; `dunamismax-posts list`
+  works. Public HTTPS: CSP/nosniff/referrer headers, no-store, no `<script>`,
+  /healthz ok, /css/site.css cached 300 s, www 301 preserves path/query,
+  Let's Encrypt certificate valid to 2027-01-04, all five host sites 200.
+- Rollback: `rollback.sh CHECKPOINT --check` passed under the lock for both
+  checkpoints; Astro `e1c292c` remains retained and schema-compatible. No
+  rollback was performed.
+- Post-release: `dunamismax-backup.service` archive verified (postgres-verify
+  PASS). A full host snapshot with `applications-verify` of `064bca5` is pending
+  the shared-inventory fix above.
 
 ## Phase 0 — Astro/PostgreSQL stack alignment (first)
 
