@@ -1,4 +1,160 @@
-# Build plan and verification
+# BUILD.md
+
+Where dunamismax.com stands, what is decided, what is next, and the evidence
+for every release. Start with **Now**. [AGENTS.md](AGENTS.md) says how to work;
+this file records what is done.
+
+## Now
+
+| | |
+| --- | --- |
+| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`) and the portfolio refresh (live at `4fbdc4f`). No feature work is planned. |
+| **Next step** | **M.1** (record the `fb9ea59` release), then **M.2** (release the portfolio updates on `main`) when the owner authorizes it. |
+| **In progress** | Nothing claimed. The working tree may hold another session's uncommitted portfolio recheck (`docs/portfolio.md`, `src/lib/projects.ts`, Home and About copy); leave it to that session. |
+| **Open items** | Production runs `fb9ea59`, which has no release record here (M.1). `3605c15` (Lorehallow card) is on `main` but not deployed; its commit notes the release needs a fresh host-wide backup first. |
+| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `fb9ea59` and `dunamismax` active (read-only check over `ssh root@ubuntu-vm`, 2026-11-20). Last recorded release: `064bca5` → `4fbdc4f`, November 20, 2026 ([record](#portfolio-refresh-november-20-2026)). |
+| **`main`** | `3605c15`, pushed to GitHub and Codeberg. |
+| **Last updated** | 2026-11-20 |
+
+## How to use this file
+
+1. **Orient.** Read **Now**, then AGENTS.md. Check `git status --short --branch`
+   and `git log -5 --oneline`; preserve unrelated work.
+2. **Choose.** The owner's request comes first. Otherwise take **Next step**.
+3. **Claim.** Put the step ID, a one-line goal and the date under
+   **In progress**. One step at a time; parallel sessions claim different steps.
+4. **Build and verify.** Meet every **Done when** criterion through the real
+   entry point (the built server, the rehearsal, the live site) as well as the
+   [gates](#gates).
+5. **Record.** Tick what is verified and add an `Evidence:` line (commit and
+   checks run, one or two sentences). Partial work stays unchecked with a
+   `Remaining:` line.
+6. **Advance.** Update **Now**, then prepend a [handoff](#handoff-log) entry.
+
+You may split, add or reword unchecked steps; say why in the handoff. Do not
+delete unfinished steps, lower criteria or change a settled decision without
+the owner. Release records are dated and never rewritten; local records and
+release records stay separate.
+
+## Settled decisions
+
+Decided with the owner. Build on them; change one only with the owner, and
+record the change here with the date.
+
+| ID | Decision |
+| --- | --- |
+| D-1 | **Stack** (owner, 2026-11-20): SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy, replacing Astro (Phase 1). No further framework change. |
+| D-2 | **Data** (owner, 2026-11-02): PostgreSQL is authoritative for posts. `src/db/schema.ts` and reviewed `drizzle/` migrations are the only schema source; `bin/schema.ts` is the only applier (Phase 0, live since `e1c292c`). No SQLite, Litestream or hosted database. |
+| D-3 | **Script-free site:** zero browser JavaScript (`csr = false`), semantic HTML, the preserved stylesheet compiled by Tailwind CSS 4 without preflight, the existing CSP. |
+| D-4 | **Posts:** plain text, published through the independent publishing role and CLI. Visibility is the database-clock view `app.public_posts`; no rebuild, timer or cache for scheduled posts. |
+| D-5 | **Hosting** (owner, 2026-11-02): self-hosted on the owner's Ubuntu server under systemd, behind the shared custom Caddy, with immutable releases and the shared deployment lock. DNS is owner-managed, DNS-only Cloudflare records; Caddy gets its own Let's Encrypt certificates. No DNS challenge, Caddy DNS plugin, token or proxy mode. Containers are optional. |
+| D-6 | **Python and Swift** only for a real project need or explicit request. Existing TypeScript operator tools stay TypeScript; no native app is planned. |
+| D-7 | **Superseded:** the Next.js rewrite and the SQLite plan do not apply. |
+| D-8 | **No public writes:** no admin, forms, accounts, tracking or new public API. |
+| D-9 | **Releases** need the owner's authorization each time, and a fresh verified host backup before cutover. |
+
+## Open questions
+
+Use the default until the owner decides otherwise.
+
+| ID | Question | Default until decided |
+| --- | --- | --- |
+| Q-1 | Retire the MySQL migration tooling (`bin/migrate-data.ts`, the `mysql2` dev dependency)? | Keep until recovery needs are confirmed against the current host contract. |
+| Q-2 | Prune the retained Astro releases and PHP/MySQL recovery material? | Keep; they are rollback and recovery sources. |
+
+## Steps
+
+- [ ] **M.1 · Record the `fb9ea59` release.** Production `current` points at
+  `fb9ea59` (*Use the current Ubuntu deployment paths and service names*), but
+  the last release recorded here is `4fbdc4f`.
+  - Done when: a dated release record below gives the evidence that exists for
+    that cutover (time, checkpoint, schema step, host backups, service and
+    public checks, rollback check), or says plainly which parts were not
+    recorded; **Now** is updated.
+- [ ] **M.2 · Release the portfolio updates on `main`.** Owner gate.
+  `3605c15`, plus any committed portfolio recheck.
+  - Done when: a release record below meets the
+    [release record contents](#release-record-contents) and **Now** names the
+    new live commit.
+
+### Release record contents
+
+Every release record lists, each on its own evidence: source commit and both
+remote tips; `deploy/prepare.sh` candidate results; pre-release `bin/backup`,
+`restore check` and `restore postgres-verify`; cutover time and checkpoint;
+schema step output; privilege report; public and candidate HTTP checks;
+independent checks (`current`, unit state, user, loopback listeners, failed
+units, public HTTPS, CSP, no `<script>`, www redirect, sibling sites 200);
+`rollback.sh CHECKPOINT --check`; post-release backup and
+`applications-verify`.
+
+## Phase overview
+
+- [x] **PHP → Astro/PostgreSQL** (October 22, 2026, `c93aaec`). Historical;
+  [docs/migration.md](docs/migration.md).
+- [x] **Phase 0 · Drizzle on the existing PostgreSQL** (November 2, 2026,
+  `e1c292c`). The Astro direction is superseded; the Drizzle adoption is live.
+- [x] **Phase 1 · SvelteKit stack migration** (November 20, 2026, `064bca5`).
+- [x] **Portfolio refresh** (November 20, 2026, `4fbdc4f`). Fifteen cards in
+  five groups.
+- Maintenance (**M.n** steps above).
+
+## Gates
+
+```sh
+npm ci
+npm run check
+npm run db:check
+npm test
+APP_ENV=production npm run build
+bash deploy/rehearse.sh
+for f in deploy/*.sh; do bash -n "$f"; done
+shellcheck -x deploy/*.sh
+git diff --check
+```
+
+On macOS set `PGBIN` to the installed PostgreSQL bin directory and `LC_ALL` to
+a valid locale (for example `en_US.UTF-8`) for the rehearsal. Unit tests cover
+escaping, Unicode, dates, credentials and RSS. The PostgreSQL suite covers
+schema reapplication and adoption, real role restrictions, SQL binding,
+draft/future visibility, scheduling without builds, the transactional CLI
+lifecycle and failed input or config. HTTP checks cover page content and
+project counts, landmarks, metadata, methods, HEAD, private paths, pagination,
+RSS limits, and outage and recovery against the compiled server. Browser review
+covers 320, 375, 768 and 1440 px in light and dark. CI runs the same gates plus
+`npm audit --audit-level=moderate`.
+
+Local checks never prove a deployment. Production evidence goes in a dated
+release record below.
+
+## Handoff log
+
+Newest first; keep eight. Date, step IDs, what changed, checks actually run,
+next action.
+
+**2026-11-20 · Docs: README, BUILD and AGENTS restructured.** Asked to bring
+the three files in line with the owner's other repositories (Lorehallow,
+RiverMind Poker, C From The Ground Up). BUILD gains **Now**, settled decisions,
+open questions with defaults, maintenance steps, this log and a fixed list of
+release record contents; every earlier record below is unchanged. AGENTS is
+reorganized into roles and autonomy, session workflow, git, parallel sessions,
+conventions, gates, deployment, security, toolchain and pitfalls. README
+describes the site as it is now. A read-only check found production on
+`fb9ea59` with no release record (M.1). Docs only: `git diff --check`; no code
+changed. Next action: M.1.
+
+**2026-11-20 · Portfolio commits after the refresh release (from git
+history).** `fb9ea59` renamed the deployment paths and unit to the current
+host names (`/etc/web-apps`, `dunamismax.service`) and is live; `3605c15`
+updated the Lorehallow card and is not deployed. Checks for both were not
+recorded here. Next action: M.1, then M.2 with the owner.
+
+---
+
+## Release history
+
+Dated records, newest first. They are evidence as written at the time and are
+not rewritten; later sections supersede earlier directions where they say so.
 
 ## Portfolio refresh (November 20, 2026)
 
@@ -413,31 +569,5 @@ Production was verified at release `c93aaec` on October 22, 2026 Eastern. The pu
 post-cutover encrypted backup/restore verification passed. Backup snapshot
 `12e8d86` was verified on both backup remotes. See the acceptance record below.
 
-## Gates
-
-```sh
-npm ci
-npm run check
-npm run db:check
-npm test
-APP_ENV=production npm run build
-bash deploy/rehearse.sh
-for f in deploy/*.sh; do bash -n "$f"; done
-shellcheck -x deploy/*.sh
-git diff --check
-```
-
-On macOS set PGBIN to the installed PostgreSQL bin directory and LC_ALL to a
-valid locale (for example en_US.UTF-8) for rehearsal.
-Unit tests port meaningful legacy escaping, Unicode, dates, credential and RSS
-cases. PostgreSQL tests cover schema reapplication, real role restrictions,
-SQL binding, draft/future visibility, scheduling without builds, transactional
-CLI create/edit/validate/publish/schedule/unpublish and failed input/config.
-HTTP checks cover preserved content/project counts, landmarks, metadata, methods,
-HEAD, private paths, pagination, RSS limits and outages/recovery against the
-compiled server. Browser QA covers widths 320/375/768/1440 in light/dark mode.
-The previous implementation passed its 249 checks before replacement.
-
-Real source migration, production cutover, remote tips, backup/restore and
-rollback verification results belong in [migration acceptance](docs/migration.md).
-Do not claim those deployment gates complete based on local fixtures.
+The acceptance record is [docs/migration.md](docs/migration.md), which also
+holds the 249-check baseline of the PHP implementation it replaced.

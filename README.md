@@ -1,123 +1,168 @@
 # dunamismax.com
 
-Stephen Sawyer’s personal site, portfolio and blog. Approved portfolio copy,
-branding, project order, links and layout are preserved. Current stack descriptions follow the verified project handoffs in
-[docs/portfolio.md](docs/portfolio.md).
+**Stephen Sawyer's personal site: portfolio, about page, contact links and a
+plain-text blog.** It is server-rendered SvelteKit with no browser JavaScript,
+reads published posts from PostgreSQL, and is self-hosted behind Caddy.
 
-## Stack (November 20, 2026)
+| | |
+| --- | --- |
+| **Website** | [dunamismax.com](https://dunamismax.com) |
+| **Status** | Live; see **Now** in [BUILD.md](BUILD.md) |
+| **Source** | [GitHub](https://github.com/dunamismax/dunamismax.com) · [Codeberg](https://codeberg.org/dunamismax/dunamismax.com) |
 
-**SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 + Drizzle ORM · Node (adapter-node) · Caddy**
+## What's on the site
 
-The owner's November 20, 2026 direction replaces Astro with SvelteKit. The port
-was released to production at `064bca5` on November 20, 2026; see
-[BUILD Phase 1](BUILD.md#phase-1--sveltekit-stack-migration-november-20-2026).
-PostgreSQL, Drizzle, the schema, roles, systemd
-service and Caddy front end are unchanged. The superseded Next.js and SQLite
-plans do not apply.
+- **Home** with six featured projects and the latest post.
+- **Projects**: fifteen projects in five groups (games and play, websites and
+  publishing, apps in development, infrastructure and support, and bots, tools
+  and teaching), each with a stable anchor. Every claim is checked against the project's running service and
+  repository; the evidence is in [docs/portfolio.md](docs/portfolio.md).
+- **About** and **Contact**.
+- **Blog** and an **RSS feed** of plain-text posts. Drafts and scheduled posts
+  stay private until the database clock says they are due.
 
-Keep semantic HTML, the preserved stylesheet and zero browser scripts
-(`csr = false`). Client-side Svelte, form actions, remote functions, auth and AI
-libraries are optional when a real feature needs them. Python and Swift belong
-only where a project need or explicit request justifies them; this site needs
-neither. Retain existing TypeScript CLI tools and systemd hosting. Use Swift for
-a future requested Apple client, calling SvelteKit endpoints over HTTPS; no
-native client is planned here. Containerization is optional.
+No scripts, external fonts, analytics, forms, accounts or third-party assets.
+The theme follows the reader's light or dark preference.
 
-## Current stack and routes
+## Stack
 
-SvelteKit 3.4.0 with Svelte 5.58.1 and Vite 8.3.8, `@sveltejs/adapter-node`
-6.0.5, strict TypeScript 6.0.3, Tailwind CSS 4.3.5 (`@tailwindcss/vite`),
-PostgreSQL 18 with Drizzle ORM 0.45.4 (node-postgres driver). Zero browser
-JavaScript, external fonts, analytics or third-party assets.
-Node 24.22.3 / npm 11.19.1 are pinned; commit the npm v3 lockfile.
-SvelteKit configuration lives in `vite.config.ts` (SvelteKit 3 no longer reads
-`svelte.config.js`). adapter-node builds `dist/web/`; `bin/server.ts` wraps its
-`handler.js` and Caddy proxies to loopback port 4311.
+**SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS 4 · PostgreSQL 18 +
+Drizzle ORM · Node (adapter-node) · Caddy**
+
+| Layer | Choice |
+| --- | --- |
+| Framework | SvelteKit 3.4.0 and Svelte 5.58.1 on Vite 8.3.8, configured in `vite.config.ts`; `csr = false`, so pages ship no JavaScript |
+| Language | TypeScript 6.0.3, strict, with `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` |
+| Styling | The preserved hand-written stylesheet (`src/styles/site.css`), compiled by Tailwind CSS 4.3.5 without preflight and served at `/css/site.css` |
+| Data | PostgreSQL 18 through Drizzle ORM 0.45.4 (node-postgres); reviewed SQL migrations in `drizzle/` |
+| Server | `@sveltejs/adapter-node` 6.0.5 behind `bin/server.ts`, which enforces methods, headers and the public path list |
+| Hosting | systemd on the owner's Ubuntu server, loopback port 4311, behind Caddy with automatic HTTPS |
+| Toolchain | Node 24.22.3 and npm 11.19.1, exact pins and a committed lockfile |
+
+## Routes
 
 | URL | Behavior |
 | --- | --- |
-| `/` | Dynamic latest post/count; remains 200 during database outages |
+| `/` | Latest post and post count; stays 200 during a database outage |
 | `/about`, `/contact`, `/projects` | Prerendered HTML; no database access |
 | `/blog`, `/blog?page=2` | Ten published posts per page |
-| `/blog/{slug}` | Published plain-text post; escaped paragraphs |
-| `/feed.xml` | Latest twenty visible posts, RSS 2.0, `application/xml` |
-| `/robots.txt`, `/manifest.webmanifest` | Existing content types and metadata |
+| `/blog/{slug}` | One published post, escaped into paragraphs |
+| `/feed.xml` | The latest twenty published posts, RSS 2.0, `application/xml` |
+| `/robots.txt`, `/manifest.webmanifest` | Crawler rules and web manifest |
 | `/healthz` | `{"status":"ok"}`, independent of PostgreSQL |
-| `/css/site.css`, `/icon.svg` | Preserved stylesheet (Tailwind-compiled, prerendered) and icon URLs |
+| `/css/site.css`, `/icon.svg` | The compiled stylesheet and the icon |
 
-GET/HEAD only (other methods 405); unknown/private paths 404/noindex.
-The www hostname permanently redirects to the apex, preserving path and query.
-Canonical URLs use configured `APP_URL`, never a request Host header.
-Blog/feed database failures return 503 with `Retry-After: 60` and no-store.
+Only GET and HEAD are allowed (other methods get 405). Unknown and private
+paths return 404 with noindex. The www hostname redirects permanently to the
+apex, keeping path and query. Canonical URLs come from the configured
+`APP_URL`, never the request's Host header. When the database is down, the
+blog, posts and feed return 503 with `Retry-After: 60` and no-store.
 
-## Current development
+## Development
+
+Use the pinned Node and npm (`.node-version`; `.npmrc` enforces engines).
 
 ```sh
 npm ci
-APP_ENV=local npm run dev
-npm run check
-npm run db:check
-npm test
-APP_ENV=production npm run build
-APP_ENV=local PORT=8000 npm start
+APP_ENV=local npm run dev      # http://127.0.0.1:8000
 ```
 
-Use the pinned Node/npm distributions; `.npmrc` enforces engines. No
-`--force` or legacy-peer-dependency workarounds. With `APP_ENV=local` and no
-`PGDATABASE`, the blog previews empty. A configured but unreachable database
-remains an outage. Set `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`
-for a local read-only database. `APP_URL` is an origin (no path/trailing slash),
-HTTPS in production. `.env.example` documents the fields; never commit secrets.
+With `APP_ENV=local` and no `PGDATABASE`, the blog previews empty. To read a
+local database, set `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER` and `PGPASSWORD`
+for a read-only role; [.env.example](.env.example) lists the fields. A
+configured but unreachable database is treated as an outage. `APP_URL` is an
+origin with no path or trailing slash, HTTPS in production. Never commit
+secrets.
+
+The checks, the same ones CI runs:
 
 ```sh
-# Disposable local fixture cluster, not your normal PostgreSQL database:
-LC_ALL=en_US.UTF-8 PGBIN=/opt/homebrew/opt/postgresql@18/bin bash deploy/rehearse.sh
-# Ubuntu uses /usr/lib/postgresql/18/bin by default. Set TEST_PGPORT if 55431 is taken.
+npm run check                     # svelte-check and TypeScript
+npm run db:check                  # Drizzle schema has no unreviewed changes
+npm test                          # unit tests
+APP_ENV=production npm run build  # web build and CLI
+APP_ENV=local PORT=8000 npm start # run the built server
 ```
 
-Schema changes start in `src/db/schema.ts`. Run `npx drizzle-kit generate --name=NAME`,
-review the SQL in `drizzle/` (add grants or PostgreSQL-specific statements Drizzle
-cannot express), then `npm run db:check` and the rehearsal. Never use
-`drizzle-kit push`, `pull` or `migrate` against a real database: `bin/schema.ts`
-(`npm run schema` with `MIGRATION_CONFIG`) is the only applier.
+The rehearsal starts a disposable PostgreSQL cluster (not your normal
+database), runs the database suite against real role privileges, then the HTTP
+suite against the built server with data, during an outage and after recovery:
 
-## Current layout
+```sh
+LC_ALL=en_US.UTF-8 PGBIN=/opt/homebrew/opt/postgresql@18/bin bash deploy/rehearse.sh
+```
+
+On Ubuntu `PGBIN` defaults to `/usr/lib/postgresql/18/bin`. Set `TEST_PGPORT`
+if port 55431 is taken.
+
+### Changing the schema
+
+Edit `src/db/schema.ts`, run `npx drizzle-kit generate --name=NAME`, review the
+SQL in `drizzle/` (add grants or PostgreSQL statements Drizzle cannot express),
+then `npm run db:check` and the rehearsal. `bin/schema.ts` (`npm run schema`
+with `MIGRATION_CONFIG`) is the only thing that applies migrations; never run
+`drizzle-kit push`, `pull` or `migrate` against a real database.
+
+### Editing pages and the portfolio
+
+Pages are in `src/routes/`. Every project card comes from the typed inventory
+in `src/lib/projects.ts`; check a project's evidence in
+[docs/portfolio.md](docs/portfolio.md) before changing its card, and keep
+`tests/http.ts` in step. [docs/content.md](docs/content.md) covers pages and
+the publishing CLI.
+
+## Publishing and security
+
+Posts live in PostgreSQL `app.posts` and are written only through the
+`dunamismax-posts` CLI, with its own database role and config. The website role
+can read only the `app.public_posts` view, which leaves out drafts and posts not
+yet due, and cannot write. Migration credentials are operator-only, and the
+`drizzle` journal schema is owner-only. Builds never receive database
+credentials or post data. See [docs/content.md](docs/content.md),
+[docs/architecture.md](docs/architecture.md) and
+[docs/production.md](docs/production.md).
+
+## Repository layout
 
 | Path | Purpose |
 | --- | --- |
-| `src/routes/` | SvelteKit pages, loads and endpoints; static pages set `prerender = true` |
-| `src/routes/+layout.svelte`, `src/lib/components/` | Metadata, navigation and the shared project card (imported as `#lib/*`) |
+| `src/routes/` | Pages, loads and endpoints; static pages set `prerender = true` |
+| `src/routes/+layout.svelte`, `src/lib/components/` | Metadata, navigation, footer and the shared project card (imported as `#lib/*`) |
 | `src/lib/projects.ts` | Typed portfolio inventory: groups, order, anchors and featured projects |
-| `src/app.css`, `src/styles/site.css` | Tailwind CSS 4 entry and the preserved hand-written stylesheet |
-| `src/hooks.server.ts`, `src/app.html` | Response headers/sanitized errors and the HTML shell |
-| `src/lib/` | Post reads, publishing, validation, safe text/RSS |
-| `src/db/` | Drizzle schema, website/operator connections, catalog/content digests |
-| `drizzle/` | Reviewed SQL migrations, journal and snapshots (drizzle-kit) |
-| `database/baseline-catalog.json` | Production pre-Drizzle catalog required for adoption |
-| `bin/*.ts` | Publishing, schema migration, data reconciliation and HTTP server |
-| `tests/` | TypeScript unit, HTTP and isolated database tests |
-| `static/` | Only the icon, copied into build client output |
-| `deploy/` | Candidate, locked cutover, rehearsal and guarded rollback |
-| `docs/` | Architecture, editorial evidence and operational runbooks |
+| `src/lib/` | Post reads, publishing, validation, safe text and RSS |
+| `src/app.css`, `src/styles/site.css` | Tailwind CSS 4 entry and the preserved stylesheet |
+| `src/hooks.server.ts`, `src/app.html` | Response headers, sanitized errors and the HTML shell |
+| `src/db/` | Drizzle schema, website and operator connections, catalog and content digests |
+| `drizzle/` | Reviewed SQL migrations, journal and snapshots |
+| `database/baseline-catalog.json` | Production's pre-Drizzle catalog, required for adoption |
+| `bin/` | HTTP server, publishing CLI, schema applier, database verification, historical MySQL import |
+| `tests/` | Unit, HTTP and isolated database tests |
+| `static/` | The icon |
+| `deploy/` | systemd unit, Caddy template, candidate, locked cutover, rehearsal and rollback |
+| `docs/` | Architecture, content, production runbook, portfolio evidence, migration history |
 
-PostgreSQL is authoritative after cutover. The website role can SELECT only
-`app.public_posts`, which excludes drafts/future posts. The publisher can
-SELECT/INSERT/UPDATE `app.posts`, without DELETE or DDL. Migration credentials
-are operator-only, and the `drizzle` journal schema is owner-only. See [publishing](docs/content.md),
-[architecture](docs/architecture.md), and [production](docs/production.md).
+## Continuous integration
+
+GitHub Actions ([verify.yml](.github/workflows/verify.yml)) runs on every push
+to `main`, weekly and on demand. It checks the pinned Node and npm, installs
+with `npm ci`, runs `npm run check`, `npm run db:check`, `npm test` and the
+production build, runs the rehearsal against a disposable PostgreSQL 18 cluster
+with synthetic data, and fails on any `npm audit` finding of moderate severity
+or above. CI gets no production credentials and never deploys. Dependency
+updates are reviewed and committed by hand on `main`; there is no Dependabot.
+An npm override pins drizzle-kit's legacy `@esbuild-kit` loader to the tree's
+patched esbuild until drizzle-kit drops it.
+
+## Documentation
+
+- [AGENTS.md](AGENTS.md): how work is done here (for agents and humans)
+- [BUILD.md](BUILD.md): current status, decisions, next steps and release records
+- [docs/architecture.md](docs/architecture.md),
+  [docs/content.md](docs/content.md),
+  [docs/production.md](docs/production.md),
+  [docs/portfolio.md](docs/portfolio.md),
+  [docs/migration.md](docs/migration.md)
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-## Continuous verification and dependency review
-
-GitHub Actions verifies the pinned Node 24.22.3/npm 11.19.1 toolchain with
-`npm ci`, strict checks, repository tests and builds, then `npm audit` (moderate
-and above fail). Integration checks use disposable synthetic PostgreSQL or the
-custom-Caddy fixture suite; no production credentials are supplied. The workflow
-also runs weekly. Dependency updates are reviewed and made directly on `main`
-(no Dependabot branches). An npm override pins drizzle-kit's legacy
-`@esbuild-kit` loader to the tree's patched esbuild; recheck it when updating
-drizzle-kit and drop it once that dependency is gone. Exact dependency pins and lockfiles remain
-required; these workflows never deploy unreviewed updates.
