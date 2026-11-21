@@ -8,10 +8,10 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | Maintenance. Every planned phase is complete. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
+| **Current work** | M.6 (five portfolio cards corrected against the live host) is committed and waits for its release. Otherwise maintenance: every planned phase is complete. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
 | **Next step** | None planned. The open items below wait on the owner. |
 | **In progress** | Nothing claimed. |
-| **Open items** | M.5 was released without D-9's full host backup (`bin/backup` commits to the ubuntu-vm-backup repository, which this task was told not to change); the deploy's pre-migration dump was taken instead, and the 07:30 UTC daily backup is the first host snapshot of `f2cb23c`. Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
+| **Open items** | M.5 was released without D-9's full host backup (`bin/backup` commits to the ubuntu-vm-backup repository, which this task was told not to change); the deploy's pre-migration dump was taken instead, and the 07:30 UTC daily backup is the first host snapshot of `f2cb23c`. Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves nine public websites and three `noindex` previews) and "a Python poker table server", and About says RiverMind runs its tables "in Python" and lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
 | **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `f2cb23c`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `be15ef5` → `f2cb23c`, November 21, 2026 at 15:39 UTC ([record](#host-contract-alignment-november-21-2026)). |
 | **`main`** | `f2cb23c` plus this release record, pushed to GitHub and Codeberg. |
 | **Last updated** | 2026-11-21 |
@@ -140,6 +140,22 @@ Use the default until the owner decides otherwise.
     20 MB release instead of 147 MB); `web-conformance` conforms; released
     `be15ef5` → `f2cb23c` on November 21, 2026 at 15:39:56 UTC,
     [record](#host-contract-alignment-november-21-2026).
+
+- [ ] **M.6 · Correct portfolio cards that drifted.** Owner request,
+  2026-11-21, after every site moved to the host contract: check the projects
+  page against the repositories and the live server and fix what is no longer
+  true. Card text only; no markup, route, schema or stylesheet change.
+  - Done when: each changed card has dated evidence in
+    [docs/portfolio.md](docs/portfolio.md); the counts in `tests/http.ts`
+    still hold (15 cards, 6 featured); the gates pass; a release serves the
+    corrected cards.
+  - Changed: RiverMind Poker (its table server is TypeScript inside the
+    SvelteKit service, Python trains the bots), Grace & Footnotes (one theme
+    script, not zero JavaScript), Field Cadence (deployed as a development
+    preview, not "nothing deployed"), Day by Word (the web version runs on
+    SvelteKit and PostgreSQL at daybyword.com as a preview), C From The Ground
+    Up (38 lessons in six parts, not 35 in five).
+  - Remaining: the release.
 
 ### Release record contents
 

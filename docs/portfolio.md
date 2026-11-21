@@ -6,6 +6,44 @@ HTTPS response before changing a status, stack or description, and record the
 evidence here. Sections below are dated; older ones are history, not the
 current state.
 
+## November 21, 2026 review
+
+Reviewed on `root@ubuntu-vm` after every site moved to the host's web platform
+contract: running units and their release revisions (`bin/web-live`),
+`/healthz` and page responses through Caddy, the Caddy site files, and each
+project's README and BUILD. Where this section differs from the November 20
+one below, this one is current.
+
+### Host
+
+Ubuntu 26.04.1 LTS. Caddy 2.11.9, PostgreSQL 18, and Node 26.13.1
+(`/opt/node-26`) for every Node service; Node 24 was removed this day. Caddy
+serves thirteen site files: dunamismax.com, graceandfootnotes.com,
+status.dunamismax.com, vincentsawyer.org, azerothtrail.com, lorehallow.com
+(with play.lorehallow.com), rivermindpoker.com, cfromthegroundup.com,
+xrayservice.net, demo.xrayservice.net, data.xrayservice.net (email images),
+daybyword.com and fieldcadence.app. The demo, daybyword.com and
+fieldcadence.app answer `noindex`. No site runs in a container and no site
+has a rollback: deploys fix forward after a candidate check.
+
+### Changed entries
+
+| Card | Evidence | Public boundary |
+| --- | --- | --- |
+| RiverMind Poker | `rivermind-poker-web.service` (Node, 127.0.0.1:4320) is the only table server, serving release `58c9c0b`; its README and BUILD (D-14, P4B.8) say the table server, engine and bots run in the SvelteKit Node service with Drizzle on PostgreSQL, and that the Python table server is retired; Python remains for MCCFR training and as the reference the TypeScript engine is checked against; `LICENSE` is GPL-3.0; rivermindpoker.com 200 | As before: play money only, bots always labelled. |
+| Grace & Footnotes | Every page carries one script, `/assets/js/theme.js` (2.6 kB, the theme switch); its README says every page reads fully without JavaScript and that this is the only browser script; release `6e4bb2e` | Do not claim zero JavaScript for it. |
+| Field Cadence | Private repo; `fieldcadence.service` active; fieldcadence.app 200 from release `409283b` with `X-Robots-Tag: noindex, nofollow`; the page says it is in development and not yet open to other dealers; BUILD: the Phase 2 shells are deployed, no sign-in mail, the domain model is next | In development, deployed as a preview. Private source; no link on the card. |
+| Day by Word | Public repo; `daybyword-web.service` active; daybyword.com 200 from release `8bc9d7d`, noindex; BUILD: the three plans are listed from PostgreSQL 18 and a plan cannot be started yet; no App Store release | In development, not released. |
+| C From The Ground Up | 38 lesson files in six `Part` directories; README "Browse all 38 lessons" and AGENTS "38 lessons in six parts" (the README's opening line and the GitHub description still say 35); lessons compile under C17 and again under C23; 174 stars; release `4112094` | Teaching workbook, not an application suite. |
+
+The other ten cards were rechecked against the same sources and left as they
+were. Two statements outside the cards are no longer true and were left for
+the owner, because Home and About copy is an owner gate: Home says "eight
+public websites" (Caddy now serves thirteen site files: nine public
+websites, three `noindex` previews and an asset host) and "a Python poker
+table server",
+and About says RiverMind runs its tables "in Python" and lists Alembic.
+
 ## November 20, 2026 review
 
 Reviewed against the MacBook's `~/github` checkouts (README, BUILD and latest

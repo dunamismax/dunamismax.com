@@ -54,8 +54,8 @@ const rivermind: Project = {
   tone: 'active',
   role: 'Poker AI · Development & hosting',
   tagline: 'Free no-limit Texas hold’em in the browser, at tables of two to nine seats against bots that are always labelled as bots. Play money only.',
-  detail: 'A Python table server with a fuzz-tested no-limit engine and hand histories streams play over WebSockets to a SvelteKit client that works on desktop and mobile. A separate training pipeline uses Monte Carlo counterfactual regret minimization to build stronger bots. It grew out of an open-source, Pluribus-inspired codebase and stays GPL-licensed.',
-  stack: ['Python', 'SvelteKit', 'TypeScript', 'PostgreSQL', 'WebSockets'],
+  detail: 'A TypeScript table server with a fuzz-tested no-limit engine and hand histories runs inside the SvelteKit application and streams play over WebSockets to desktop and mobile browsers, with tables and hands kept in PostgreSQL. A separate Python training pipeline uses Monte Carlo counterfactual regret minimization to build stronger bots. It grew out of an open-source, Pluribus-inspired codebase and stays GPL-licensed.',
+  stack: ['SvelteKit', 'TypeScript', 'PostgreSQL', 'WebSockets', 'Python'],
   links: [
     { label: 'Play', href: 'https://rivermindpoker.com' },
     { label: 'Source', href: gh('rivermind-poker') },
@@ -96,7 +96,7 @@ const grace: Project = {
   tone: 'active',
   role: 'Publishing · Development & hosting',
   tagline: 'My Christian writing website, built around a readable, accessible publishing experience and content I host myself.',
-  detail: 'SvelteKit and PostgreSQL with Drizzle serve essays, scheduled publication, RSS, study dates, and downloadable resources, with no browser JavaScript. A shell-based publishing workflow uses its own database identity, kept apart from the public website.',
+  detail: 'SvelteKit and PostgreSQL with Drizzle serve essays, scheduled publication, RSS, study dates, and downloadable resources. Every page reads fully without JavaScript; the only browser script is a small theme switch. A shell-based publishing workflow uses its own database identity, kept apart from the public website.',
   stack: ['SvelteKit', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Drizzle'],
   links: [{ label: 'Visit website', href: 'https://graceandfootnotes.com' }],
 };
@@ -133,10 +133,10 @@ const fieldcadence: Project = {
   tone: 'phase-0',
   role: 'Field-service platform · Product & engineering',
   tagline: 'Service-desk software for x-ray and imaging dealers that knows when every machine is due: customers, sites, equipment by serial number, tickets, and recurring requirements.',
-  detail: 'Next due dates are computed, never typed. A nightly run proposes who should do the work and when, the office dispatches from a web board, and technicians close tickets from their phones, even with no signal. SvelteKit, PostgreSQL, Drizzle, and Better Auth, with a SwiftUI iPhone app on the same API. The foundation is built and tested; nothing is deployed yet.',
+  detail: 'Next due dates are computed, never typed. A nightly run proposes who should do the work and when, the office dispatches from a web board, and technicians close tickets from their phones, even with no signal. SvelteKit, PostgreSQL, Drizzle, and Better Auth, with a SwiftUI iPhone app on the same API. The foundation and the app shells are built and tested, and run at fieldcadence.app as a development preview that is not yet open to other dealers.',
   stack: ['SvelteKit', 'TypeScript', 'PostgreSQL', 'Better Auth', 'SwiftUI'],
   links: [],
-  note: 'Private source · Not yet deployed',
+  note: 'Private source · In development',
 };
 
 const daybyword: Project = {
@@ -146,7 +146,7 @@ const daybyword: Project = {
   tone: 'phase-0',
   role: 'Bible reading app · iPhone, iPad & web',
   tagline: 'A Bible reading companion: find a plan that fits, see today’s reading at a glance, keep an honest record, and get a welcoming way back after missed days.',
-  detail: 'A native iPhone and iPad app in Swift and SwiftUI, with reminders and widgets, plus a web version moving to SvelteKit and PostgreSQL. It never shows Bible text itself; you keep reading in your own Bible or app. Not yet released.',
+  detail: 'A native iPhone and iPad app in Swift and SwiftUI, with reminders and widgets, plus a web version on SvelteKit and PostgreSQL, running at daybyword.com as a development preview. It never shows Bible text itself; you keep reading in your own Bible or app. Not yet released.',
   stack: ['Swift', 'SwiftUI', 'SvelteKit', 'TypeScript', 'PostgreSQL'],
   links: [{ label: 'Source', href: gh('daybyword') }],
 };
@@ -223,8 +223,8 @@ const cbook: Project = {
   status: 'Published',
   tone: 'shipped',
   role: 'Open-source book · Writing & teaching',
-  tagline: 'A free, progressive C course of 35 runnable lessons, from Hello World to sockets, processes, threads, and an ncurses text adventure.',
-  detail: 'Five parts of short lessons with the explanation in the comments and the code inline, built against C23 with a C17 fallback. The course website is SvelteKit, built from the same lesson files, with an mdBook edition kept as a mirror. It is my most-starred public repository.',
+  tagline: 'A free, progressive C course of 38 runnable lessons, from Hello World to sockets, processes, threads, and an ncurses text adventure, then debugging, undefined behavior, and testing.',
+  detail: 'Six parts of short lessons with the explanation in the comments and the code inline, built against C23 with a C17 fallback. The course website is SvelteKit, built from the same lesson files, with an mdBook edition kept as a mirror. It is my most-starred public repository.',
   stack: ['C', 'POSIX', 'ncurses', 'SvelteKit', 'mdBook'],
   links: [
     { label: 'Course website', href: 'https://cfromthegroundup.com' },
