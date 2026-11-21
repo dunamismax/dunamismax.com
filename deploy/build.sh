@@ -26,9 +26,14 @@ APP_ENV=production APP_URL=https://dunamismax.com node-26 pnpm run build
 node-26 bash deploy/rehearse.sh | tee "$work/rehearsal.log"
 for file in deploy/*.sh; do bash -n "$file"; done
 shellcheck -x deploy/*.sh
-node-26 pnpm install --frozen-lockfile --prod --config.confirm-modules-purge=false
-printf '%s\n' "$commit" > REVISION
 # The release holds only what runs: no source, no build toolchain, no credentials.
-mkdir "$work/release"
-cp -a REVISION .node-version package.json dist node_modules deploy drizzle database "$work/release/"
+# Production dependencies are installed fresh, because `install --prod` over the
+# build tree leaves the dev packages in pnpm's virtual store.
+release=$work/release
+mkdir "$release"
+cp -a .node-version package.json pnpm-lock.yaml pnpm-workspace.yaml "$release/"
+(cd "$release" && node-26 pnpm install --frozen-lockfile --prod --ignore-scripts)
+rm "$release/pnpm-lock.yaml" "$release/pnpm-workspace.yaml"
+cp -a dist deploy drizzle database "$release/"
+printf '%s\n' "$commit" > "$release/REVISION"
 printf 'Built %s\nDeploy: sudo with-deploy-lock bash %s/deploy/deploy.sh %s\n' "$commit" "$work/src" "$commit"

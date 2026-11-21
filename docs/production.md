@@ -45,8 +45,9 @@ with-deploy-lock bash /home/sawyer/web-work/dunamismax.com-COMMIT/src/deploy/dep
 `deploy/build.sh` refuses anything but `origin/main`, extracts it with
 `git archive`, installs with `pnpm install --frozen-lockfile`, runs check,
 db:check, the unit tests, the production build, the disposable PostgreSQL 18
-rehearsal (kept as `rehearsal.log`) and the shell checks, then prunes to
-production dependencies, writes `REVISION` and assembles `release/`. Builds
+rehearsal (kept as `rehearsal.log`) and the shell checks, then assembles
+`release/`: production dependencies installed fresh from the lockfile
+(`--prod`), the build output, `deploy/`, `drizzle/`, `database/` and `REVISION`. Builds
 never receive database credentials or post exports.
 
 `deploy/deploy.sh COMMIT`, as root under the lock:
