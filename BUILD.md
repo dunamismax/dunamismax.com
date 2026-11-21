@@ -8,12 +8,12 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`), the portfolio refresh (`4fbdc4f`) and the portfolio updates (M.2, live at `eeeb06d`). Every cutover now has a release record (M.1). M.3 (boundary, test and release-evidence maintenance) is committed. No feature work is planned. |
-| **Next step** | **M.4** (release M.3), authorized by the owner on 2026-11-20. |
-| **In progress** | M.4 · release the M.1 and M.3 commit to production · 2026-11-20. |
-| **Open items** | M.3 is on `main` but not yet live (M.4). Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
-| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `eeeb06d`, `dunamismax` active. Last recorded release: `fb9ea59` → `eeeb06d`, November 20, 2026 ([record](#portfolio-updates-november-20-2026)). |
-| **`main`** | `791ecde` plus the M.1 and M.3 commit, pushed to GitHub and Codeberg with the owner's approval. |
+| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`), the portfolio refresh (`4fbdc4f`) and the portfolio updates (M.2, live at `eeeb06d`). Every cutover has a release record (M.1), and the boundary, test and release-evidence maintenance (M.3) is live at `be15ef5` (M.4). No feature work is planned. |
+| **Next step** | None planned. The open items below wait on the owner. |
+| **In progress** | Nothing claimed. |
+| **Open items** | Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
+| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `be15ef5`, `dunamismax` active. Last recorded release: `eeeb06d` → `be15ef5`, November 21, 2026 at 02:01 UTC ([record](#boundary-and-release-evidence-maintenance-november-21-2026-utc)). |
+| **`main`** | `be15ef5` plus this release record, pushed to GitHub and Codeberg. |
 | **Last updated** | 2026-11-20 |
 
 ## How to use this file
@@ -114,10 +114,15 @@ Use the default until the owner decides otherwise.
     build time), headers identical except the two cache headers above, no
     `<script>`. `cutover.sh` and `prepare.sh` run only on the host and are
     covered by syntax and shellcheck alone until M.4.
-- [ ] **M.4 · Release M.3.** Owner gate.
+- [x] **M.4 · Release M.3.** Owner gate.
   - Done when: a release record below meets the
     [release record contents](#release-record-contents), cites the new
     checkpoint and candidate log files, and **Now** names the new live commit.
+  - Evidence: owner-authorized; `eeeb06d` → `be15ef5` on November 21, 2026 at
+    02:01:52 UTC,
+    [record](#boundary-and-release-evidence-maintenance-november-21-2026-utc).
+    The schema step and completion time were read from the checkpoint's new
+    files and the candidate counts from `.candidate-rehearsal.log`.
 
 ### Release record contents
 
@@ -180,7 +185,7 @@ release record below.
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
 
-**2026-11-20 · M.1 recorded, M.3 done locally.** Asked to continue BUILD.md
+**2026-11-20 · M.1 recorded, M.3 built, M.4 released: `eeeb06d` → `be15ef5`.** Asked to continue BUILD.md
 and improve the project. M.1: a read-only host inspection found two
 unrecorded cutovers, not one (`4fbdc4f` → `aef964e` at 14:26 UTC and
 `aef964e` → `fb9ea59` at 15:45 UTC) and a host-side unit rename between
@@ -192,10 +197,14 @@ headers in the HTTP checks, four new unit tests, release evidence kept by
 run: baseline gates, then `make verify` (10 unit tests; 195 / 192 / 195
 HTTP; shellcheck; `git diff --check`) and a byte comparison of thirteen
 built responses. Not run: a browser review (no presentation change) and the
-host-only scripts. Committed and pushed with the owner's approval; not yet
-deployed. `npm audit` is
+host-only scripts, which the release then exercised. Committed, pushed and
+released with the owner's approval (M.4: backups, cutover, independent checks
+and rollback check all passed; see the record). `npm audit` is
 clean; newer versions exist for pg, svelte, tsx, typescript and the type
-packages and were left pinned. Next action: M.4, which the owner authorized.
+packages and were left pinned. Three logs from this release remain on the
+host: `/root/dunamismax-{pre,post}release-backup-be15ef5.log` and
+`/home/sawyer/web-candidates/dunamismax-prepare-be15ef5.log`. Next action:
+none planned; the open items in **Now** are the owner's.
 
 **2026-11-20 · M.2 released: `fb9ea59` → `eeeb06d`.** Owner-authorized. Ships
 the Lorehallow card (`3605c15`) and the portfolio recheck (`eeeb06d`: Azeroth
@@ -230,6 +239,55 @@ recorded here. Next action: M.1, then M.2 with the owner.
 
 Dated records, newest first. They are evidence as written at the time and are
 not rewritten; later sections supersede earlier directions where they say so.
+
+## Boundary and release-evidence maintenance (November 21, 2026 UTC)
+
+M.3 and M.4. No page, copy, route, schema or stylesheet change. One definition
+of the HTTP boundary (`src/lib/http.ts`, `SLUG_PATTERN`); `/robots.txt` and
+`/manifest.webmanifest` now carry the five-minute cache they always declared;
+the HTTP checks pin security headers and cache policy; `cutover.sh` and
+`prepare.sh` keep their evidence; `make verify`; shell checks in CI. The commit
+also carries the M.1 record below. Local evidence is under M.3 in
+[Steps](#steps).
+
+- [x] Released to production (owner-authorized), November 21, 2026 at
+  02:01:52 UTC (November 20, 9:01 p.m. Eastern): `eeeb06d` → `be15ef5`.
+  - Source: `be15ef5` pushed to GitHub and Codeberg (both tips verified);
+    GitHub Actions Verify passed, including the new shell step; VM checkout
+    fast-forwarded as `sawyer`, clean. `deploy/prepare.sh` candidate passed
+    svelte-check (0 errors, 0 warnings), 10 unit tests, build, shellcheck, the
+    PostgreSQL database test and the PG 18 rehearsal; its
+    `.candidate-rehearsal.log` reads 195 populated / 192 outage / 195
+    recovered HTTP checks.
+  - Pre-release: `bin/backup --push` passed at 01:54 UTC, snapshot `b38bd15`
+    verified on both mirrors; its own restore verification passed
+    (`postgres-verify` 13 databases, `applications-verify` 18 artifacts,
+    dunamismax.com `eeeb06d` HTTP 200 from restored data). Then
+    `restore check` 133 files, 0 failures, and `restore postgres-verify`
+    13 databases.
+  - Cutover under `with-deploy-lock`, checkpoint
+    `/root/dunamismax-web-20261121T020152Z`, `completed-at` 02:01:56 UTC.
+    `schema-step.log`: `adopted: false`, 1 migration of 1 available, 0 rows,
+    the empty-content digest. Privilege report: production roles verified.
+    Candidate and public production each passed 189 HTTP checks (empty
+    blog). Full Caddy config valid. No shared service restarted.
+  - Independent checks: current → `be15ef5`; dunamismax active and running,
+    ExecMainStatus 0, 0 restarts, user dunamismax-web; 4311 and 5432
+    loopback-only, 4323 closed; no failed units; no error lines in the unit
+    log since cutover; caddy and postgresql@18-main active. Public HTTPS: /,
+    /projects (15 cards), /about, /contact, /blog, /feed.xml, /healthz 200
+    and no-store; /missing 404; POST 405; `/robots.txt`,
+    `/manifest.webmanifest` and `/css/site.css` cached 300 s and `/icon.svg`
+    one day; CSP, nosniff, referrer and permissions headers present; no
+    `<script>`; www 301 preserves path and query; the nine other public
+    sites 200.
+  - Rollback: `rollback.sh CHECKPOINT --check` passed under the lock; not
+    performed.
+  - Post-release: `bin/backup --push` passed at 02:05 UTC, snapshot `f536f58`
+    verified on both mirrors; inventory records `current=be15ef5`, 13
+    releases; `applications-verify` passed, 18 artifacts, and served
+    dunamismax.com `be15ef5` with HTTP 200 from restored data;
+    `postgres-verify` 13 databases.
 
 ## Portfolio updates (November 20, 2026)
 
