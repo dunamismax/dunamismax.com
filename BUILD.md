@@ -8,12 +8,12 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | M.6 (five portfolio cards corrected against the live host) is committed and waits for its release. Otherwise maintenance: every planned phase is complete. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
+| **Current work** | Maintenance. Every planned phase is complete. M.6 (five portfolio cards corrected against the live host) is live at `1e324bc`. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
 | **Next step** | None planned. The open items below wait on the owner. |
 | **In progress** | Nothing claimed. |
-| **Open items** | M.5 was released without D-9's full host backup (`bin/backup` commits to the ubuntu-vm-backup repository, which this task was told not to change); the deploy's pre-migration dump was taken instead, and the 07:30 UTC daily backup is the first host snapshot of `f2cb23c`. Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves nine public websites and three `noindex` previews) and "a Python poker table server", and About says RiverMind runs its tables "in Python" and lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
-| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `f2cb23c`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `be15ef5` → `f2cb23c`, November 21, 2026 at 15:39 UTC ([record](#host-contract-alignment-november-21-2026)). |
-| **`main`** | `f2cb23c` plus this release record, pushed to GitHub and Codeberg. |
+| **Open items** | Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves nine public websites and three `noindex` previews) and "a Python poker table server", and About says RiverMind runs its tables "in Python" and lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
+| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `1e324bc`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `f2cb23c` → `1e324bc`, November 21, 2026 at 19:03 UTC ([record](#portfolio-corrections-november-21-2026)). |
+| **`main`** | `1e324bc` plus this release record, pushed to GitHub and Codeberg. |
 | **Last updated** | 2026-11-21 |
 
 ## How to use this file
@@ -141,7 +141,7 @@ Use the default until the owner decides otherwise.
     `be15ef5` → `f2cb23c` on November 21, 2026 at 15:39:56 UTC,
     [record](#host-contract-alignment-november-21-2026).
 
-- [ ] **M.6 · Correct portfolio cards that drifted.** Owner request,
+- [x] **M.6 · Correct portfolio cards that drifted.** Owner request,
   2026-11-21, after every site moved to the host contract: check the projects
   page against the repositories and the live server and fix what is no longer
   true. Card text only; no markup, route, schema or stylesheet change.
@@ -155,7 +155,10 @@ Use the default until the owner decides otherwise.
     preview, not "nothing deployed"), Day by Word (the web version runs on
     SvelteKit and PostgreSQL at daybyword.com as a preview), C From The Ground
     Up (38 lessons in six parts, not 35 in five).
-  - Remaining: the release.
+  - Evidence: `1e324bc` (cards and the dated evidence in
+    `docs/portfolio.md`); gates and rehearsal passed; released `f2cb23c` →
+    `1e324bc` on November 21, 2026 at 19:03 UTC,
+    [record](#portfolio-corrections-november-21-2026).
 
 ### Release record contents
 
@@ -216,6 +219,19 @@ release record below.
 
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
+
+**2026-11-21 · M.6 built and released: `f2cb23c` → `1e324bc`.** Owner asked
+for the projects page to be checked against the repositories and the live
+server after every site moved to the host contract, and fixed. Five cards
+changed (RiverMind Poker, Grace & Footnotes, Field Cadence, Day by Word, C
+From The Ground Up); evidence is the November 21 section of
+`docs/portfolio.md`. Checks run: check, db:check, 10 unit tests, production
+build, `git diff --check`, then `deploy/build.sh` with the rehearsal and
+`deploy/deploy.sh` (candidate, switch, live and public HTTP checks). Not
+done: Home and About sentences that are also out of date (see **Now**, open
+items), because that copy is an owner gate; no browser review at the four
+widths, since only text inside existing cards changed. Next action: none
+planned.
 
 **2026-11-21 · M.5 built and released: `be15ef5` → `f2cb23c`.** Owner asked to align the site with the host
 web-platform contract. pnpm 12.18.0 (`pnpm import`, then a clean
@@ -298,6 +314,37 @@ recorded here. Next action: M.1, then M.2 with the owner.
 
 Dated records, newest first. They are evidence as written at the time and are
 not rewritten; later sections supersede earlier directions where they say so.
+
+## Portfolio corrections (November 21, 2026)
+
+M.6. Card text in `src/lib/projects.ts` only: five cards, same fifteen
+projects, same anchors. No markup, route, schema or stylesheet change.
+
+- [x] Released to production (owner-requested), November 21, 2026 at 19:03
+  UTC: `f2cb23c` → `1e324bc`.
+  - Source: `1e324bc` pushed to GitHub and Codeberg (`git push` updated both;
+    `ls-remote` shows `1e324bc`); VM checkout clean at that commit.
+  - Build (`deploy/build.sh`, sawyer, outside the lock, Node 26.13.1 and pnpm
+    12.18.0): svelte-check 0 errors and 0 warnings, db:check, 10 unit tests,
+    production build, rehearsal (PostgreSQL suite passed; 197 populated / 194
+    outage / 197 recovered HTTP checks), `bash -n`, shellcheck.
+  - Pre-release backup (D-9): the host backup ran at 18:44–19:02 UTC and
+    committed snapshot `14332af` in ubuntu-vm-backup after `postgres-verify`
+    (18 databases) and `applications-verify` (18 artifacts) passed and
+    `restore check` decrypted 154 files; GitHub has the snapshot, and its
+    upload to the Codeberg mirror timed out twice and is to be retried. The
+    deploy also took `/var/backups/dunamismax.com/pre-migrate-1e324bc….dump`.
+  - Deploy (`with-deploy-lock bash …/deploy/deploy.sh 1e324bc…`): staged
+    `releases/1e324bc…`; schema step `adopted: false`, 1 migration of 1
+    available, 0 rows, the empty-content digest; privilege report: production
+    roles verified. Candidate: 192 HTTP checks (empty blog). Switch, restart;
+    192 HTTP checks on the live port; `web-live`:
+    `/opt/node-v26.13.1-linux-x64/bin/node`, `releases/1e324bc…`, revision
+    `1e324bc…`, `current`. Public HTTPS: 192 HTTP checks.
+  - Independent checks, from outside the server: `/healthz` reports `1e324bc`
+    with `"database":"ok"`; `/projects` shows the five corrected cards and none
+    of the replaced wording ("Python table server", "Not yet deployed", "35
+    runnable"); fifteen cards; no `<script>`; the www redirect answers 301.
 
 ## Host contract alignment (November 21, 2026)
 
