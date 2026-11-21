@@ -8,12 +8,12 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | M.5: align with the host web-platform contract (pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check), owner-requested 2026-11-21. Every earlier phase is complete; the last feature-free maintenance release (M.3/M.4) went live at `be15ef5`. |
-| **Next step** | Release M.5 with `deploy/build.sh` and `deploy/deploy.sh`, then record it. |
-| **In progress** | M.5 · host contract alignment and its first fix-forward release · 2026-11-21. |
-| **Open items** | Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
-| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `be15ef5`, `dunamismax` active. Last recorded release: `eeeb06d` → `be15ef5`, November 21, 2026 at 02:01 UTC ([record](#boundary-and-release-evidence-maintenance-november-21-2026-utc)). |
-| **`main`** | The M.5 commit, pushed to GitHub and Codeberg. |
+| **Current work** | Maintenance. Every planned phase is complete. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
+| **Next step** | None planned. The open items below wait on the owner. |
+| **In progress** | Nothing claimed. |
+| **Open items** | M.5 was released without D-9's full host backup (`bin/backup` commits to the ubuntu-vm-backup repository, which this task was told not to change); the deploy's pre-migration dump was taken instead, and the 07:30 UTC daily backup is the first host snapshot of `f2cb23c`. Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
+| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `f2cb23c`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `be15ef5` → `f2cb23c`, November 21, 2026 at 15:39 UTC ([record](#host-contract-alignment-november-21-2026)). |
+| **`main`** | `f2cb23c` plus this release record, pushed to GitHub and Codeberg. |
 | **Last updated** | 2026-11-21 |
 
 ## How to use this file
@@ -124,7 +124,7 @@ Use the default until the owner decides otherwise.
     The schema step and completion time were read from the checkpoint's new
     files and the candidate counts from `.candidate-rehearsal.log`.
 
-- [ ] **M.5 · Align with the host web-platform contract.** Owner request,
+- [x] **M.5 · Align with the host web-platform contract.** Owner request,
   2026-11-21; the contract is
   `/home/sawyer/github/ubuntu-vm-backup/docs/web-platform.md`. Tooling only: no
   page, copy, route, schema or stylesheet change.
@@ -136,7 +136,10 @@ Use the default until the owner decides otherwise.
     `deploy/build.sh` and `deploy/deploy.sh`; `/healthz` reports the release's
     `REVISION` and a real database check; the gates pass on Node 26; the first
     deploy with the new flow serves the commit from `/opt/node-26`.
-  - Remaining: the release (and its record below).
+  - Evidence: `1546441` and `f2cb23c` (release dependencies installed fresh:
+    20 MB release instead of 147 MB); `web-conformance` conforms; released
+    `be15ef5` → `f2cb23c` on November 21, 2026 at 15:39:56 UTC,
+    [record](#host-contract-alignment-november-21-2026).
 
 ### Release record contents
 
@@ -198,7 +201,7 @@ release record below.
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
 
-**2026-11-21 · M.5 built.** Owner asked to align the site with the host
+**2026-11-21 · M.5 built and released: `be15ef5` → `f2cb23c`.** Owner asked to align the site with the host
 web-platform contract. pnpm 12.18.0 (`pnpm import`, then a clean
 `pnpm-lock.yaml`: the import had carried a `mysql2` peer resolution of
 drizzle-orm, removed), `pnpm-workspace.yaml` (`saveExact`, `engineStrict`,
@@ -219,7 +222,11 @@ errors, 0 warnings), db:check, 10 unit tests, build, rehearsal (database
 suite; 197 populated / 194 outage / 197 recovered HTTP checks), `bash -n`,
 shellcheck, `git diff --check`, `web-conformance` (conforms). tsx 4.20.6
 prints a Node 26 `module.register()` deprecation warning in dev and test runs
-only. Next action: release M.5.
+only. The first build showed `install --prod` leaves dev packages in pnpm's
+virtual store, fixed forward in `f2cb23c`. Released with the new flow at
+15:39 UTC ([record](#host-contract-alignment-november-21-2026)); the old
+rollback pointer and the restore copies in the `/root` checkpoint were
+removed. Next action: none planned.
 
 **2026-11-20 · M.1 recorded, M.3 built, M.4 released: `eeeb06d` → `be15ef5`.** Asked to continue BUILD.md
 and improve the project. M.1: a read-only host inspection found two
@@ -275,6 +282,47 @@ recorded here. Next action: M.1, then M.2 with the owner.
 
 Dated records, newest first. They are evidence as written at the time and are
 not rewritten; later sections supersede earlier directions where they say so.
+
+## Host contract alignment (November 21, 2026)
+
+M.5. Tooling only: no page, copy, route, schema or stylesheet change; `/healthz`
+now reports the revision and a database check. First release with
+`deploy/build.sh` and `deploy/deploy.sh`.
+
+- [x] Released to production (owner-requested), November 21, 2026 at
+  15:39:52–15:39:57 UTC: `be15ef5` → `f2cb23c`.
+  - Source: `1546441` and `f2cb23c` pushed to GitHub and Codeberg (`git push`
+    updated both); VM checkout clean at `f2cb23c`.
+  - Build (`deploy/build.sh`, sawyer, outside the lock, Node 26.13.1 and pnpm
+    12.18.0): svelte-check 0 errors and 0 warnings, db:check, 10 unit tests,
+    production build, rehearsal (PostgreSQL suite passed; 197 populated / 194
+    outage / 197 recovered HTTP checks), `bash -n`, shellcheck. Release 20 MB.
+  - Pre-release backup: not the D-9 host backup (see **Now**). The deploy took
+    `/var/backups/dunamismax.com/pre-migrate-f2cb23c….dump` (root, 0600).
+  - Deploy (`with-deploy-lock bash …/deploy/deploy.sh f2cb23c…`): staged
+    `releases/f2cb23c…`; schema step `adopted: false`, 1 migration of 1
+    available, 0 rows, the empty-content digest; journal 1 row = 1 entry;
+    privilege report: production roles verified. Candidate on port 4400 as
+    `dunamismax-web` under the new unit: `/healthz` reported `f2cb23c` with
+    `"database":"ok"`, 192 HTTP checks (empty blog). Switch, restart; port
+    4311 `/healthz` reported `f2cb23c`, 192 HTTP checks; `web-live`:
+    `/opt/node-v26.13.1-linux-x64/bin/node`, `releases/f2cb23c…`, revision
+    `f2cb23c…`, `current`. Caddy fragment unchanged (not reloaded). Public
+    HTTPS: 192 HTTP checks; www redirect keeps path and query.
+  - Independent checks: `dunamismax` active, 0 restarts, ExecMainStatus 0, user
+    `dunamismax-web`; installed unit equals `deploy/dunamismax.service`; only
+    4311 and 5432 on loopback, no candidate left; no failed units; unit
+    journal since the restart has no warning or error lines. Public `/`,
+    `/about`, `/projects`, `/blog`, `/feed.xml` 200, `/missing` 404, `/healthz`
+    200 with the revision; CSP, HSTS and nosniff present; no `<script>`;
+    `dunamismax-posts --help` runs on Node 26; the ten other public sites 200.
+  - Rollback material removed: `/srv/www/dunamismax.com/last-web-rollback`,
+    and `previous-*` and `site.caddy` from
+    `/root/dunamismax-web-20261121T020152Z` (its evidence logs are kept).
+  - Post-release backup and `applications-verify`: not run here (they write
+    the ubuntu-vm-backup repository); the 07:30 UTC daily backup runs them.
+    The probe starts `dist/cli/bin/server.js` with `PG*` variables on
+    `/opt/node-26`, which this release supports.
 
 ## Boundary and release-evidence maintenance (November 21, 2026 UTC)
 
