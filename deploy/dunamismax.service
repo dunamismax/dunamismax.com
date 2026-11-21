@@ -10,7 +10,7 @@ Group=dunamismax-web
 WorkingDirectory=/srv/www/dunamismax.com/current
 Environment=NODE_ENV=production APP_ENV=production APP_URL=https://dunamismax.com HOST=127.0.0.1 PORT=4311
 EnvironmentFile=/etc/web-apps/dunamismax/web.env
-ExecStart=/opt/node-runtime/bin/node /srv/www/dunamismax.com/current/dist/cli/bin/server.js
+ExecStart=/opt/node-26/bin/node /srv/www/dunamismax.com/current/dist/cli/bin/server.js
 Restart=on-failure
 RestartSec=3
 TimeoutStopSec=30

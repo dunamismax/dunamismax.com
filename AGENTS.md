@@ -99,7 +99,7 @@ separate action:
 
 - Committing and pushing `main` (once approved, push right away, see
   [section 5](#5-git-rules)).
-- Deploying a release, rolling one back, or changing anything on the host.
+- Deploying a release or changing anything on the host.
 - Changing public copy, branding, URLs, anchors, metadata or contact links,
   except this site's own stack card and footer colophon, which track its real
   stack.
@@ -119,7 +119,8 @@ Nothing above loosens these:
 - Never run `drizzle-kit push`, `pull` or `migrate` against a real database.
 - Never restore an old dump or the frozen MySQL database over live PostgreSQL
   data.
-- If a release breaks the site, roll it back first (under the lock), then fix.
+- Releases only move forward. If a release breaks the site, fix it in a new
+  commit and deploy that; never point `current` at an older release.
 
 ### When you are blocked
 
@@ -184,9 +185,9 @@ BUILD.md is the record of where the site stands and how it got there.
 - **Local records and release records are separate.** A local check never
   proves a deployment. A release record lists, each on its own evidence: source
   commit and verified GitHub and Codeberg tips, pre-release backup and restore,
-  candidate checks, cutover and checkpoint, service and listeners, schema and
-  privileges, public HTTPS and privacy checks, rollback check, post-release
-  backup.
+  candidate checks, cutover, service and listeners, schema and privileges,
+  the live revision (`/healthz` and `web-live`), public HTTPS and privacy
+  checks, post-release backup.
 - **History is not rewritten.** Dated release records, Phase 0 and Phase 1 and
   `docs/migration.md` stay as written. Add new dated records instead.
 - **Handoff log:** prepend one short entry per session (date, step IDs, what
@@ -277,9 +278,10 @@ change to either needs the test changed with it.
 
 - `src/db/schema.ts` is the schema source; `drizzle/` holds reviewed SQL
   migrations, with grants as appended custom SQL. Change the schema with
-  `npx drizzle-kit generate --name=NAME`, review the SQL, then
-  `npm run db:check` and the rehearsal. Keep migrations additive so code
-  rollback stays valid.
+  `pnpm exec drizzle-kit generate --name=NAME`, review the SQL, then
+  `pnpm run db:check` and the rehearsal. Keep migrations additive: the
+  previous release keeps serving while the new one is checked, and releases
+  only move forward, so every migration must leave the running release working.
 - `bin/schema.ts` is the only applier. It adopts a pre-Drizzle database only
   when its catalog equals `database/baseline-catalog.json`; never edit that file
   to make adoption pass.
@@ -293,8 +295,11 @@ change to either needs the test changed with it.
   credentials for writing, and never log credentials or post bodies (Drizzle
   query errors embed parameters).
 - Outages are honest: Home stays 200 with an unknown count; Blog, posts and RSS
-  return 503 with `Retry-After: 60` and no-store; static pages and `/healthz`
-  stay up.
+  return 503 with `Retry-After: 60` and no-store; static pages stay up.
+  `/healthz` reports readiness for the deploy: `200`
+  `{"status":"ok","revision":"<commit>","database":"ok"}` after a real query as
+  the web role, `503` when PostgreSQL cannot answer. `revision` comes from the
+  release's `REVISION` file.
 
 ### Portfolio
 
@@ -320,7 +325,7 @@ optional and must not add a proxy or expose PostgreSQL.
 
 | Change | Run |
 | --- | --- |
-| Any code, dependency or content change | `npm run check`, `npm run db:check`, `npm test`, `APP_ENV=production npm run build` |
+| Any code, dependency or content change | `pnpm run check`, `pnpm run db:check`, `pnpm run test`, `APP_ENV=production pnpm run build` |
 | Data, schema, server, publishing or HTTP behavior | the above plus `bash deploy/rehearse.sh` |
 | Shell scripts | `for f in deploy/*.sh; do bash -n "$f"; done` and `shellcheck -x deploy/*.sh` |
 | Presentation | browser review at 320, 375, 768 and 1440 px in light and dark, no horizontal overflow, no `<script>` in output |
@@ -338,7 +343,7 @@ Set `TEST_PGPORT` if 55431 is taken and `TEST_WEB_PORT` if 4322 is.
 `make verify` runs every gate in the table in order (it sets `PGBIN` and
 `LC_ALL` for Homebrew's PostgreSQL 18 when they are unset). CI (`.github/workflows/verify.yml`) runs
 the same gates (including the shell checks) plus
-`npm audit --audit-level=moderate` on every push to `main` and weekly, with no production credentials; it never deploys. Do not weaken a
+`pnpm audit --audit-level=moderate` on every push to `main` and weekly, with no production credentials; it never deploys. Do not weaken a
 check to make a change pass.
 
 ---
@@ -351,43 +356,50 @@ successor), before any release. Pushing does not deploy.
 
 | Item | Convention |
 | --- | --- |
-| Runtime | `deploy/dunamismax.service`, user `dunamismax-web`, Node from `/opt/node-runtime` |
-| Listener | `127.0.0.1:4311`; temporary candidate `4323` after checking it is free |
+| Runtime | `deploy/dunamismax.service`, user `dunamismax-web`, `/opt/node-26/bin/node` (Node 26.13.1) |
+| Listener | `127.0.0.1:4311`; the candidate takes the first free port in 4400–4499 |
 | Caddy | `/etc/caddy/Caddyfile` imports `/etc/caddy/sites/dunamismax.com.caddy`; template `deploy/Caddyfile`; binary `/usr/local/lib/caddy/caddy` |
 | PostgreSQL | native loopback service; database `dunamismax`, schema `app`; owner, web, publishing and migration roles |
 | Credentials | `/etc/web-apps/dunamismax/{web,publishing,migration}.env`, one per identity; systemd loads only `web.env` |
 | Releases | `/srv/www/dunamismax.com/releases/<commit>`, atomic `current` symlink |
 | Lock | shared `/run/web-deploy/lock` through `with-deploy-lock` (descriptor 9) |
 | Journal | `drizzle.__drizzle_migrations`, owner-only; production adopted at `e1c292c` |
+| Build work | `/home/sawyer/web-work/dunamismax.com-<commit>/` (`src/` and the assembled `release/`) |
+| Pre-migration dumps | `/var/backups/dunamismax.com/pre-migrate-<commit>.dump` (root, 0600) |
 
 Release rules:
 
-- Build and test an isolated candidate (`deploy/prepare.sh`) before taking the
-  lock. Hold the lock for the whole privileged transaction, rollback included.
-  Never nest it or recreate it; root-only `deploy/` scripts verify
-  descriptor 9.
+- Fix forward only; the host contract (section 8) is the flow.
+  `deploy/build.sh` builds and checks `origin/main` from `git archive` as
+  sawyer, outside the lock. `deploy/deploy.sh COMMIT` then runs as root in one
+  `with-deploy-lock` process: stage, pre-migration dump and migration as the
+  service account, candidate on the new unit file, switch, verify, Caddy only
+  if the fragment changed, record. Never nest the lock or recreate it;
+  `deploy.sh` verifies descriptor 9.
+- A failure before the switch leaves the previous release serving. A failure
+  after it means the new release is live and unhealthy: read
+  `journalctl -u dunamismax`, fix it in a new commit and deploy that. Never
+  repoint `current`, restore an old unit or fragment, or keep copies "to go
+  back".
 - Take and verify a fresh host backup (`bin/backup`, `restore check`,
   `restore postgres-verify`) before cutover. A timer's exit status alone is not
   restore evidence.
-- Keep immutable commit releases, the previous releases (including the retained
-  Astro ones) and the installed backup timers. Remove obsolete checkout code
+- Keep immutable commit releases (older ones are evidence, expired by
+  `server-disk-cleanup`, not a way back) and the installed backup timers. Remove obsolete checkout code
   only after confirming recovery needs, and confirm what legacy material is
   retained in the current host contract, not from old acceptance notes.
 - Before a future schema cutover: rehearse nonempty data in isolation, exclude
   concurrent publishing, and reconcile counts and full-content SHA256.
-- Code rollback preserves newer PostgreSQL writes; refuse a rollback to the
-  divergent frozen MySQL data until reconciled.
 - DNS is owner-managed, DNS-only Cloudflare records pointing at the server;
   Caddy gets its own Let's Encrypt certificates. Check shared prerequisites
   without replacing the shared Caddy binary or restarting shared services.
 - After a release, verify the live `current` link, service, listeners, public
   HTTPS behavior and backups yourself, and record them in BUILD.md.
-- Write the release record in the same session as the cutover. The candidate
-  keeps `.candidate-rehearsal.log`; the root-only checkpoint keeps
-  `schema-step.log`, `privilege-report.log`, `candidate-http.log`,
-  `production-http.log` and `completed-at`. Backup, restore and rollback-check
-  output is not saved anywhere, so copy it into the record when you run it
-  (M.1 shows what is lost otherwise).
+- Write the release record in the same session as the cutover. The build
+  keeps `rehearsal.log` in its work directory; the deploy prints the schema
+  step, privilege report, candidate and production HTTP counts and the
+  `web-live` line, and logs `web-deploy` to the journal. Nothing else is
+  saved, so copy that output into the record when you run it.
 
 ---
 
@@ -415,7 +427,7 @@ Release rules:
 | [BUILD.md](BUILD.md) | Where the site stands: Now, decisions, open questions, steps, release history, handoff log |
 | [docs/architecture.md](docs/architecture.md) | Design: HTTP boundary, rendering, schema, roles, migrations |
 | [docs/content.md](docs/content.md) | Editing pages and the portfolio, and publishing posts |
-| [docs/production.md](docs/production.md) | Host layout, release, verification and rollback runbook |
+| [docs/production.md](docs/production.md) | Host layout, fix-forward release and verification runbook |
 | [docs/portfolio.md](docs/portfolio.md) | Dated evidence behind every portfolio claim |
 | [docs/migration.md](docs/migration.md) | Historical October 2026 PHP-to-Astro acceptance |
 
@@ -427,13 +439,15 @@ agent, prompt or continuity files.
 
 ## 12. Toolchain versions
 
-Pinned exactly; install with `npm ci`, never `--force` or legacy peer
-dependency workarounds. `.npmrc` enforces engines.
+Pinned exactly at the host baseline (`ubuntu-vm-backup/config/web-platform.json`);
+install with `pnpm install --frozen-lockfile`, never `--force` or peer
+workarounds. `pnpm-workspace.yaml` sets `saveExact` and `engineStrict`; on the
+VM run every build command through `node-26` (for example `node-26 pnpm run check`).
 
 | Tool | Version |
 | --- | --- |
-| Node | 24.22.3 (`.node-version`) |
-| npm | 11.19.1 |
+| Node | 26.13.1 (`.node-version`, `engines.node`) |
+| pnpm | 12.18.0 (`packageManager`) |
 | SvelteKit | 3.4.0 |
 | Svelte | 5.58.1 |
 | Vite | 8.3.8 |
@@ -441,7 +455,7 @@ dependency workarounds. `.npmrc` enforces engines.
 | Tailwind CSS | 4.3.5 (`@tailwindcss/vite`) |
 | TypeScript | 6.0.3, strict with `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` |
 | drizzle-orm / drizzle-kit | 0.45.4 / 0.31.11 |
-| pg | 8.16.3 |
+| pg / @types/pg | 8.23.1 / 8.23.1 |
 | PostgreSQL | 18 (production 18.6) |
 
 When a version changes, update `package.json`, the lockfile, this table and
@@ -458,11 +472,11 @@ README in the same commit.
 - Headers set by a prerendered `+server.ts` endpoint (`robots.txt`, the
   manifest, the stylesheet) are dropped: only the body is written to disk. Put
   cache policy for such paths in `cachePolicy` in `bin/server.ts`.
-- `.astro/` stays in `.gitignore` so the VM checkout remains clean for
-  `deploy/prepare.sh`.
+- `.astro/` stays in `.gitignore` so old local build output never dirties the
+  VM checkout.
 - On macOS the rehearsal needs `PGBIN` and a valid `LC_ALL`.
-- An npm override pins drizzle-kit's legacy `@esbuild-kit` loader to the
-  tree's patched esbuild; recheck it when updating drizzle-kit and drop it once
+- A pnpm override in `pnpm-workspace.yaml` pins drizzle-kit's legacy
+  `@esbuild-kit` loader to the tree's patched esbuild; recheck it when updating drizzle-kit and drop it once
   that dependency is gone.
 - On the VM, run git in `/home/sawyer/github/dunamismax.com` as `sawyer`; as
   root it fails with "dubious ownership". Deployed helpers are mode 0644, so

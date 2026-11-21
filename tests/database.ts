@@ -36,15 +36,14 @@ try {
  result=report(schema(fresh));assert.deepEqual([result.adopted,result.migrations,result.rows],[false,1,0]);
  assert.deepEqual(await superuser(fresh,catalog),baselineCatalog,'fresh schema matches the production baseline catalog');
  assert.deepEqual(await journal(fresh),[{hash:baseline!.hash,created_at:String(baseline!.folderMillis)}]);
- // Pre-Drizzle database: legacy additive schema, nonempty import with stable IDs/Unicode/UTC, overwrite refusal.
+ // Pre-Drizzle database: legacy additive schema with nonempty content, stable IDs, Unicode and UTC instants.
  const legacy=readFileSync('tests/legacy-schema.sql','utf8');
  await superuser(adopted,async client => {await client.query(legacy);await client.query(legacy);});
- const source=join(directory,'migration.json');
- const rows=[{id:'42',slug:'import-public',title:'café 🌲 & <literal>',excerpt:'é',body:'First\r\n\r\nSecond',status:'published',published_at:'2026-01-02 03:04:05',created_at:'2025-12-01 00:00:00',updated_at:'2026-01-03 04:05:06'},{id:'500',slug:'import-draft',title:'Draft',excerpt:'',body:'PRIVATE',status:'draft',published_at:null,created_at:'2026-01-01 00:00:00',updated_at:'2026-01-01 00:00:00'}];
- writeFileSync(source,JSON.stringify(rows),{mode:0o600});
- const migrate=(mode:string) => spawnSync(process.execPath,['--import','tsx','bin/migrate-data.ts',mode,source],{env:{...process.env,MIGRATION_CONFIG:config('dunamismax_migration',adopted)},encoding:'utf8'});
- for(const mode of ['import','import','reconcile']) {const imported=migrate(mode);assert.equal(imported.status,0,imported.stderr);}
- rows[0]!.title='Changed';writeFileSync(source,JSON.stringify(rows));assert.notEqual(migrate('import').status,0);assert.notEqual(migrate('reconcile').status,0);
+ // Rows as the retired MySQL import left them: explicit IDs, UTC instants, Unicode, CRLF, and the sequence past the highest ID.
+ await superuser(adopted,client => client.query(`INSERT INTO app.posts (id,slug,title,excerpt,body,status,published_at,created_at,updated_at) VALUES
+  (42,'import-public','café 🌲 & <literal>','é',E'First\\r\\n\\r\\nSecond','published','2026-01-02 03:04:05+00','2025-12-01 00:00:00+00','2026-01-03 04:05:06+00'),
+  (500,'import-draft','Draft','','PRIVATE','draft',NULL,'2026-01-01 00:00:00+00','2026-01-01 00:00:00+00');
+  SELECT setval('app.posts_id_seq',501,false)`));
  await superuser(adopted,client => client.query("INSERT INTO app.posts (slug,title,body,status,published_at,created_at,updated_at) VALUES ('precise','Precise','Body','published','2026-03-04 05:06:07.123456+00','2026-03-04 05:06:07.654321+00','2026-03-04 05:06:07.000001+00')"));
  assert.deepEqual(await superuser(adopted,catalog),baselineCatalog,'legacy fixture reproduces the production baseline catalog');
  const before=await superuser(adopted,contentState);assert.equal(before.rows,3);assert.equal(before.sequence,'501:called');

@@ -2,15 +2,17 @@ import { readFileSync } from 'node:fs';
 import { isDeepStrictEqual } from 'node:util';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { readMigrationFiles } from 'drizzle-orm/migrator';
-import { protectedEnv } from '../src/lib/credentials.js';
+import { inheritedEnv, protectedEnv } from '../src/lib/credentials.js';
 import { operatorConnection, safeMessage } from '../src/db/operator.js';
 import { catalog, contentState } from '../src/db/catalog.js';
 // Operator-only: applies reviewed drizzle/ migrations as dunamismax_owner under the deployment lock.
+// Credentials: MIGRATION_CONFIG (a protected file) when set, otherwise the environment systemd
+// loaded from /etc/web-apps/dunamismax/migration.env (deploy/deploy.sh).
 // A pre-Drizzle database is adopted only when its catalog exactly matches the reviewed baseline.
 const folder = 'drizzle', journal = { migrationsFolder: folder, migrationsSchema: 'drizzle', migrationsTable: '__drizzle_migrations' };
 let connection: Awaited<ReturnType<typeof operatorConnection>> | undefined;
 try {
-  connection = await operatorConnection(protectedEnv(process.env.MIGRATION_CONFIG ?? '/etc/web-apps/dunamismax/migration.env'), 'dunamismax_migration');
+  connection = await operatorConnection(process.env.MIGRATION_CONFIG ? protectedEnv(process.env.MIGRATION_CONFIG) : inheritedEnv(), 'dunamismax_migration');
   const { client, db } = connection;
   await client.query('SET ROLE dunamismax_owner');
   await client.query("SELECT pg_advisory_lock(hashtext('dunamismax.com schema migrations'))");

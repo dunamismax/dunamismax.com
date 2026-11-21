@@ -15,3 +15,8 @@ export function pgConfig(env: Record<string,string>, expected: string): ClientCo
   if (env.PGUSER !== expected) throw new Error('Wrong PostgreSQL role for this operation');
   return { host: env.PGHOST!, port: Number(env.PGPORT), database: env.PGDATABASE!, user: env.PGUSER!, password: env.PGPASSWORD!, options: '-c search_path=app,pg_catalog', connectionTimeoutMillis: 3000, statement_timeout: 30000 };
 }
+// The same keys from this process's environment, where systemd placed them from an
+// EnvironmentFile= (the deploy's migration step runs as the service account with migration.env).
+export function inheritedEnv(): Record<string,string> {
+  return Object.fromEntries(['PGHOST','PGPORT','PGDATABASE','PGUSER','PGPASSWORD'].flatMap(key => process.env[key] ? [[key, process.env[key]!]] : []));
+}

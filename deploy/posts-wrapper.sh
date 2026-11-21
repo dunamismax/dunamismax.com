@@ -12,5 +12,5 @@ set +a
 cd /srv/www/dunamismax.com/current
 # Preserve credentials in the inherited environment, never command arguments.
 unset DATABASE_URL POSTS_CONFIG NODE_OPTIONS NODE_PATH PGOPTIONS PGSERVICE
-export PATH=/opt/node-runtime/bin:/usr/bin:/bin POSTS_TRUSTED_WRAPPER=1
-exec /usr/sbin/runuser -u sawyer -- /opt/node-runtime/bin/node dist/cli/bin/posts.js "$@"
+export PATH=/opt/node-26/bin:/usr/bin:/bin POSTS_TRUSTED_WRAPPER=1
+exec /usr/sbin/runuser -u sawyer -- /opt/node-26/bin/node dist/cli/bin/posts.js "$@"

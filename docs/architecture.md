@@ -54,19 +54,17 @@ with connection and statement deadlines and sanitized error reporting.
 
 A home database error yields a neutral writing link and unknown count. It never
 claims there are no posts during an outage. Blog routes/RSS return an honest
-503/no-store with Retry-After; static pages and health remain available.
+503/no-store with Retry-After; static pages remain available. `/healthz` runs one
+real query through the website pool and answers 503 when it fails, so the
+deploy's candidate check proves the database path, and it reports the release's
+`REVISION`.
 
 The TypeScript publisher uses Drizzle transactions and row locks, validates Unicode
 limits/plain text/timestamps, preserves unspecified fields, and leaves slugs
 immutable. Only publish/schedule change drafts to published. Unpublish retains
-the publication date. PostgreSQL is authoritative after cutover; the retained
-MySQL database is a frozen rollback source, not a second writer.
-
-Migration tooling is the only remaining MySQL client dependency. It exports a
-consistent UTC snapshot privately, imports to an empty target transactionally,
-reconciles every field using an ordered SHA256 and restores the identity sequence.
-It is safe to rerun with identical data and refuses a differing nonempty target.
-No migration snapshot or credential is committed or copied into release assets.
+the publication date. PostgreSQL is authoritative. MySQL is retired on the host,
+and the one-time MySQL import tool and its `mysql2` driver were removed on
+2026-11-21 (BUILD M.5); `docs/migration.md` records how the import was done.
 
 ## Schema and migrations
 

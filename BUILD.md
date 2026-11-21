@@ -8,13 +8,13 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`), the portfolio refresh (`4fbdc4f`) and the portfolio updates (M.2, live at `eeeb06d`). Every cutover has a release record (M.1), and the boundary, test and release-evidence maintenance (M.3) is live at `be15ef5` (M.4). No feature work is planned. |
-| **Next step** | None planned. The open items below wait on the owner. |
-| **In progress** | Nothing claimed. |
+| **Current work** | M.5: align with the host web-platform contract (pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check), owner-requested 2026-11-21. Every earlier phase is complete; the last feature-free maintenance release (M.3/M.4) went live at `be15ef5`. |
+| **Next step** | Release M.5 with `deploy/build.sh` and `deploy/deploy.sh`, then record it. |
+| **In progress** | M.5 · host contract alignment and its first fix-forward release · 2026-11-21. |
 | **Open items** | Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
 | **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `be15ef5`, `dunamismax` active. Last recorded release: `eeeb06d` → `be15ef5`, November 21, 2026 at 02:01 UTC ([record](#boundary-and-release-evidence-maintenance-november-21-2026-utc)). |
-| **`main`** | `be15ef5` plus this release record, pushed to GitHub and Codeberg. |
-| **Last updated** | 2026-11-20 |
+| **`main`** | The M.5 commit, pushed to GitHub and Codeberg. |
+| **Last updated** | 2026-11-21 |
 
 ## How to use this file
 
@@ -47,7 +47,7 @@ record the change here with the date.
 | D-2 | **Data** (owner, 2026-11-02): PostgreSQL is authoritative for posts. `src/db/schema.ts` and reviewed `drizzle/` migrations are the only schema source; `bin/schema.ts` is the only applier (Phase 0, live since `e1c292c`). No SQLite, Litestream or hosted database. |
 | D-3 | **Script-free site:** zero browser JavaScript (`csr = false`), semantic HTML, the preserved stylesheet compiled by Tailwind CSS 4 without preflight, the existing CSP. |
 | D-4 | **Posts:** plain text, published through the independent publishing role and CLI. Visibility is the database-clock view `app.public_posts`; no rebuild, timer or cache for scheduled posts. |
-| D-5 | **Hosting** (owner, 2026-11-02): self-hosted on the owner's Ubuntu server under systemd, behind the shared custom Caddy, with immutable releases and the shared deployment lock. DNS is owner-managed, DNS-only Cloudflare records; Caddy gets its own Let's Encrypt certificates. No DNS challenge, Caddy DNS plugin, token or proxy mode. Containers are optional. |
+| D-5 | **Hosting** (owner, 2026-11-02): self-hosted on the owner's Ubuntu server under systemd, behind the shared custom Caddy, with immutable releases and the shared deployment lock. DNS is owner-managed, DNS-only Cloudflare records; Caddy gets its own Let's Encrypt certificates. No DNS challenge, Caddy DNS plugin, token or proxy mode. Production runs as a systemd unit on `/opt/node-26/bin/node`, never in a container (owner, 2026-11-21, host web-platform contract); containers only for local development and tests. Releases fix forward: each is checked as a candidate before it takes traffic, and there is no way back to an older release (owner, 2026-11-21). |
 | D-6 | **Python and Swift** only for a real project need or explicit request. Existing TypeScript operator tools stay TypeScript; no native app is planned. |
 | D-7 | **Superseded:** the Next.js rewrite and the SQLite plan do not apply. |
 | D-8 | **No public writes:** no admin, forms, accounts, tracking or new public API. |
@@ -59,8 +59,8 @@ Use the default until the owner decides otherwise.
 
 | ID | Question | Default until decided |
 | --- | --- | --- |
-| Q-1 | Retire the MySQL migration tooling (`bin/migrate-data.ts`, the `mysql2` dev dependency)? | Keep until recovery needs are confirmed against the current host contract. |
-| Q-2 | Prune the retained Astro releases and PHP/MySQL recovery material? | Keep; they are rollback and recovery sources. |
+| Q-1 | ~~Retire the MySQL migration tooling?~~ | **Decided by the owner, 2026-11-21:** removed in M.5 (`bin/migrate-data.ts`, `migrate:data`, `mysql2`); MySQL is retired on the host and nothing else used them. |
+| Q-2 | Prune the retained PHP/MySQL recovery material? | Keep as recovery evidence. Older release directories are expired by the host's `server-disk-cleanup` (it keeps five); they are not a way back. |
 
 ## Steps
 
@@ -124,21 +124,34 @@ Use the default until the owner decides otherwise.
     The schema step and completion time were read from the checkpoint's new
     files and the candidate counts from `.candidate-rehearsal.log`.
 
+- [ ] **M.5 · Align with the host web-platform contract.** Owner request,
+  2026-11-21; the contract is
+  `/home/sawyer/github/ubuntu-vm-backup/docs/web-platform.md`. Tooling only: no
+  page, copy, route, schema or stylesheet change.
+  - Done when: `bin/web-conformance` passes; pnpm 12.18.0 with a committed
+    `pnpm-lock.yaml` (from `pnpm import`), no npm anywhere; Node 26.13.1 in
+    `.node-version`, `engines`, CI and the unit; `pg` and `@types/pg` 8.23.1,
+    `@types/node` 26.6.6; `mysql2`, `bin/migrate-data.ts` and `migrate:data`
+    gone; rollback gone (script, checkpoints, pointer, docs) and replaced by
+    `deploy/build.sh` and `deploy/deploy.sh`; `/healthz` reports the release's
+    `REVISION` and a real database check; the gates pass on Node 26; the first
+    deploy with the new flow serves the commit from `/opt/node-26`.
+  - Remaining: the release (and its record below).
+
 ### Release record contents
 
 Every release record lists, each on its own evidence: source commit and both
-remote tips; `deploy/prepare.sh` candidate results; pre-release `bin/backup`,
-`restore check` and `restore postgres-verify`; cutover time and checkpoint;
-schema step output; privilege report; public and candidate HTTP checks;
-independent checks (`current`, unit state, user, loopback listeners, failed
-units, public HTTPS, CSP, no `<script>`, www redirect, sibling sites 200);
-`rollback.sh CHECKPOINT --check`; post-release backup and
-`applications-verify`.
+remote tips; `deploy/build.sh` results (gates and `rehearsal.log` counts);
+pre-release backup (D-9) where taken; the deploy's time, pre-migration dump,
+schema step, journal count and privilege report; candidate port, `/healthz`
+and HTTP checks; production `/healthz`, HTTP checks and the `web-live` line;
+independent checks (unit state, user, Node binary, loopback listeners, failed
+units, clean unit journal, public HTTPS, CSP, no `<script>`, www redirect,
+sibling sites 200); post-release backup and `applications-verify` where run.
 
-From M.4 on, the candidate keeps `.candidate-rehearsal.log` and the checkpoint
-keeps `schema-step.log`, `privilege-report.log`, `candidate-http.log`,
-`production-http.log` and `completed-at`. Backup, restore and rollback-check
-output is not saved by any script: copy it into the record as you run it.
+From M.5 on the build keeps `rehearsal.log` in its work directory and the
+deploy prints everything else (and logs `web-deploy` to the journal). Nothing
+else is saved: copy the output into the record as you run it.
 
 ## Phase overview
 
@@ -154,18 +167,18 @@ output is not saved by any script: copy it into the record as you run it.
 ## Gates
 
 ```sh
-npm ci
-npm run check
-npm run db:check
-npm test
-APP_ENV=production npm run build
+pnpm install --frozen-lockfile
+pnpm run check
+pnpm run db:check
+pnpm run test
+APP_ENV=production pnpm run build
 bash deploy/rehearse.sh
 for f in deploy/*.sh; do bash -n "$f"; done
 shellcheck -x deploy/*.sh
 git diff --check
 ```
 
-`make verify` runs all of them after `npm ci`. On macOS set `PGBIN` to the installed PostgreSQL bin directory and `LC_ALL` to
+`make verify` runs all of them after `pnpm install --frozen-lockfile` (on the VM, run each through `node-26`). On macOS set `PGBIN` to the installed PostgreSQL bin directory and `LC_ALL` to
 a valid locale (for example `en_US.UTF-8`) for the rehearsal. Unit tests cover
 escaping, Unicode, dates, credentials and RSS. The PostgreSQL suite covers
 schema reapplication and adoption, real role restrictions, SQL binding,
@@ -175,7 +188,7 @@ project counts, landmarks, metadata, methods, HEAD, private paths, pagination,
 RSS limits, and outage and recovery against the compiled server. Browser review
 covers 320, 375, 768 and 1440 px in light and dark. The HTTP checks also pin
 the security headers and cache policy of every response class. CI runs the
-same gates plus `npm audit --audit-level=moderate`.
+same gates plus `pnpm audit --audit-level=moderate`.
 
 Local checks never prove a deployment. Production evidence goes in a dated
 release record below.
@@ -184,6 +197,29 @@ release record below.
 
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
+
+**2026-11-21 · M.5 built.** Owner asked to align the site with the host
+web-platform contract. pnpm 12.18.0 (`pnpm import`, then a clean
+`pnpm-lock.yaml`: the import had carried a `mysql2` peer resolution of
+drizzle-orm, removed), `pnpm-workspace.yaml` (`saveExact`, `engineStrict`,
+`allowBuilds: esbuild`, the `@esbuild-kit` override moved from `overrides` in
+`package.json`); Node 26.13.1 in `.node-version`, `engines`, CI, the unit and
+the publishing wrapper; `pg`/`@types/pg` 8.23.1 and `@types/node` 26.6.6 (the
+baseline); `mysql2` and the MySQL import tool removed (Q-1 decided), the
+adoption test now seeds its legacy rows with SQL. Rollback removed:
+`rollback.sh`, `cutover.sh`, `prepare.sh` and their docs, replaced by
+`deploy/build.sh` (sawyer, outside the lock) and `deploy/deploy.sh` (root,
+one lock: stage, dump, migrate as the service account, candidate, switch,
+verify, Caddy if changed, record). `/healthz` now runs a real query and
+reports `REVISION`, so it answers 503 during a database outage (previously
+always 200). The HTTP smoke check is compiled into the release
+(`dist/cli/tests/http.js`); the rehearsal's default web port moved from 4322
+(Field Cadence's) to 54311. Checks run on the VM with `node-26`: check (0
+errors, 0 warnings), db:check, 10 unit tests, build, rehearsal (database
+suite; 197 populated / 194 outage / 197 recovered HTTP checks), `bash -n`,
+shellcheck, `git diff --check`, `web-conformance` (conforms). tsx 4.20.6
+prints a Node 26 `module.register()` deprecation warning in dev and test runs
+only. Next action: release M.5.
 
 **2026-11-20 · M.1 recorded, M.3 built, M.4 released: `eeeb06d` → `be15ef5`.** Asked to continue BUILD.md
 and improve the project. M.1: a read-only host inspection found two

@@ -15,6 +15,8 @@ for(const path of ['/missing','/.env','/.git/config','/database/schema.sql','/da
  const res=await fetch(base+path);const html=await res.text();check(res.status===404,path+' private/invalid 404');check(!html.includes('rel="canonical"'),path+' error canonical');check(res.headers.get('x-robots-tag')==='noindex',path+' noindex');
 }
 for(const path of ['/blog','/feed.xml','/blog/synthetic-public-0']) {const res=await fetch(base+path);check(res.status===(outage?503: path==='/blog/synthetic-public-0'&&!populated?404:200),path+' database behavior');if(outage) check(res.headers.get('retry-after')==='60',path+' retry');}
+// Readiness: a real database query; the deploy passes TEST_REVISION to pin the release being checked.
+{const res=await fetch(base+'/healthz');const health=await res.json() as {status?: string; revision?: string; database?: string};check(res.status===(outage?503:200),'/healthz status');check(health.status===(outage?'unavailable':'ok')&&health.database===(outage?'unavailable':'ok'),'/healthz database');if(process.env.TEST_REVISION) check(health.revision===process.env.TEST_REVISION,'/healthz revision');}
 const home=await (await fetch(base+'/')).text();if(outage) check(home.includes('Build logs and server notes.')&&!home.includes('No posts yet.'),'honest home outage');
 for(const [path,type] of [['/healthz','application/json'],['/feed.xml','application/xml'],['/robots.txt','text/plain'],['/manifest.webmanifest','application/manifest+json'],['/css/site.css','text/css'],['/icon.svg','image/svg+xml']]) {
  const res=await fetch(base+path);if(path==='/feed.xml'&&outage)continue;check(res.headers.get('content-type')?.includes(type!),path+' content type');

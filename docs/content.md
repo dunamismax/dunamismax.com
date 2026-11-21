@@ -36,15 +36,14 @@ The root-owned wrapper takes a shared deployment lock for the command, loads
 only `/etc/web-apps/dunamismax/publishing.env`, then drops to the independent
 `sawyer` operator identity (separate from the website user). Deployment’s exclusive lock excludes
 concurrent publishing. It never passes migration credentials or a database URL
-to the web process. Direct local development uses `npm run posts -- ...` with
+to the web process. Direct local development uses `pnpm run posts ...` with
 `POSTS_CONFIG` pointing to an absolute 0600 file owned by the invoking user
 outside the checkout; that file is the sole configuration source. No inherited
 website/admin credential fallback is allowed. Help needs no database/config.
 
-The old PHP command is removed from this checkout. At first cutover its
-configuration is frozen root-owned mode 0000; a protected rollback copy retains
-the original ownership/mode. Do not restore it while PostgreSQL writers are
-active. The guarded rollback refuses a MySQL switch when content has diverged.
+The old PHP command is removed from this checkout, and its configuration was
+frozen root-owned mode 0000 at the first cutover. MySQL is retired; PostgreSQL
+is the only database, and releases only move forward.
 
 ## Drizzle implementation
 

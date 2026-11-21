@@ -7,10 +7,9 @@
     "#lib/*": "./src/lib/*"
   },
   "engines": {
-    "node": "24.22.3",
-    "npm": "11.19.1"
+    "node": "26.13.1"
   },
-  "packageManager": "npm@11.19.1",
+  "packageManager": "pnpm@12.18.0",
   "scripts": {
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --fail-on-warnings && tsc --noEmit",
     "db:check": "drizzle-kit check && drizzle-kit generate --name=unreviewed 2>&1 | grep 'No schema changes'",
@@ -22,32 +21,25 @@
     "test:http": "tsx tests/http.ts",
     "test:database": "tsx tests/database.ts",
     "posts": "tsx bin/posts.ts",
-    "schema": "tsx bin/schema.ts",
-    "migrate:data": "tsx bin/migrate-data.ts"
+    "schema": "tsx bin/schema.ts"
   },
   "dependencies": {
     "drizzle-orm": "0.45.4",
-    "pg": "8.16.3"
+    "pg": "8.23.1"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "6.0.5",
     "@sveltejs/kit": "3.4.0",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@tailwindcss/vite": "4.3.5",
-    "@types/node": "24.19.2",
-    "@types/pg": "8.15.5",
+    "@types/node": "26.6.6",
+    "@types/pg": "8.23.1",
     "drizzle-kit": "0.31.11",
-    "mysql2": "3.24.6",
     "svelte": "5.58.1",
     "svelte-check": "4.7.8",
     "tailwindcss": "4.3.5",
     "tsx": "4.20.6",
     "typescript": "6.0.3",
     "vite": "8.3.8"
-  },
-  "overrides": {
-    "@esbuild-kit/core-utils": {
-      "esbuild": "0.25.12"
-    }
   }
 }

@@ -8,7 +8,7 @@ import { changePost } from '../src/lib/publisher.js';
 import type { Fields } from '../src/lib/publisher.js';
 import { validateSlug, timestamp, BODY_BYTES } from '../src/lib/validation.js';
 const HELP = `dunamismax.com publishing (plain text; no HTML or Markdown interpretation)
-Usage: npm run posts -- COMMAND [SLUG] [options]
+Usage: pnpm run posts COMMAND [SLUG] [options]
   create SLUG --title TEXT --body-file FILE [--excerpt TEXT]
   edit SLUG [--title TEXT] [--body-file FILE] [--excerpt TEXT]
   validate SLUG [edit options]        Validate without writes

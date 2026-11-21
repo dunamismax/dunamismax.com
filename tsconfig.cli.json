@@ -3,7 +3,8 @@
   "include": [
     "bin/**/*.ts",
     "src/lib/**/*.ts",
-    "src/db/**/*.ts"
+    "src/db/**/*.ts",
+    "tests/http.ts"
   ],
   "compilerOptions": {
     "noEmit": false,

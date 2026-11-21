@@ -1,116 +1,118 @@
 # Production
 
-The runbook below describes the SvelteKit/PostgreSQL/Drizzle workflow
-(SvelteKit 3, adapter-node, Tailwind CSS 4, PostgreSQL 18, Caddy). The first
-SvelteKit releases (`62dbde1`, then `064bca5`) went live on November 20, 2026;
-evidence is in BUILD Phase 1. Historical acceptance is in docs/migration.md,
-not a fresh host inspection. The deployment model is
-unchanged by the framework change: the same unit, user, listener, credentials,
-lock, candidate/release layout and `dist/cli/bin/*.js` entry points. Host names
-such as `dunamismax`, `/etc/web-apps`, `/run/web-deploy/lock` and
-`node-runtime` are shared-host contract names and are retained as-is.
+The SvelteKit/PostgreSQL/Drizzle site (SvelteKit 3, adapter-node, Tailwind CSS
+4, PostgreSQL 18, Caddy) runs as a systemd unit on Node 26.13.1. The first
+SvelteKit releases went live on November 20, 2026 (BUILD Phase 1); the move to
+pnpm, Node 26 and the fix-forward deploy is BUILD M.5.
 
-Follow the shared contract at
-`/home/sawyer/github/ubuntu-vm-backup/docs/web-platform.md`. Root access is
-required for deployment. Pushing does not deploy. Never modify other sites.
+The shared host contract,
+`/home/sawyer/github/ubuntu-vm-backup/docs/web-platform.md`, is authoritative;
+this page applies it to this site. Root access is required for deployment.
+Pushing does not deploy. Never modify other sites.
 
 Authorized root access is `ssh root@ubuntu-vm`; sawyer's `sudo -n` may require
-interactive authentication even though root SSH is available. Run privileged
-commands in that root session, or use sudo from an authenticated operator shell.
-Deployed shell helpers are mode 0644; invoke them with `bash`.
+interactive authentication even though root SSH is available.
 
 | Item | Setting |
 | --- | --- |
 | Checkout | `/home/sawyer/github/dunamismax.com` |
-| Isolated candidates | `/home/sawyer/web-candidates/dunamismax/<commit>` |
-| Immutable releases | `/srv/www/dunamismax.com/releases/<commit>` |
+| Build work | `/home/sawyer/web-work/dunamismax.com-<commit>/` (`src/`, `release/`, `rehearsal.log`) |
+| Immutable releases | `/srv/www/dunamismax.com/releases/<commit>` (`REVISION`, `.node-version`, `package.json`, `dist/`, production `node_modules/`, `deploy/`, `drizzle/`, `database/`) |
 | Active link | `/srv/www/dunamismax.com/current` |
 | Node unit/user | `dunamismax.service` / `dunamismax-web` |
-| Listener | `127.0.0.1:4311` (temporary candidate 4323) |
-| Runtime | `/opt/node-runtime/bin/node` 24.22.3 |
+| Listener | `127.0.0.1:4311`; the candidate takes the first free port in 4400–4499 |
+| Runtime | `/opt/node-26/bin/node` (26.13.1); builds use `node-26 pnpm ...` |
 | Website credentials | `/etc/web-apps/dunamismax/web.env` (root-only; systemd loads) |
 | Writer credentials | `/etc/web-apps/dunamismax/publishing.env` (root-only wrapper) |
-| Migration credentials | `/etc/web-apps/dunamismax/migration.env` (operator only) |
+| Migration credentials | `/etc/web-apps/dunamismax/migration.env` (the deploy's migration step only) |
+| Pre-migration dumps | `/var/backups/dunamismax.com/pre-migrate-<commit>.dump` (root, 0600) |
 | PostgreSQL | `dunamismax`, owner `dunamismax_owner`, schema `app` |
-| Caddy fragment | `/etc/caddy/sites/dunamismax.com.caddy` |
-| Rollback pointer | `/srv/www/dunamismax.com/last-web-rollback` |
+| Caddy fragment | `/etc/caddy/sites/dunamismax.com.caddy` (changed only through `caddy-apply`) |
 
 ## Release
 
-On the VM, from a clean committed checkout, with the supported runtime:
+Fix forward only. On the VM, after the commit is on `origin/main`:
 
 ```sh
-git pull --ff-only origin main
-bash deploy/prepare.sh
-# Before privileged cutover: fresh host backup; helper takes its own lock.
-sudo /home/sawyer/github/ubuntu-vm-backup/bin/backup
-sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore check
-sudo /home/sawyer/github/ubuntu-vm-backup/bin/restore postgres-verify
-# Use the concrete candidate path printed by prepare; do not nest the lock.
-sudo with-deploy-lock bash /absolute/candidate/deploy/cutover.sh /absolute/candidate /expected/current/release
+# 1. Build and check, outside the lock, as sawyer:
+cd /home/sawyer/github/dunamismax.com && git pull --ff-only origin main
+bash deploy/build.sh                 # default: origin/main
+# Owner's D-9: a fresh verified host backup before the deploy, when authorized.
+# 2-8. As root, in ONE lock process (never hold the lock from another session):
+with-deploy-lock bash /home/sawyer/web-work/dunamismax.com-COMMIT/src/deploy/deploy.sh COMMIT
 ```
 
-Prepare archives only committed source into an isolated directory, installs with
-npm ci, checks types/tests/build, exercises disposable PostgreSQL 18 fixtures
-and HTTP populated/outage/recovery, then hashes the candidate. Production
-builds do not receive any database credentials or post exports.
+`deploy/build.sh` refuses anything but `origin/main`, extracts it with
+`git archive`, installs with `pnpm install --frozen-lockfile`, runs check,
+db:check, the unit tests, the production build, the disposable PostgreSQL 18
+rehearsal (kept as `rehearsal.log`) and the shell checks, then prunes to
+production dependencies, writes `REVISION` and assembles `release/`. Builds
+never receive database credentials or post exports.
 
-Evidence for the release record is kept as it is produced. Prepare saves the
-rehearsal output in the candidate as `.candidate-rehearsal.log` (synthetic
-data only). Cutover saves `schema-step.log`, `privilege-report.log`,
-`candidate-http.log`, `production-http.log` and `completed-at` in the
-root-only checkpoint directory. Read them from there when writing the record
-in BUILD.md; none contains credentials or post text.
+`deploy/deploy.sh COMMIT`, as root under the lock:
 
-PostgreSQL is authoritative. Ordinary deployment supports Node release to Node
-release changes only (Astro and SvelteKit releases share `dist/cli/bin/server.js`); it does not read/import MySQL. The original migration evidence is
-in docs/migration.md and protected host archives. Obtain a fresh verified host
-backup before a release. Cutover runs `dist/cli/bin/schema.js` (Drizzle
-migrations as dunamismax_owner); migrations stay additive and rollback-compatible,
-and a code rollback never replaces live PostgreSQL data.
+1. **Stage**: copies the build to `releases/<commit>.staging`, root-owned and
+   read-only to the service account, then renames it into place. An existing
+   release directory must be identical to the build or the deploy stops.
+2. **Migrate**: dumps the database to `/var/backups/dunamismax.com/`, runs
+   `dist/cli/bin/schema.js` as `dunamismax-web` with only `migration.env`
+   (`systemd-run`), checks that `drizzle.__drizzle_migrations` has as many rows
+   as the release's journal has entries, and runs the privilege report
+   (`verify-database.js`).
+3. **Candidate**: starts the new release from its final directory as a
+   transient copy of the *new* unit file on a free port in 4400–4499, waits for
+   `/healthz` to answer `{"status":"ok","revision":"<commit>","database":"ok"}`,
+   runs the HTTP smoke check (`dist/cli/tests/http.js`, the same script that
+   checks production) as sawyer, and always stops and removes the candidate.
+4. **Switch**: installs the unit (and the publishing wrapper) if changed,
+   verifies it, switches `current` atomically and restarts `dunamismax`.
+5. **Verify**: `/healthz` on 4311 reports the commit, the smoke check passes,
+   and `bin/web-live dunamismax.service` reports the release directory, the
+   revision, `/opt/node-v26.13.1-linux-x64/bin/node` and state `current`.
+6. **Caddy**: only if `deploy/Caddyfile` differs from the installed fragment,
+   `caddy-apply dunamismax.com <release>/deploy/Caddyfile`.
+7. **Record**: `logger -t web-deploy`, then the smoke check against
+   https://dunamismax.com and the www redirect check.
 
-Cutover checks the expected active release under the mandatory shared lock,
-saves root-only rollback files, installs owning identities and immutable release,
-tests a separate hardened candidate service with read-only credentials, validates
-the full Caddy config/unit, switches current atomically, starts only the new Node
-unit, reloads Caddy and checks public HTTPS behavior/redirects. An error restores
-the old release/fragment/unit/wrapper and publishing configuration within the
-same lock. Candidate services stop before activation and on failure.
+**When a step fails** the script stops and names the step. Before the switch
+the previous release is still serving and nothing needs undoing beyond the
+candidate unit, which the script removes. After the switch the new release is
+live: read `journalctl -u dunamismax`, fix it in a new commit and deploy that.
+Never point `current` at an older release, restore a unit or fragment, or keep
+copies to go back. A pre-migration dump is restored over live data only by the
+owner's decision, never as a deploy step.
 
-## Verification and rollback
+## Verification
 
 ```sh
 systemctl is-active dunamismax caddy postgresql@18-main
-curl -fsS https://dunamismax.com/healthz
+curl -fsS https://dunamismax.com/healthz     # revision is the live commit
+sudo bash /home/sawyer/github/ubuntu-vm-backup/bin/web-live dunamismax.service
 curl -fsSI https://dunamismax.com/about
 curl -fsS https://dunamismax.com/feed.xml
-sudo with-deploy-lock bash /srv/www/dunamismax.com/current/deploy/rollback.sh /root/CHECKPOINT --check
-# If rollback is necessary, same command without --check.
+journalctl -u dunamismax --since today
 ```
 
-Rollback checkpoints hold the previous current link, Caddy fragment, Node
-unit/state and independent publishing wrapper. Rollback refuses a stale current
-link or a previous release without the Node server (`dist/cli/bin/server.js`,
-present in both Astro and SvelteKit releases). Historical PHP checkpoints
-are for isolated legacy recovery after the server-wide retirement.
+What is live is read from the running process (`web-live`) or `/healthz`,
+never from the checkout.
 
-PHP/MySQL packages and active pools/settings are retired by final host integration.
-Original MySQL files, old releases and protected encrypted archives are retained.
 The daily dunamismax-backup timer uses the host's shared PostgreSQL site-backup
-helper with isolated restore verification. The host backup captures all databases,
-roles, credentials and exact emitted application releases; run encrypted
-`restore check`, `postgres-verify` and `applications-verify` after changes.
+helper with isolated restore verification. The host backup captures all
+databases, roles, credentials and the active application release; run
+encrypted `restore check`, `postgres-verify` and `applications-verify` after
+changes.
 
 The root-owned `dunamismax-posts` wrapper uses `/usr/sbin/runuser` explicitly
-before dropping privileges. Its restricted PATH deliberately omits sbin. Verify
-`dunamismax-posts list` with the normal operator workflow after installation;
-never place credentials on command arguments or give them to the website.
+before dropping privileges and runs `/opt/node-26/bin/node`. Its restricted PATH
+deliberately omits sbin. Verify `dunamismax-posts list` with the normal
+operator workflow after installation; never place credentials on command
+arguments or give them to the website.
 
 ## Drizzle schema migrations
 
-`deploy/cutover.sh` already runs `dist/cli/bin/schema.js` from the candidate,
-under the exclusive deployment lock (publishing excluded), before the candidate
-service starts. On the first Drizzle release it adopts the existing database:
+`deploy/deploy.sh` runs `dist/cli/bin/schema.js` from the staged release as
+the service account with `migration.env`, under the exclusive deployment lock
+(publishing excluded), before the candidate service starts. On the first Drizzle release it adopts the existing database:
 it creates the owner-only `drizzle` journal schema, requires app's catalog to
 equal `database/baseline-catalog.json`, records the baseline without executing
 it, and proves posts/IDs/sequence/full-content SHA256 unchanged. It refuses and
@@ -118,10 +120,10 @@ records nothing if the catalog differs; stop and reconcile rather than editing
 the baseline file. Later releases apply only new reviewed migrations. Output is
 one JSON line with counts and the content digest, never post text.
 
-The previous Astro release remains compatible: it ignores the journal schema,
-and the SvelteKit migration changes no schema, so either release can serve the
-same database and a code rollback to Astro stays valid.
-Keep later migrations additive so code rollback stays valid. Never run
+Migrations run before the candidate while the previous release is still
+serving, and releases only move forward, so every migration must leave the
+running release working: add tables, nullable or defaulted columns and indexes;
+remove or rename only in a later release. Never run
 drizzle-kit push/pull/migrate against production. `verify-database.js` also
 checks that web and publishing cannot read or modify the journal.
 
@@ -137,7 +139,7 @@ is no Cloudflare DNS challenge, plugin or token. Shared-host changes must be
 coordinated in that workflow rather than replacing shared Caddy here. Keep current www/apex
 routing and validate complete config before a permitted reload.
 
-Containers remain an optional future packaging choice. They must not require
-a second proxy or public PostgreSQL; native host-loopback connectivity needs an
-explicit tested network design. Python/Swift tooling is not part of deployment
+Production runs as the systemd unit, never in a container (host contract,
+owner decision of 2026-11-21); containers are fine for local development and
+tests only. Python/Swift tooling is not part of deployment
 unless an actual project requirement or explicit request adds it.

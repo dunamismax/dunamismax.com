@@ -1,34 +1,34 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Names and helpers shared by deploy/build.sh and deploy/deploy.sh. The flow is the
+# host contract's (ubuntu-vm-backup/docs/web-platform.md, section 8): fix forward,
+# and every release is checked as a candidate before it takes traffic.
+set -Eeuo pipefail
+# shellcheck disable=SC2034  # used by the scripts that source this file
+{
+    site=dunamismax.com
+    unit=dunamismax
+    service_user=dunamismax-web
+    database=dunamismax
+    port=4311
+    fragment=dunamismax.com
+    base=/srv/www/$site
+    node=/opt/node-26/bin/node
+    node_dir=/opt/node-v26.13.1-linux-x64
+    work_root=/home/sawyer/web-work
+    dumps=/var/backups/$site
+}
+die() { printf '%s: %s\n' "${0##*/}" "$*" >&2; exit 1; }
 require_lock() {
-    [[ $EUID == 0 ]] || { echo 'Root required.' >&2; exit 1; }
-    [[ -e /proc/$$/fd/9 && $(readlink /proc/$$/fd/9) == /run/web-deploy/lock ]] || { echo 'Use with-deploy-lock around this entire transaction.' >&2; exit 1; }
+    [[ $EUID == 0 ]] || die 'root required'
+    [[ -e /proc/$$/fd/9 && $(readlink /proc/$$/fd/9) == /run/web-deploy/lock ]] || die 'run the whole deploy inside one with-deploy-lock process'
     flock -n 9 || exit 75
 }
-export node=/opt/node-runtime/bin/node
-base=/srv/www/dunamismax.com
-fragment=/etc/caddy/sites/dunamismax.com.caddy
-unit=/etc/systemd/system/dunamismax.service
-caddy=/usr/local/lib/caddy/caddy
-validate_caddy() {
-    runuser -u caddy -g caddy -- env HOME=/var/lib/caddy "$caddy" validate --config /etc/caddy/Caddyfile
-}
-switch_release() { ln -s "$1" "$base/current.next"; mv -Tf "$base/current.next" "$base/current"; }
+# wait_health URL COMMIT: /healthz must report this release with a working database.
 wait_health() {
-    local address=$1
-    for _ in {1..60}; do if curl -fsS "$address/healthz" | /usr/bin/grep -q '"status":"ok"'; then return 0; fi; sleep 0.25; done
+    local expected="{\"status\":\"ok\",\"revision\":\"$2\",\"database\":\"ok\"}"
+    for _ in {1..120}; do
+        [[ $(curl -fsS --max-time 3 "$1/healthz" 2>/dev/null) == "$expected" ]] && return 0
+        sleep 0.25
+    done
     return 1
-}
-restore_release() {
-    local saved=$1
-    systemctl stop dunamismax-candidate.service 2>/dev/null || true
-    cp -a "$saved/site.caddy" "$fragment"
-    validate_caddy
-    switch_release "$(cat "$saved/previous-release")"
-    if [[ -f $saved/previous.service ]]; then cp -a "$saved/previous.service" "$unit"; else rm -f "$unit"; fi
-    systemctl daemon-reload
-    if [[ $(cat "$saved/previous-active") == active ]]; then systemctl restart dunamismax.service; else systemctl disable --now dunamismax.service || true; fi
-    if [[ -f $saved/previous-wrapper ]]; then cp -a "$saved/previous-wrapper" /usr/local/sbin/dunamismax-posts; else rm -f /usr/local/sbin/dunamismax-posts; fi
-    systemctl reload caddy
-    curl -fsS https://dunamismax.com/healthz
 }

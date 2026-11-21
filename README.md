@@ -37,7 +37,7 @@ Drizzle ORM · Node (adapter-node) · Caddy**
 | Data | PostgreSQL 18 through Drizzle ORM 0.45.4 (node-postgres); reviewed SQL migrations in `drizzle/` |
 | Server | `@sveltejs/adapter-node` 6.0.5 behind `bin/server.ts`, which enforces methods, headers and the public path list |
 | Hosting | systemd on the owner's Ubuntu server, loopback port 4311, behind Caddy with automatic HTTPS |
-| Toolchain | Node 24.22.3 and npm 11.19.1, exact pins and a committed lockfile |
+| Toolchain | Node 26.13.1 and pnpm 12.18.0, exact pins at the host baseline and a committed `pnpm-lock.yaml` |
 
 ## Routes
 
@@ -49,7 +49,7 @@ Drizzle ORM · Node (adapter-node) · Caddy**
 | `/blog/{slug}` | One published post, escaped into paragraphs |
 | `/feed.xml` | The latest twenty published posts, RSS 2.0, `application/xml` |
 | `/robots.txt`, `/manifest.webmanifest` | Crawler rules and web manifest, cacheable for five minutes |
-| `/healthz` | `{"status":"ok"}`, independent of PostgreSQL |
+| `/healthz` | `{"status":"ok","revision":"<commit>","database":"ok"}` after a real database query; 503 when PostgreSQL cannot answer |
 | `/css/site.css`, `/icon.svg` | The compiled stylesheet (five minutes) and the icon (one day) |
 
 Only GET and HEAD are allowed (other methods get 405). Unknown and private
@@ -60,11 +60,13 @@ blog, posts and feed return 503 with `Retry-After: 60` and no-store.
 
 ## Development
 
-Use the pinned Node and npm (`.node-version`; `.npmrc` enforces engines).
+Use the pinned Node and pnpm (`.node-version`, `packageManager`;
+`pnpm-workspace.yaml` sets `engineStrict` and `saveExact`). On the VM, prefix
+every command with `node-26`.
 
 ```sh
-npm ci
-APP_ENV=local npm run dev      # http://127.0.0.1:8000
+pnpm install --frozen-lockfile
+APP_ENV=local pnpm run dev     # http://127.0.0.1:8000
 ```
 
 With `APP_ENV=local` and no `PGDATABASE`, the blog previews empty. To read a
@@ -77,11 +79,11 @@ secrets.
 The checks, the same ones CI runs:
 
 ```sh
-npm run check                     # svelte-check and TypeScript
-npm run db:check                  # Drizzle schema has no unreviewed changes
-npm test                          # unit tests
-APP_ENV=production npm run build  # web build and CLI
-APP_ENV=local PORT=8000 npm start # run the built server
+pnpm run check                     # svelte-check and TypeScript
+pnpm run db:check                  # Drizzle schema has no unreviewed changes
+pnpm run test                      # unit tests
+APP_ENV=production pnpm run build  # web build, CLI and the HTTP smoke check
+APP_ENV=local PORT=8000 pnpm start # run the built server
 ```
 
 The rehearsal starts a disposable PostgreSQL cluster (not your normal
@@ -93,15 +95,15 @@ LC_ALL=en_US.UTF-8 PGBIN=/opt/homebrew/opt/postgresql@18/bin bash deploy/rehears
 ```
 
 On Ubuntu `PGBIN` defaults to `/usr/lib/postgresql/18/bin`. Set `TEST_PGPORT`
-if port 55431 is taken, or `TEST_WEB_PORT` if 4322 is. `make verify` runs
+if port 55431 is taken, or `TEST_WEB_PORT` if 54311 is. `make verify` runs
 every check above, the rehearsal, the shell checks and `git diff --check` in
 order, and finds Homebrew's PostgreSQL 18 on macOS by itself.
 
 ### Changing the schema
 
-Edit `src/db/schema.ts`, run `npx drizzle-kit generate --name=NAME`, review the
+Edit `src/db/schema.ts`, run `pnpm exec drizzle-kit generate --name=NAME`, review the
 SQL in `drizzle/` (add grants or PostgreSQL statements Drizzle cannot express),
-then `npm run db:check` and the rehearsal. `bin/schema.ts` (`npm run schema`
+then `pnpm run db:check` and the rehearsal. `bin/schema.ts` (`pnpm run schema`
 with `MIGRATION_CONFIG`) is the only thing that applies migrations; never run
 `drizzle-kit push`, `pull` or `migrate` against a real database.
 
@@ -137,22 +139,22 @@ credentials or post data. See [docs/content.md](docs/content.md),
 | `src/db/` | Drizzle schema, website and operator connections, catalog and content digests |
 | `drizzle/` | Reviewed SQL migrations, journal and snapshots |
 | `database/baseline-catalog.json` | Production's pre-Drizzle catalog, required for adoption |
-| `bin/` | HTTP server, publishing CLI, schema applier, database verification, historical MySQL import |
+| `bin/` | HTTP server, publishing CLI, schema applier, database verification |
 | `tests/` | Unit, HTTP and isolated database tests |
 | `static/` | The icon |
-| `deploy/` | systemd unit, Caddy template, candidate, locked cutover, rehearsal and rollback |
+| `deploy/` | systemd unit, Caddy template, build (`build.sh`), locked fix-forward deploy with a candidate check (`deploy.sh`), rehearsal, publishing wrapper |
 | `docs/` | Architecture, content, production runbook, portfolio evidence, migration history |
 
 ## Continuous integration
 
 GitHub Actions ([verify.yml](.github/workflows/verify.yml)) runs on every push
-to `main`, weekly and on demand. It checks the pinned Node and npm, installs
-with `npm ci`, runs `npm run check`, `npm run db:check`, `npm test` and the
+to `main`, weekly and on demand. It checks the pinned Node and pnpm, installs
+with `pnpm install --frozen-lockfile`, runs `pnpm run check`, `pnpm run db:check`, `pnpm run test` and the
 production build, checks the deploy scripts with `bash -n` and ShellCheck,
 runs the rehearsal against a disposable PostgreSQL 18 cluster with synthetic
-data, and fails on any `npm audit` finding of moderate severity or above. CI gets no production credentials and never deploys. Dependency
+data, and fails on any `pnpm audit` finding of moderate severity or above. CI gets no production credentials and never deploys. Dependency
 updates are reviewed and committed by hand on `main`; there is no Dependabot.
-An npm override pins drizzle-kit's legacy `@esbuild-kit` loader to the tree's
+A pnpm override (`pnpm-workspace.yaml`) pins drizzle-kit's legacy `@esbuild-kit` loader to the tree's
 patched esbuild until drizzle-kit drops it.
 
 ## Documentation
