@@ -23,7 +23,8 @@ failed() { local code=$?; trap - ERR; echo "Cutover failed; restoring $saved" >&
 trap failed ERR
 [[ -s $expected/dist/cli/bin/server.js ]] || { echo 'Only Node-release to Node-release (SvelteKit) deployment is supported; use isolated legacy recovery.' >&2; exit 1; }
 cd "$candidate"
-"$node" dist/cli/bin/schema.js
+# One JSON line of counts and a content digest, never post text; kept for the release record.
+"$node" dist/cli/bin/schema.js | tee "$saved/schema-step.log"
 "$node" dist/cli/bin/verify-database.js | tee "$saved/privilege-report.log"
 # Keep privileges and data isolated from other projects.
 id dunamismax-web >/dev/null 2>&1 || useradd --system --no-create-home --home-dir /nonexistent --shell /usr/sbin/nologin dunamismax-web
@@ -53,5 +54,6 @@ systemctl reload caddy
 TEST_BASE_URL=https://dunamismax.com "$node" --import tsx tests/http.ts | tee "$saved/production-http.log"
 [[ $(curl -sSI https://www.dunamismax.com/path?query=1 | tr -d '\r' | awk 'tolower($1)=="location:"{print $2}') == 'https://dunamismax.com/path?query=1' ]]
 printf '%s\n' "$saved" > "$base/last-web-rollback"
+date -u +%Y-%m-%dT%H:%M:%SZ > "$saved/completed-at"
 trap - ERR
 printf 'Deployed %s. Rollback checkpoint: %s\n' "$commit" "$saved"

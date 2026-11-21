@@ -1,6 +1,8 @@
 export const BODY_BYTES = 16777215;
 export interface EditablePost { slug: string; title: string; excerpt: string; body: string; status: string; published_at: Date | null }
-export function validateSlug(slug: string): void { if (slug.length > 180 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error('Slug must be 1–180 lowercase ASCII letters/digits separated by single hyphens.'); }
+// The one slug grammar: the CLI, the post route and the server's public path allowlist all use it.
+export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export function validateSlug(slug: string): void { if (slug.length > 180 || !SLUG_PATTERN.test(slug)) throw new Error('Slug must be 1–180 lowercase ASCII letters/digits separated by single hyphens.'); }
 export function timestamp(input: string): Date {
   const match = /^([1-9][0-9]{3}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(Z|[+-](?:0[0-9]|1[0-3]):[0-5][0-9]|[+-]14:00)$/.exec(input);
   if (!match || input.endsWith('-00:00')) throw new Error('Use a valid timestamp with a known explicit UTC offset up to ±14:00.');

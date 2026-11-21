@@ -13,7 +13,8 @@ node-runtime npm ci --no-audit
 node-runtime npm run check
 node-runtime npm test
 APP_ENV=production APP_URL=https://dunamismax.com node-runtime npm run build
-node-runtime bash deploy/rehearse.sh
+# Kept in the candidate (and its manifest) so a release record can cite the counts later.
+node-runtime bash deploy/rehearse.sh | tee .candidate-rehearsal.log
 for file in deploy/*.sh; do bash -n "$file"; done
 shellcheck -x deploy/*.sh
 printf '%s\n' "$commit" > .release-commit

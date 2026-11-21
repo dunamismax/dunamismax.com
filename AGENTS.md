@@ -266,6 +266,13 @@ runs, so anything that must apply to every response belongs in `bin/server.ts`.
 `/_app` and prerendered `__data.json` paths stay 404. Canonical URLs use
 `APP_URL`, never the request Host header.
 
+The security headers, allowed methods and refusal message have one definition,
+`src/lib/http.ts`, used by both `bin/server.ts` and the hook; the slug grammar
+is `SLUG_PATTERN` in `src/lib/validation.ts`. Cache policy is the
+`cachePolicy` table in `bin/server.ts`; anything not listed is no-store.
+`tests/http.ts` pins the header values and the cache policy on purpose, so a
+change to either needs the test changed with it.
+
 ### Data and publishing
 
 - `src/db/schema.ts` is the schema source; `drizzle/` holds reviewed SQL
@@ -327,9 +334,11 @@ populated, outage and recovered. On macOS:
 LC_ALL=en_US.UTF-8 PGBIN=/opt/homebrew/opt/postgresql@18/bin bash deploy/rehearse.sh
 ```
 
-Set `TEST_PGPORT` if 55431 is taken. CI (`.github/workflows/verify.yml`) runs
-the same gates plus `npm audit --audit-level=moderate` on every push to `main`
-and weekly, with no production credentials; it never deploys. Do not weaken a
+Set `TEST_PGPORT` if 55431 is taken and `TEST_WEB_PORT` if 4322 is.
+`make verify` runs every gate in the table in order (it sets `PGBIN` and
+`LC_ALL` for Homebrew's PostgreSQL 18 when they are unset). CI (`.github/workflows/verify.yml`) runs
+the same gates (including the shell checks) plus
+`npm audit --audit-level=moderate` on every push to `main` and weekly, with no production credentials; it never deploys. Do not weaken a
 check to make a change pass.
 
 ---
@@ -373,6 +382,12 @@ Release rules:
   without replacing the shared Caddy binary or restarting shared services.
 - After a release, verify the live `current` link, service, listeners, public
   HTTPS behavior and backups yourself, and record them in BUILD.md.
+- Write the release record in the same session as the cutover. The candidate
+  keeps `.candidate-rehearsal.log`; the root-only checkpoint keeps
+  `schema-step.log`, `privilege-report.log`, `candidate-http.log`,
+  `production-http.log` and `completed-at`. Backup, restore and rollback-check
+  output is not saved anywhere, so copy it into the record when you run it
+  (M.1 shows what is lost otherwise).
 
 ---
 
@@ -440,6 +455,9 @@ README in the same commit.
   `kind === 'unknown'` errors, so a 404 is not an error line.
 - adapter-node serves static and prerendered files before the hook runs; header
   and path rules live in `bin/server.ts`.
+- Headers set by a prerendered `+server.ts` endpoint (`robots.txt`, the
+  manifest, the stylesheet) are dropped: only the body is written to disk. Put
+  cache policy for such paths in `cachePolicy` in `bin/server.ts`.
 - `.astro/` stays in `.gitignore` so the VM checkout remains clean for
   `deploy/prepare.sh`.
 - On macOS the rehearsal needs `PGBIN` and a valid `LC_ALL`.

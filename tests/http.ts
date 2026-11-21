@@ -20,6 +20,12 @@ for(const [path,type] of [['/healthz','application/json'],['/feed.xml','applicat
  const res=await fetch(base+path);if(path==='/feed.xml'&&outage)continue;check(res.headers.get('content-type')?.includes(type!),path+' content type');
 }
 for(const path of ['/','/blog','/feed.xml','/healthz']) {const res=await fetch(base+path,{method:'POST'});check(res.status===405&&res.headers.get('allow')==='GET, HEAD',path+' methods');}
+// Pinned independently of src/lib/http.ts: every response class (SSR, prerendered, static, error, refused method) carries them.
+const security: Record<string,string>={'content-security-policy':"default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'",'x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin','permissions-policy':'camera=(), microphone=(), geolocation=()'};
+const brief='public, max-age=300, must-revalidate';
+const cache: Record<string,string>={'/':'no-store','/about':'no-store','/projects':'no-store','/blog':'no-store','/feed.xml':'no-store','/healthz':'no-store','/missing':'no-store','/css/site.css':brief,'/robots.txt':brief,'/manifest.webmanifest':brief,'/icon.svg':'public, max-age=86400'};
+for(const [path,policy] of Object.entries(cache)) {const res=await fetch(base+path);for(const [name,value] of Object.entries(security)) check(res.headers.get(name)===value,path+' '+name);check(res.headers.get('cache-control')===policy,path+' cache policy');}
+{const res=await fetch(base+'/',{method:'DELETE'});for(const [name,value] of Object.entries(security)) check(res.headers.get(name)===value,'refused method '+name);check(res.headers.get('cache-control')==='no-store'&&res.headers.get('x-robots-tag')==='noindex','refused method is uncached and unindexed');}
 if(populated&&!outage) {
  const page2=await (await fetch(base+'/blog?page=2')).text();check(page2.includes('Page 2 of 3')&&page2.includes('https://dunamismax.com/blog?page=2'),'pagination metadata');
  check((await fetch(base+'/blog?page=4')).status===404,'past last page');

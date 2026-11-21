@@ -55,6 +55,13 @@ npm ci, checks types/tests/build, exercises disposable PostgreSQL 18 fixtures
 and HTTP populated/outage/recovery, then hashes the candidate. Production
 builds do not receive any database credentials or post exports.
 
+Evidence for the release record is kept as it is produced. Prepare saves the
+rehearsal output in the candidate as `.candidate-rehearsal.log` (synthetic
+data only). Cutover saves `schema-step.log`, `privilege-report.log`,
+`candidate-http.log`, `production-http.log` and `completed-at` in the
+root-only checkpoint directory. Read them from there when writing the record
+in BUILD.md; none contains credentials or post text.
+
 PostgreSQL is authoritative. Ordinary deployment supports Node release to Node
 release changes only (Astro and SvelteKit releases share `dist/cli/bin/server.js`); it does not read/import MySQL. The original migration evidence is
 in docs/migration.md and protected host archives. Obtain a fresh verified host

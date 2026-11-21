@@ -8,12 +8,12 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`), the portfolio refresh (`4fbdc4f`) and the portfolio updates (M.2, live at `eeeb06d`). No feature work is planned. |
-| **Next step** | **M.1** (record the `fb9ea59` release from what evidence exists). |
-| **In progress** | Nothing claimed. |
-| **Open items** | `fb9ea59`, live before M.2, has no release record (M.1). The Day by Word card says it is not released, but daybyword.com answers 200 ([portfolio evidence](docs/portfolio.md)); whether to call it released is the owner's call. |
+| **Current work** | Maintenance. Every planned phase is complete: the SvelteKit port (Phase 1, live at `064bca5`), the portfolio refresh (`4fbdc4f`) and the portfolio updates (M.2, live at `eeeb06d`). Every cutover now has a release record (M.1). M.3 (boundary, test and release-evidence maintenance) is committed. No feature work is planned. |
+| **Next step** | **M.4** (release M.3), authorized by the owner on 2026-11-20. |
+| **In progress** | M.4 · release the M.1 and M.3 commit to production · 2026-11-20. |
+| **Open items** | M.3 is on `main` but not yet live (M.4). Two questions of public copy are the owner's call: the Day by Word card says it is not released, but daybyword.com answers 200; and Home says "eight public websites" while the host now serves more public sites than that, cfromthegroundup.com among them ([portfolio evidence](docs/portfolio.md)). |
 | **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `eeeb06d`, `dunamismax` active. Last recorded release: `fb9ea59` → `eeeb06d`, November 20, 2026 ([record](#portfolio-updates-november-20-2026)). |
-| **`main`** | `eeeb06d` plus this release record, pushed to GitHub and Codeberg. |
+| **`main`** | `791ecde` plus the M.1 and M.3 commit, pushed to GitHub and Codeberg with the owner's approval. |
 | **Last updated** | 2026-11-20 |
 
 ## How to use this file
@@ -64,18 +64,60 @@ Use the default until the owner decides otherwise.
 
 ## Steps
 
-- [ ] **M.1 · Record the `fb9ea59` release.** Production `current` points at
+- [x] **M.1 · Record the `fb9ea59` release.** Production `current` points at
   `fb9ea59` (*Use the current Ubuntu deployment paths and service names*), but
   the last release recorded here is `4fbdc4f`.
   - Done when: a dated release record below gives the evidence that exists for
     that cutover (time, checkpoint, schema step, host backups, service and
     public checks, rollback check), or says plainly which parts were not
     recorded; **Now** is updated.
+  - Evidence: [record](#refresh-record-and-deployment-names-november-20-2026),
+    written from a read-only host inspection (checkpoints, unit journal,
+    candidates, backup history) and GitHub Actions. The inspection found a
+    second unrecorded cutover, `4fbdc4f` → `aef964e`, and a host-side unit
+    rename between the two; all three are in the record, with a list of what
+    was not kept.
 - [x] **M.2 · Release the portfolio updates on `main`.** Owner gate.
   `3605c15`, plus any committed portfolio recheck.
   - Done when: a release record below meets the
     [release record contents](#release-record-contents) and **Now** names the
     new live commit.
+
+- [x] **M.3 · Boundary, test and release-evidence maintenance.** Found while
+  reviewing the repository for M.1. No page, copy, route, schema or stylesheet
+  change.
+  - One definition of the HTTP boundary: `src/lib/http.ts` (security headers,
+    methods, refusal message) and `SLUG_PATTERN`, used by `bin/server.ts`, the
+    hook, the post route and the CLI in place of repeated literals.
+  - Cache policy fix: `/robots.txt` and `/manifest.webmanifest` declared a
+    five-minute cache in their endpoints, but prerendering drops endpoint
+    headers and both were served no-store. `bin/server.ts` now sets it.
+  - Tests: `tests/http.ts` pins the four security headers and the cache
+    policy on eleven paths and a refused method (the checks each release did
+    by hand); four new unit tests cover the portfolio inventory's structure,
+    the slug grammar, the boundary constants and the date and XML helpers.
+  - Release evidence: `cutover.sh` keeps `schema-step.log` and `completed-at`
+    in the checkpoint and `prepare.sh` keeps `.candidate-rehearsal.log`, so a
+    record can be written from files (M.1 could not recover these).
+  - Tooling: `rehearse.sh` fails clearly when its web port is taken instead of
+    testing whatever answers there, and takes `TEST_WEB_PORT`; `make verify`
+    runs every gate; CI runs the shell checks it was documented to run. Home
+    reads the latest post and the count in parallel.
+  - Done when: every gate passes and the built pages are unchanged.
+  - Evidence (local, Node 24.22.3, PostgreSQL 18): baseline
+    gates green before the change (6 unit tests; 135 / 132 / 135 HTTP).
+    After it, `make verify`: svelte-check 0 errors and 0 warnings, `db:check`,
+    10 unit tests, production build, rehearsal 195 populated / 192 outage /
+    195 recovered HTTP checks, `bash -n`, shellcheck, `git diff --check`.
+    Thirteen responses from the built server compared byte for byte before
+    and after: every body identical (the empty feed differs only in its
+    build time), headers identical except the two cache headers above, no
+    `<script>`. `cutover.sh` and `prepare.sh` run only on the host and are
+    covered by syntax and shellcheck alone until M.4.
+- [ ] **M.4 · Release M.3.** Owner gate.
+  - Done when: a release record below meets the
+    [release record contents](#release-record-contents), cites the new
+    checkpoint and candidate log files, and **Now** names the new live commit.
 
 ### Release record contents
 
@@ -87,6 +129,11 @@ independent checks (`current`, unit state, user, loopback listeners, failed
 units, public HTTPS, CSP, no `<script>`, www redirect, sibling sites 200);
 `rollback.sh CHECKPOINT --check`; post-release backup and
 `applications-verify`.
+
+From M.4 on, the candidate keeps `.candidate-rehearsal.log` and the checkpoint
+keeps `schema-step.log`, `privilege-report.log`, `candidate-http.log`,
+`production-http.log` and `completed-at`. Backup, restore and rollback-check
+output is not saved by any script: copy it into the record as you run it.
 
 ## Phase overview
 
@@ -113,7 +160,7 @@ shellcheck -x deploy/*.sh
 git diff --check
 ```
 
-On macOS set `PGBIN` to the installed PostgreSQL bin directory and `LC_ALL` to
+`make verify` runs all of them after `npm ci`. On macOS set `PGBIN` to the installed PostgreSQL bin directory and `LC_ALL` to
 a valid locale (for example `en_US.UTF-8`) for the rehearsal. Unit tests cover
 escaping, Unicode, dates, credentials and RSS. The PostgreSQL suite covers
 schema reapplication and adoption, real role restrictions, SQL binding,
@@ -121,8 +168,9 @@ draft/future visibility, scheduling without builds, the transactional CLI
 lifecycle and failed input or config. HTTP checks cover page content and
 project counts, landmarks, metadata, methods, HEAD, private paths, pagination,
 RSS limits, and outage and recovery against the compiled server. Browser review
-covers 320, 375, 768 and 1440 px in light and dark. CI runs the same gates plus
-`npm audit --audit-level=moderate`.
+covers 320, 375, 768 and 1440 px in light and dark. The HTTP checks also pin
+the security headers and cache policy of every response class. CI runs the
+same gates plus `npm audit --audit-level=moderate`.
 
 Local checks never prove a deployment. Production evidence goes in a dated
 release record below.
@@ -131,6 +179,23 @@ release record below.
 
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
+
+**2026-11-20 · M.1 recorded, M.3 done locally.** Asked to continue BUILD.md
+and improve the project. M.1: a read-only host inspection found two
+unrecorded cutovers, not one (`4fbdc4f` → `aef964e` at 14:26 UTC and
+`aef964e` → `fb9ea59` at 15:45 UTC) and a host-side unit rename between
+them; the [record](#refresh-record-and-deployment-names-november-20-2026)
+gives what survives and lists what does not. M.3 (added this session): one
+definition of the HTTP boundary, the robots and manifest cache fix, pinned
+headers in the HTTP checks, four new unit tests, release evidence kept by
+`cutover.sh` and `prepare.sh`, `make verify`, shell checks in CI. Checks
+run: baseline gates, then `make verify` (10 unit tests; 195 / 192 / 195
+HTTP; shellcheck; `git diff --check`) and a byte comparison of thirteen
+built responses. Not run: a browser review (no presentation change) and the
+host-only scripts. Committed and pushed with the owner's approval; not yet
+deployed. `npm audit` is
+clean; newer versions exist for pg, svelte, tsx, typescript and the type
+packages and were left pinned. Next action: M.4, which the owner authorized.
 
 **2026-11-20 · M.2 released: `fb9ea59` → `eeeb06d`.** Owner-authorized. Ships
 the Lorehallow card (`3605c15`) and the portfolio recheck (`eeeb06d`: Azeroth
@@ -209,6 +274,73 @@ Evidence: [docs/portfolio.md](docs/portfolio.md#verified-entries).
   - Post-release: `bin/backup --push` snapshot `49de3de`, both mirrors
     verified, inventory records `current=eeeb06d`; `applications-verify`
     passed, 18 artifacts.
+
+## Refresh record and deployment names (November 20, 2026)
+
+Two cutovers between the portfolio refresh (`4fbdc4f`) and the portfolio
+updates (`eeeb06d`) were not recorded when they happened. This record (M.1)
+was written afterwards from a read-only inspection of the host at 01:35 UTC on
+November 21, 2026: the root-only cutover checkpoints, the unit journal, the
+candidate directories, the ubuntu-vm-backup history and GitHub Actions. It
+gives the evidence that survives and says which parts do not. Nothing on the
+host was changed to write it.
+
+Neither release changed a page, route, schema or stylesheet. `aef964e` only
+adds the refresh release record to BUILD.md. `fb9ea59` renames the deployment
+paths and units in scripts and docs to the host's current names
+(`/etc/web-apps`, `/opt/node-runtime`, `/run/web-deploy/lock`,
+`dunamismax.service`, `dunamismax-candidate`): 18 files, 72 lines each way.
+
+- [x] `4fbdc4f` → `aef964e`, November 20, 2026 at 14:26:08 UTC.
+  - Source: GitHub Actions Verify passed for `aef964e` (push at 14:23 UTC).
+    The inventory in backup snapshot `320f76e` (14:24:50 UTC) shows the VM
+    checkout at `aef964e` and `current=4fbdc4f`.
+  - Candidate: `.candidate-sha256` was written at 14:24:57 UTC.
+    `deploy/prepare.sh` writes it only after check, unit tests, build, the
+    rehearsal, `bash -n` and shellcheck pass.
+  - Cutover: checkpoint `/root/dunamismax-astro-20261120T142608Z`, previous
+    release `4fbdc4f`, previous unit active. Privilege report: production
+    roles verified. Candidate and public production each passed 129 HTTP
+    checks (empty blog). Journal: the candidate served on 4323 from 14:26:09
+    to 14:26:10 and the unit restarted at 14:26:10 listening on 4311.
+  - Post-release: snapshot `733e5a1` (14:26:53 UTC) holds a new application
+    archive and database dump, and its inventory shows `current=aef964e`.
+- Host rename, 15:15:34 UTC. Not a cutover from this repository and it has no
+  checkpoint here. The journal shows `astro-dunamismax.service` stopping at
+  15:15:34 and `dunamismax.service` starting at 15:15:36 on 4311, still
+  serving `aef964e`. ubuntu-vm-backup `102f22d` and snapshot `53ef357`
+  (15:20:18 UTC) record the renamed unit and publishing wrapper. Until the
+  next cutover the live release's own deploy scripts named the old paths.
+- [x] `aef964e` → `fb9ea59`, November 20, 2026 at 15:45:07 UTC.
+  - Source: committed at 15:20:35 UTC; GitHub Actions Verify passed (push at
+    15:20 UTC). The inventory in snapshot `0b1f6f4` shows the VM checkout at
+    `fb9ea59` and `current=aef964e`.
+  - Candidate: `.candidate-sha256` was written at 15:44:35 UTC.
+  - Pre-release: full host snapshot `0b1f6f4` (archives, data, files,
+    inventory, metadata, secrets) at 15:42:11 UTC, three minutes before
+    cutover, with a fresh dunamismax dump.
+  - Cutover: checkpoint `/root/dunamismax-web-20261120T154507Z`, previous
+    release `aef964e`, previous unit active. Privilege report: production
+    roles verified. Candidate and public production each passed 129 HTTP
+    checks (empty blog). Journal: the candidate served on 4323 from 15:45:08
+    to 15:45:09 and the unit restarted at 15:45:10 listening on 4311.
+  - In service until the M.2 cutover at 23:00:30 UTC: the unit journal for
+    that period has five lines and none reports a failure, an error or an
+    unavailable database.
+  - Post-release: snapshot `570c831` (15:49:04 UTC) holds a new application
+    archive and its inventory shows `current=fb9ea59`, eleven releases.
+  - Rollback target: the M.2 checkpoint names `fb9ea59` as its previous
+    release, and `rollback.sh --check` against it passed during M.2.
+- Not recorded for either cutover, and not reconstructed here: verification
+  of the Codeberg tip at the time (on November 21 both remotes' `main`
+  contain both commits); the candidate's check counts; the output of
+  `restore check`, `postgres-verify` and `applications-verify` for the
+  surrounding snapshots; the schema step output, which `cutover.sh` did not
+  save (a failing step aborts and restores, and the privilege report that
+  follows it passed); the independent public checks (CSP, no `<script>`, www
+  redirect, sibling sites); and a `rollback.sh --check` against these two
+  checkpoints. No pre-release snapshot is distinguishable for `aef964e`
+  beyond `320f76e`, a data and inventory snapshot 78 seconds before cutover.
 
 ## Portfolio refresh (November 20, 2026)
 

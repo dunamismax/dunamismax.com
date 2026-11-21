@@ -45,7 +45,7 @@ build, disk cleanup.
 | Azeroth Trail | Public repo; `azerothtrail.service` (SvelteKit, adapter-node on 127.0.0.1:4315) active from release `1bbe241`, which includes the SvelteKit, PostgreSQL 18 and Drizzle move `9740b04`; Caddy serves the prerendered pages and proxies the tracker API; the old `azerothtrail-status` service is inactive; azerothtrail.com 200 (rechecked 2026-11-20) | Paladin and Druid only; Web Push status alerts. |
 | vincentsawyer.org | Private repo; `vincentsawyer-web` SvelteKit (adapter-node) release `4de8492`; 200 | Live. Admin and store are not public features; do not describe them. |
 | Grace & Footnotes | Private repo; SvelteKit release `1a17b1e` running; 200 | Personal Christian writing site. |
-| dunamismax.com | This repository; SvelteKit release `064bca5` | No browser JavaScript. |
+| dunamismax.com | This repository; `dunamismax.service` active from SvelteKit release `eeeb06d` (rechecked 2026-11-20); later releases are in BUILD.md | No browser JavaScript. |
 | Imaging Services website | Private repo; `imagingservices.service` active; demo `current` and `/healthz` both at release `a176d39`, which includes the SvelteKit port `3958955`; `astro-imagingservices` inactive (rechecked 2026-11-20) | Thirteen pages. Omit the demo link; main site not cut over. |
 | Field Cadence | Private repo; Phase S0 foundation built and tested on SvelteKit; no Caddy site | In development, nothing deployed. Private source. |
 | Day by Word | Public repo; Swift/SwiftUI app and SvelteKit web workspace; daybyword.com does not resolve | In development, not released. |

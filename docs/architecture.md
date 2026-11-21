@@ -27,7 +27,15 @@ linked with a content-hash query, rather than a hashed `/_app` asset.
 (`dist/web/handler.js`). It enforces GET/HEAD, headers, cache policy and an
 explicit public path surface. This matters because the adapter serves static and
 prerendered files before `src/hooks.server.ts` runs. The hook also protects SSR
-responses, sets noindex/Retry-After and logs only sanitized errors. CSP forbids
+responses, sets noindex/Retry-After and logs only sanitized errors. Both take
+the security headers, the allowed methods and the refusal message from
+`src/lib/http.ts`, and the slug grammar from `SLUG_PATTERN` in
+`src/lib/validation.ts`, so the two layers cannot drift. Headers that a
+prerendered endpoint declares never reach the client, because its output is
+served as a static file; the cache policy for the stylesheet, robots.txt, the
+manifest and the icon is therefore the `cachePolicy` table in `bin/server.ts`,
+and everything else is no-store. `tests/http.ts` pins the headers and cache
+policy of every response class. CSP forbids
 inline styles and scripts. Only the build’s client/prerendered directories are
 read internally; Caddy proxies requests and never exposes a source or
 server-build webroot. SvelteKit’s prerendered `__data.json` files and `/_app`

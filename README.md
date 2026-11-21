@@ -48,12 +48,12 @@ Drizzle ORM · Node (adapter-node) · Caddy**
 | `/blog`, `/blog?page=2` | Ten published posts per page |
 | `/blog/{slug}` | One published post, escaped into paragraphs |
 | `/feed.xml` | The latest twenty published posts, RSS 2.0, `application/xml` |
-| `/robots.txt`, `/manifest.webmanifest` | Crawler rules and web manifest |
+| `/robots.txt`, `/manifest.webmanifest` | Crawler rules and web manifest, cacheable for five minutes |
 | `/healthz` | `{"status":"ok"}`, independent of PostgreSQL |
-| `/css/site.css`, `/icon.svg` | The compiled stylesheet and the icon |
+| `/css/site.css`, `/icon.svg` | The compiled stylesheet (five minutes) and the icon (one day) |
 
 Only GET and HEAD are allowed (other methods get 405). Unknown and private
-paths return 404 with noindex. The www hostname redirects permanently to the
+paths return 404 with noindex. Every other response is no-store. The www hostname redirects permanently to the
 apex, keeping path and query. Canonical URLs come from the configured
 `APP_URL`, never the request's Host header. When the database is down, the
 blog, posts and feed return 503 with `Retry-After: 60` and no-store.
@@ -93,7 +93,9 @@ LC_ALL=en_US.UTF-8 PGBIN=/opt/homebrew/opt/postgresql@18/bin bash deploy/rehears
 ```
 
 On Ubuntu `PGBIN` defaults to `/usr/lib/postgresql/18/bin`. Set `TEST_PGPORT`
-if port 55431 is taken.
+if port 55431 is taken, or `TEST_WEB_PORT` if 4322 is. `make verify` runs
+every check above, the rehearsal, the shell checks and `git diff --check` in
+order, and finds Homebrew's PostgreSQL 18 on macOS by itself.
 
 ### Changing the schema
 
@@ -129,7 +131,7 @@ credentials or post data. See [docs/content.md](docs/content.md),
 | `src/routes/` | Pages, loads and endpoints; static pages set `prerender = true` |
 | `src/routes/+layout.svelte`, `src/lib/components/` | Metadata, navigation, footer and the shared project card (imported as `#lib/*`) |
 | `src/lib/projects.ts` | Typed portfolio inventory: groups, order, anchors and featured projects |
-| `src/lib/` | Post reads, publishing, validation, safe text and RSS |
+| `src/lib/` | Post reads, publishing, validation, safe text, RSS and the shared HTTP boundary constants |
 | `src/app.css`, `src/styles/site.css` | Tailwind CSS 4 entry and the preserved stylesheet |
 | `src/hooks.server.ts`, `src/app.html` | Response headers, sanitized errors and the HTML shell |
 | `src/db/` | Drizzle schema, website and operator connections, catalog and content digests |
@@ -146,9 +148,9 @@ credentials or post data. See [docs/content.md](docs/content.md),
 GitHub Actions ([verify.yml](.github/workflows/verify.yml)) runs on every push
 to `main`, weekly and on demand. It checks the pinned Node and npm, installs
 with `npm ci`, runs `npm run check`, `npm run db:check`, `npm test` and the
-production build, runs the rehearsal against a disposable PostgreSQL 18 cluster
-with synthetic data, and fails on any `npm audit` finding of moderate severity
-or above. CI gets no production credentials and never deploys. Dependency
+production build, checks the deploy scripts with `bash -n` and ShellCheck,
+runs the rehearsal against a disposable PostgreSQL 18 cluster with synthetic
+data, and fails on any `npm audit` finding of moderate severity or above. CI gets no production credentials and never deploys. Dependency
 updates are reviewed and committed by hand on `main`; there is no Dependabot.
 An npm override pins drizzle-kit's legacy `@esbuild-kit` loader to the tree's
 patched esbuild until drizzle-kit drops it.
