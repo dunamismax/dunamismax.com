@@ -282,8 +282,8 @@ host: `/root/dunamismax-{pre,post}release-backup-be15ef5.log` and
 none planned; the open items in **Now** are the owner's.
 
 **2026-11-20 · M.2 released: `fb9ea59` → `eeeb06d`.** Owner-authorized. Ships
-the Lorehallow card (`3605c15`) and the portfolio recheck (`eeeb06d`: Azeroth
-Trail, Imaging Services and the support site on SvelteKit, the C course at
+a since-retired project card (`3605c15`) and the portfolio recheck (`eeeb06d`:
+Imaging Services and the support site on SvelteKit, the C course at
 cfromthegroundup.com; evidence in docs/portfolio.md). The first pre-release
 host backup failed twice for reasons outside this site: Vincent Sawyer's new
 25 GiB media tree did not fit the `/tmp` staging tmpfs, and the RiverMind web
@@ -292,8 +292,8 @@ ubuntu-vm-backup (`d05d4f8`, `58a8a44`, `b931862`) before cutover; see the
 [record](#portfolio-updates-november-20-2026). Next action: M.1.
 
 **2026-11-20 · Docs: README, BUILD and AGENTS restructured.** Asked to bring
-the three files in line with the owner's other repositories (Lorehallow,
-RiverMind Poker, C From The Ground Up). BUILD gains **Now**, settled decisions,
+the three files in line with the owner's other repositories (RiverMind
+Poker, C From The Ground Up). BUILD gains **Now**, settled decisions,
 open questions with defaults, maintenance steps, this log and a fixed list of
 release record contents; every earlier record below is unchanged. AGENTS is
 reorganized into roles and autonomy, session workflow, git, parallel sessions,
@@ -305,7 +305,7 @@ changed. Next action: M.1.
 **2026-11-20 · Portfolio commits after the refresh release (from git
 history).** `fb9ea59` renamed the deployment paths and unit to the current
 host names (`/etc/web-apps`, `dunamismax.service`) and is live; `3605c15`
-updated the Lorehallow card and is not deployed. Checks for both were not
+updated a since-retired project card and is not deployed. Checks for both were not
 recorded here. Next action: M.1, then M.2 with the owner.
 
 ---
@@ -440,8 +440,8 @@ also carries the M.1 record below. Local evidence is under M.3 in
 
 Content-only change (M.2): `src/lib/projects.ts`, one line each of Home and
 About copy, and docs. Routes, schema, server, deployment scripts and the
-stylesheet are unchanged. The Lorehallow card shows its open prototype
-(`3605c15`); Azeroth Trail, the Imaging Services demo and RustDesk remote
+stylesheet are unchanged. A since-retired game card shows its prototype
+(`3605c15`); the Imaging Services demo and RustDesk remote
 support name SvelteKit instead of Astro; the C course links
 cfromthegroundup.com with the mdBook edition as a mirror (`eeeb06d`).
 Evidence: [docs/portfolio.md](docs/portfolio.md#verified-entries).
@@ -557,8 +557,8 @@ shows six featured cards. Home, About, Projects, Blog, footer and metadata copy
 now describe the actual stack (SvelteKit/TypeScript/PostgreSQL, plus Go,
 Python and Swift where projects use them). Evidence:
 [docs/portfolio.md](docs/portfolio.md#november-20-2026-review). All existing
-anchors are kept; new ones are `#lorehallow`, `#rivermind-poker`,
-`#azeroth-trail`, `#vincent-sawyer`, `#field-cadence`, `#day-by-word`,
+anchors are kept; new ones are `#rivermind-poker`,
+`#vincent-sawyer`, `#field-cadence`, `#day-by-word`,
 `#c-from-the-ground-up`, `#group-games` and `#group-in-development`.
 
 - [x] Local: `npm run check`, `npm run db:check`, `npm test`, production

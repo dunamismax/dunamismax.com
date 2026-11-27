@@ -32,21 +32,6 @@ export interface ProjectGroup {
 
 const gh = (repo: string) => `https://github.com/dunamismax/${repo}`;
 
-const lorehallow: Project = {
-  id: 'lorehallow',
-  name: 'Lorehallow',
-  status: 'Pre-alpha',
-  tone: 'phase-0',
-  role: 'Multiplayer game · Design, server & hosting',
-  tagline: 'A small pixel-art fantasy MMO built around a shared, persistent world, in the spirit of early World of Warcraft: zones, quests, grouping, and other people already there when you log in.',
-  detail: 'The authoritative game server is Go, with each zone owned by a single goroutine and a versioned Protocol Buffers protocol. It targets hundreds to thousands of connected players, and no number is claimed until it is measured. lorehallow.com publishes the full build plan, a live progress tracker, and a devlog; an early Phaser browser prototype is open at play.lorehallow.com.',
-  stack: ['Go', 'Protocol Buffers', 'TypeScript', 'SvelteKit', 'Caddy'],
-  links: [
-    { label: 'Website', href: 'https://lorehallow.com' },
-    { label: 'Source', href: gh('lorehallow') },
-  ],
-};
-
 const rivermind: Project = {
   id: 'rivermind-poker',
   name: 'RiverMind Poker',
@@ -59,21 +44,6 @@ const rivermind: Project = {
   links: [
     { label: 'Play', href: 'https://rivermindpoker.com' },
     { label: 'Source', href: gh('rivermind-poker') },
-  ],
-};
-
-const azerothtrail: Project = {
-  id: 'azeroth-trail',
-  name: 'Azeroth Trail',
-  status: 'Live',
-  tone: 'active',
-  role: 'Game guide · Development & hosting',
-  tagline: 'A World of Warcraft leveling guide for Paladins and Druids that answers one question for every spec: what should I do at my level?',
-  detail: 'Levels 1 to 60 with zones, quests, training, talent order, and dungeons, sourced and dated. A verifier fails the build if a talent build drifts from its source. Prerendered SvelteKit pages work with JavaScript off, and the same server tracks server status in every region in PostgreSQL and sends Web Push alerts when servers come back.',
-  stack: ['SvelteKit', 'TypeScript', 'PostgreSQL', 'Web Push', 'Caddy'],
-  links: [
-    { label: 'Website', href: 'https://azerothtrail.com' },
-    { label: 'Source', href: gh('azerothtrail') },
   ],
 };
 
@@ -237,8 +207,8 @@ export const projectGroups: readonly ProjectGroup[] = [
   {
     id: 'group-games',
     title: 'Games & play',
-    summary: 'Multiplayer and game projects with real servers behind them, from an MMO backend in Go to a poker AI you can sit down against.',
-    projects: [lorehallow, rivermind, azerothtrail],
+    summary: 'Game projects with real servers behind them: a poker site with a live table server and bots trained by poker AI that you can sit down against.',
+    projects: [rivermind],
   },
   {
     id: 'group-apps',
@@ -269,4 +239,4 @@ export const projectGroups: readonly ProjectGroup[] = [
 export const allProjects: readonly Project[] = projectGroups.flatMap((group) => group.projects);
 
 /** Shown on the home page, in this order. */
-export const featuredProjects: readonly Project[] = [rustdesk, lorehallow, rivermind, azerothtrail, vincentsawyer, status];
+export const featuredProjects: readonly Project[] = [rustdesk, rivermind, vincentsawyer, grace, status, cbook];

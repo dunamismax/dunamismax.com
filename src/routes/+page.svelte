@@ -13,7 +13,7 @@
         <div class="hero-copy">
             <p class="eyebrow">Stephen Sawyer · dunamismax</p>
             <h1 id="home-title">I build the software.<br>I run the servers.</h1>
-            <p class="lede lede--strong">I’m Stephen Sawyer: a full-stack developer and hands-on sysadmin. I build web applications with SvelteKit, TypeScript, and PostgreSQL, and reach for Go, Python, and Swift when a project calls for a game server, a poker AI, or an iPhone app.</p>
+            <p class="lede lede--strong">I’m Stephen Sawyer: a full-stack developer and hands-on sysadmin. I build web applications with SvelteKit, TypeScript, and PostgreSQL, and reach for Python and Swift when a project calls for a poker AI or an iPhone app.</p>
             <p class="lede">Everything I ship runs on Ubuntu infrastructure I operate myself: eight public websites, a multiplayer game server, company-wide RustDesk support, monitoring, and encrypted backups. I take responsibility for the code and for the service people actually use.</p>
             <div class="hero-actions">
                 <a href="/projects" class="button button-primary">View projects</a>
@@ -47,7 +47,7 @@
                     </div>
                     <div>
                         <dt>Long-running services</dt>
-                        <dd>A Go game server, a Python poker table server, a Discord bot, and the company’s RustDesk server and relay.</dd>
+                        <dd>A poker table server, a Discord bot, and the company’s RustDesk server and relay.</dd>
                     </div>
                     <div>
                         <dt>Operations</dt>
@@ -63,7 +63,7 @@
 <section class="signal-bar" aria-label="At a glance">
     <div class="section-inner">
         <div class="signal-grid">
-            <article class="signal-card"><p>Stack</p><strong>SvelteKit, TypeScript, PostgreSQL, Go, Python</strong></article>
+            <article class="signal-card"><p>Stack</p><strong>SvelteKit, TypeScript, PostgreSQL, Python</strong></article>
             <article class="signal-card"><p>Portfolio</p><strong>{allProjects.length} projects &amp; services</strong></article>
             <article class="signal-card"><p>Writing</p><strong>{postCount === null ? 'Notes on the blog' : postCount === 1 ? '1 published note' : `${postCount} published notes`}</strong></article>
             <article class="signal-card"><p>Responsibility</p><strong>First commit through operations</strong></article>
@@ -79,7 +79,7 @@
             </article>
             <article class="workflow-card">
                 <p class="workflow-card__title">Games &amp; realtime</p>
-                <p>An authoritative Go MMO server with Protocol Buffers, and a Python poker engine streaming tables to the browser over WebSockets.</p>
+                <p>A fuzz-tested poker engine and table server streaming hands to the browser over WebSockets, with bots trained in Python.</p>
             </article>
             <article class="workflow-card">
                 <p class="workflow-card__title">Apps &amp; scripting</p>
@@ -99,7 +99,7 @@
                 <p class="eyebrow">Selected work</p>
                 <h2 id="featured-title">Built, hosted, and maintained.</h2>
             </div>
-            <p>Games, websites, and company IT, all running on infrastructure I operate. The full portfolio also covers apps in development, automation, and an open-source C book.</p>
+            <p>Games, websites, teaching, and company IT, all running on infrastructure I operate. The full portfolio also covers apps in development and automation.</p>
         </div>
         <ul class="card-list card-list--projects">
             {#each featuredProjects as project (project.id)}<ProjectCard {project} />{/each}

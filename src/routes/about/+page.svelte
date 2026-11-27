@@ -31,7 +31,7 @@
             </article>
             <article class="experience-item">
                 <h3>Games &amp; realtime systems</h3>
-                <p>Lorehallow is a multiplayer game with an authoritative Go server and a Protocol Buffers protocol, built to be measured before it makes any claim about scale. RiverMind Poker runs no-limit hold’em tables in Python over WebSockets, with bots trained by counterfactual regret minimization. Azeroth Trail is a live, source-checked WoW leveling guide.</p>
+                <p>RiverMind Poker runs no-limit hold’em tables over WebSockets, with bots trained by counterfactual regret minimization.</p>
                 <a href="/projects#group-games">Games &amp; play <span aria-hidden="true">→</span></a>
             </article>
             <article class="experience-item">
@@ -41,7 +41,7 @@
             </article>
             <article class="experience-item">
                 <h3>Ubuntu systems administration</h3>
-                <p>I administer the shared server: Caddy for HTTPS, dedicated Node, Go, and Python services under systemd, PostgreSQL 18 with separate least-privilege roles, Docker, and scheduled jobs. Operations include Tailscale access, fail2ban, Lynis audits, monitoring, and age-encrypted backups with restore checks and rebuild procedures.</p>
+                <p>I administer the shared server: Caddy for HTTPS, dedicated Node and Python services under systemd, PostgreSQL 18 with separate least-privilege roles, Docker, and scheduled jobs. Operations include Tailscale access, fail2ban, Lynis audits, monitoring, and age-encrypted backups with restore checks and rebuild procedures.</p>
                 <a href="/projects#group-infrastructure">Infrastructure &amp; recovery <span aria-hidden="true">→</span></a>
             </article>
             <article class="experience-item">
@@ -61,7 +61,7 @@
         <dl class="skills-grid">
             <div><dt>Web applications</dt><dd>SvelteKit 3, Svelte 5, strict TypeScript, Tailwind CSS 4, PostgreSQL 18, Drizzle ORM, Better Auth, semantic HTML, and accessible, script-free server rendering.</dd></div>
             <div><dt>Languages</dt><dd>TypeScript, Go, Python, Swift, SQL, C, and Bash.</dd></div>
-            <div><dt>Games &amp; realtime</dt><dd>Authoritative Go servers, goroutine-per-zone design, Protocol Buffers with Buf, WebSockets, fuzz-tested game engines, and MCCFR poker training.</dd></div>
+            <div><dt>Games &amp; realtime</dt><dd>Authoritative game servers over WebSockets, fuzz-tested game engines, and MCCFR poker training.</dd></div>
             <div><dt>Python &amp; automation</dt><dd>uv, Ruff, pytest, Alembic, discord.py, httpx, the Scryfall and Cloudflare APIs, and QuickBooks reconciliation tooling.</dd></div>
             <div><dt>Apple platforms</dt><dd>Swift 6, SwiftUI, and Xcode for iPhone and iPad clients that share HTTPS APIs with the web apps.</dd></div>
             <div><dt>Hosting &amp; operations</dt><dd>Ubuntu, Caddy, Node.js, systemd services and timers, Docker, Git with GitHub and Codeberg mirrors, GitHub Actions, and immutable, versioned releases.</dd></div>

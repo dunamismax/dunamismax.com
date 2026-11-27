@@ -6,6 +6,15 @@ HTTPS response before changing a status, stack or description, and record the
 evidence here. Sections below are dated; older ones are history, not the
 current state.
 
+## November 27, 2026 change
+
+The owner retired two game projects and took them off the host. Their cards,
+their places among the home page's featured cards and their mentions in Home,
+About and Projects copy are removed. The Games & play group now holds
+RiverMind Poker alone, and the home page features RustDesk remote support,
+RiverMind Poker, vincentsawyer.org, Grace & Footnotes, Dunamis Status and
+C From The Ground Up. Every other card is unchanged from the review below.
+
 ## November 21, 2026 review
 
 Reviewed on `root@ubuntu-vm` after every site moved to the host's web platform
@@ -18,9 +27,9 @@ one below, this one is current.
 
 Ubuntu 26.04.1 LTS. Caddy 2.11.9, PostgreSQL 18, and Node 26.13.1
 (`/opt/node-26`) for every Node service; Node 24 was removed this day. Caddy
-serves thirteen site files: dunamismax.com, graceandfootnotes.com,
-status.dunamismax.com, vincentsawyer.org, azerothtrail.com, lorehallow.com
-(with play.lorehallow.com), rivermindpoker.com, cfromthegroundup.com,
+serves thirteen site files, two of them since retired: dunamismax.com,
+graceandfootnotes.com, status.dunamismax.com, vincentsawyer.org,
+rivermindpoker.com, cfromthegroundup.com,
 xrayservice.net, demo.xrayservice.net, data.xrayservice.net (email images),
 daybyword.com and fieldcadence.app. The demo, daybyword.com and
 fieldcadence.app answer `noindex`. No site runs in a container and no site
@@ -56,10 +65,9 @@ This is an editorial inventory, not a live health report or a security audit.
 Ubuntu 26.04.1 LTS. Caddy 2.11.9 (`/usr/local/lib/caddy/caddy`), PostgreSQL
 18.6, Node 24.22.3 (`/opt/node-runtime`), Go 1.27.4, Docker 29.10, Tailscale,
 fail2ban and a Lynis timer. PHP-FPM and MySQL are no longer running, so no
-portfolio copy may describe them as current. Caddy serves ten site files:
+portfolio copy may describe them as current. Caddy serves ten site files, two of them since retired:
 dunamismax.com, graceandfootnotes.com, status.dunamismax.com, vincentsawyer.org,
-azerothtrail.com, lorehallow.com (with play.lorehallow.com, which serves the browser
-game prototype), rivermindpoker.com, xrayservice.net,
+rivermindpoker.com, xrayservice.net,
 demo.xrayservice.net and data.xrayservice.net (email images). The eight public
 websites named on the home page are the first eight; the demo is noindex.
 
@@ -78,9 +86,7 @@ build, disk cleanup.
 
 | Card | Evidence | Public boundary |
 | --- | --- | --- |
-| Lorehallow | Public repo; `lorehallow-server` (Go binary) running; lorehallow.com 200 from the script-free SvelteKit release `9c4a1c7`; play.lorehallow.com serves the Phaser client and a named connection joins the shared map (checked 2026-11-20); BUILD.md Phase 2 current | Pre-alpha. An open prototype with no accounts; no v0.2.0 release yet. Scale is a target, never a claim. |
 | RiverMind Poker | Public GPL repo; `rivermind-poker serve-nl` running behind Caddy; rivermindpoker.com 200 | Play money only, bots always labelled. Credit its open-source origins. |
-| Azeroth Trail | Public repo; `azerothtrail.service` (SvelteKit, adapter-node on 127.0.0.1:4315) active from release `1bbe241`, which includes the SvelteKit, PostgreSQL 18 and Drizzle move `9740b04`; Caddy serves the prerendered pages and proxies the tracker API; the old `azerothtrail-status` service is inactive; azerothtrail.com 200 (rechecked 2026-11-20) | Paladin and Druid only; Web Push status alerts. |
 | vincentsawyer.org | Private repo; `vincentsawyer-web` SvelteKit (adapter-node) release `4de8492`; 200 | Live. Admin and store are not public features; do not describe them. |
 | Grace & Footnotes | Private repo; SvelteKit release `1a17b1e` running; 200 | Personal Christian writing site. |
 | dunamismax.com | This repository; `dunamismax.service` active from SvelteKit release `eeeb06d` (rechecked 2026-11-20); later releases are in BUILD.md | No browser JavaScript. |

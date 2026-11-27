@@ -7,7 +7,7 @@
     <div class="section-inner">
         <p class="eyebrow">Portfolio</p>
         <h1 id="projects-title">Games, websites, apps, and the systems behind them.</h1>
-        <p class="lede">An MMO server in Go, a poker AI you can play against, the websites I build for my family and my company, and the infrastructure I run for all of it. I own each project from the first commit through deployment, monitoring, and backups.</p>
+        <p class="lede">A poker AI you can play against, the websites I build for my family and my company, and the infrastructure I run for all of it. I own each project from the first commit through deployment, monitoring, and backups.</p>
         <ul class="hero-summary" aria-label="Project summary">
             <li>{allProjects.length} projects &amp; services</li>
             <li>{projectGroups.length} areas of work</li>
