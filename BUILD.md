@@ -11,7 +11,7 @@ this file records what is done.
 | **Current work** | Maintenance. Every planned phase is complete. M.7 (two retired game projects removed from the portfolio) is live at `a1be687`. M.6 (five portfolio cards corrected against the live host) is live at `1e324bc`. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
 | **Next step** | None planned. The open items below wait on the owner. |
 | **In progress** | Nothing claimed. |
-| **Open items** | Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves seven public websites and three `noindex` previews), and About lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
+| **Open items** | Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves seven public websites and four `noindex` previews), and About lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
 | **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `a1be687`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `1e324bc` → `a1be687`, November 27, 2026 at 00:35 UTC ([record](#retired-projects-removed-november-27-2026)). |
 | **`main`** | `a1be687` plus this release record, pushed to GitHub and Codeberg. |
 | **Last updated** | 2026-11-27 |
