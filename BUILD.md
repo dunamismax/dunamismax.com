@@ -8,13 +8,13 @@ this file records what is done.
 
 | | |
 | --- | --- |
-| **Current work** | Maintenance. Every planned phase is complete. M.6 (five portfolio cards corrected against the live host) is live at `1e324bc`. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
+| **Current work** | Maintenance. Every planned phase is complete. M.7 (two retired game projects removed from the portfolio) is live at `a1be687`. M.6 (five portfolio cards corrected against the live host) is live at `1e324bc`. M.5 (host web-platform contract: pnpm 12.18.0, Node 26.13.1, baseline pins, fix-forward deploy with a candidate check) is live at `f2cb23c`. No feature work is planned. |
 | **Next step** | None planned. The open items below wait on the owner. |
 | **In progress** | Nothing claimed. |
-| **Open items** | Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves nine public websites and three `noindex` previews) and "a Python poker table server", and About says RiverMind runs its tables "in Python" and lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
-| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `1e324bc`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `f2cb23c` → `1e324bc`, November 21, 2026 at 19:03 UTC ([record](#portfolio-corrections-november-21-2026)). |
-| **`main`** | `1e324bc` plus this release record, pushed to GitHub and Codeberg. |
-| **Last updated** | 2026-11-21 |
+| **Open items** | Public copy outside the project cards is still the owner's call: Home says "eight public websites" (the host serves seven public websites and three `noindex` previews), and About lists Alembic; RiverMind's table server is TypeScript now ([portfolio evidence](docs/portfolio.md)). |
+| **Live site** | https://dunamismax.com. `/srv/www/dunamismax.com/current` → `a1be687`, `dunamismax` active on `/opt/node-26/bin/node`. Last recorded release: `1e324bc` → `a1be687`, November 27, 2026 at 00:35 UTC ([record](#retired-projects-removed-november-27-2026)). |
+| **`main`** | `a1be687` plus this release record, pushed to GitHub and Codeberg. |
+| **Last updated** | 2026-11-27 |
 
 ## How to use this file
 
@@ -160,6 +160,21 @@ Use the default until the owner decides otherwise.
     `1e324bc` on November 21, 2026 at 19:03 UTC,
     [record](#portfolio-corrections-november-21-2026).
 
+- [x] **M.7 · Remove the two retired game projects.** Owner request,
+  2026-11-27: two game projects were retired and taken off the host; remove
+  every mention from the site.
+  - Done when: their cards, featured places and Home, About and Projects copy
+    are gone, with dated evidence in [docs/portfolio.md](docs/portfolio.md);
+    `tests/http.ts` holds 13 cards and 6 featured; the gates pass; a release
+    serves it.
+  - Changed: Games & play holds RiverMind Poker alone; Grace & Footnotes and
+    C From The Ground Up take the two featured places; Home, About and
+    Projects copy no longer claim a Go game server. This step is an owner
+    request, so the copy gates are met.
+  - Evidence: `a1be687`; gates and rehearsal passed; released `1e324bc` →
+    `a1be687` on November 27, 2026 at 00:35 UTC,
+    [record](#retired-projects-removed-november-27-2026).
+
 ### Release record contents
 
 Every release record lists, each on its own evidence: source commit and both
@@ -219,6 +234,16 @@ release record below.
 
 Newest first; keep eight. Date, step IDs, what changed, checks actually run,
 next action.
+
+**2026-11-27 · M.7 built and released: `1e324bc` → `a1be687`.** Owner asked
+for two retired game projects to be removed everywhere. Their cards, featured
+places and Home, About and Projects copy are gone; Grace & Footnotes and C From
+The Ground Up are featured instead; Go game-server claims are gone. Checks run:
+`make verify` on the Mac (check, db:check, tests, build, rehearsal, shell
+checks, `git diff --check`), then `deploy/build.sh` with the rehearsal and
+`deploy/deploy.sh` on the VM after a verified host backup. Not done: browser
+review at the four widths (the card grid markup is unchanged). Next: none
+planned.
 
 **2026-11-21 · M.6 built and released: `f2cb23c` → `1e324bc`.** Owner asked
 for the projects page to be checked against the repositories and the live
@@ -314,6 +339,35 @@ recorded here. Next action: M.1, then M.2 with the owner.
 
 Dated records, newest first. They are evidence as written at the time and are
 not rewritten; later sections supersede earlier directions where they say so.
+
+## Retired projects removed (November 27, 2026)
+
+M.7. `src/lib/projects.ts`, Home, About and Projects copy, `tests/http.ts` and
+docs: two cards removed, two featured places reassigned, 13 projects. No
+route, schema, server or stylesheet change.
+
+- [x] Released to production (owner-requested), November 27, 2026 at 00:35
+  UTC: `1e324bc` → `a1be687`.
+  - Source: `a1be687` pushed to GitHub and Codeberg (`ls-remote` shows
+    `a1be687`); VM checkout clean at that commit.
+  - Build (`deploy/build.sh`, sawyer, outside the lock, Node 26.13.1 and pnpm
+    12.18.0): gates and production build passed; rehearsal: PostgreSQL suite
+    passed, 195 populated / 192 outage / 195 recovered HTTP checks.
+  - Pre-release backup (D-9): the host backup ran at 00:27–00:33 UTC and
+    committed snapshot `f291970` in ubuntu-vm-backup after `postgres-verify`
+    and `applications-verify` (13 artifacts) passed; GitHub and Codeberg both
+    verified the snapshot. The deploy also took its pre-migration dump.
+  - Deploy (`with-deploy-lock bash …/deploy/deploy.sh a1be687…`): staged
+    `releases/a1be687…`; schema step `adopted: false`, 1 migration of 1
+    available, 0 rows; privilege report: production roles verified.
+    Candidate: 190 HTTP checks (empty blog). Switch, restart; 190 HTTP checks
+    on the live port; `web-live`: `/opt/node-v26.13.1-linux-x64/bin/node`,
+    `releases/a1be687…`, revision `a1be687…`, `current`. Public HTTPS: 190
+    HTTP checks.
+  - Independent checks, from outside the server: `/healthz` reports `a1be687`
+    with `"database":"ok"`; `/projects` shows 13 cards and Home 6 featured,
+    neither retired name appears on Home, Projects or About, no `<script>`;
+    the www redirect answers 301; `dunamismax` active and no failed units.
 
 ## Portfolio corrections (November 21, 2026)
 
